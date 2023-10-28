@@ -1,56 +1,40 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:kanpai/components/select_option.dart';
+import 'package:kanpai/view/onboarding/onboarding_layout.dart';
+import 'package:kanpai/view/onboarding/question2_screen/tech_area.dart';
+import 'package:kanpai/view/onboarding/question3_screen/question3_screen.dart';
 
-class Question2Screen extends ConsumerWidget {
+class Question2Screen extends HookConsumerWidget {
   const Question2Screen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final appbar = AppBar(
-      title: const Text("ログイン"),
-      elevation: 0,
-      backgroundColor: Colors.transparent,
-    );
+    final techArea = useState<TechArea?>(null);
 
-    return Scaffold(
-        appBar: appbar,
-        extendBodyBehindAppBar: true,
-        backgroundColor: const Color.fromRGBO(245, 245, 245, 1),
-        body: Padding(
-          padding: EdgeInsets.only(
-              top: 32 + appbar.preferredSize.height,
-              left: 32,
-              right: 32,
-              bottom: 32),
-          child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                SizedBox(
-                  width: double.infinity,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "好き／得意な領域は？",
-                        style: Theme.of(context).textTheme.headlineLarge,
-                      ),
-                      Text(
-                        "地元トークで盛り上がれるかも！？",
-                        style: Theme.of(context).textTheme.labelMedium,
-                      )
-                    ],
-                  ),
-                ),
-                SizedBox(
-                    width: double.infinity,
-                    child: FilledButton(
-                        onPressed: () async {
-                          // MaterialPageRoute(builder: () => )
-                        },
-                        child: const Text(
-                          "次へ",
-                        ))),
-              ]),
-        ));
+    return OnboardingLayout(
+      title: "好き・得意な領域は？",
+      hide: techArea.value == null,
+      onNextPressed: () {
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (_) => const Question3Screen()));
+      },
+      child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: TechArea.values.map((item) {
+            final isSelected = techArea.value == item;
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: SelectOption(
+                isSelected: isSelected,
+                onSelected: () {
+                  techArea.value = item;
+                },
+                child: Text(item.label),
+              ),
+            );
+          }).toList()),
+    );
   }
 }
