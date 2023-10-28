@@ -20,7 +20,7 @@ User _$UserFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$User {
-  String get id =>
+  String? get id =>
       throw _privateConstructorUsedError; // Firebase Authenticationのuid
   String? get name => throw _privateConstructorUsedError; // 名前
   String? get profileImageUrl => throw _privateConstructorUsedError; // 画像のurl
@@ -49,7 +49,7 @@ abstract class $UserCopyWith<$Res> {
       _$UserCopyWithImpl<$Res, User>;
   @useResult
   $Res call(
-      {String id,
+      {String? id,
       String? name,
       String? profileImageUrl,
       String? location,
@@ -76,7 +76,7 @@ class _$UserCopyWithImpl<$Res, $Val extends User>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = null,
+    Object? id = freezed,
     Object? name = freezed,
     Object? profileImageUrl = freezed,
     Object? location = freezed,
@@ -90,10 +90,10 @@ class _$UserCopyWithImpl<$Res, $Val extends User>
     Object? cheerUserIds = freezed,
   }) {
     return _then(_value.copyWith(
-      id: null == id
+      id: freezed == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       name: freezed == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -150,7 +150,7 @@ abstract class _$$UserImplCopyWith<$Res> implements $UserCopyWith<$Res> {
   @override
   @useResult
   $Res call(
-      {String id,
+      {String? id,
       String? name,
       String? profileImageUrl,
       String? location,
@@ -174,7 +174,7 @@ class __$$UserImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = null,
+    Object? id = freezed,
     Object? name = freezed,
     Object? profileImageUrl = freezed,
     Object? location = freezed,
@@ -188,10 +188,10 @@ class __$$UserImplCopyWithImpl<$Res>
     Object? cheerUserIds = freezed,
   }) {
     return _then(_$UserImpl(
-      id: null == id
+      id: freezed == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       name: freezed == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -262,7 +262,7 @@ class _$UserImpl implements _User {
       _$$UserImplFromJson(json);
 
   @override
-  final String id;
+  final String? id;
 // Firebase Authenticationのuid
   @override
   final String? name;
@@ -371,7 +371,7 @@ class _$UserImpl implements _User {
 
 abstract class _User implements User {
   factory _User(
-      {required final String id,
+      {required final String? id,
       final String? name,
       final String? profileImageUrl,
       final String? location,
@@ -387,7 +387,7 @@ abstract class _User implements User {
   factory _User.fromJson(Map<String, dynamic> json) = _$UserImpl.fromJson;
 
   @override
-  String get id;
+  String? get id;
   @override // Firebase Authenticationのuid
   String? get name;
   @override // 名前
