@@ -2,6 +2,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kanpai/models/user_model.dart';
 import 'package:kanpai/repositories/user_repository.dart';
 
+final homeViewModelProvider =
+    StateNotifierProvider<HomeViewModel, AsyncValue<List<User>>>((ref) {
+  final userRepository = ref.watch(userRepositoryProvider);
+  return HomeViewModel(userRepository);
+});
+
 class HomeViewModel extends StateNotifier<AsyncValue<List<User>>> {
   final UserRepository _userRepository;
 
