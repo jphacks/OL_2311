@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:kanpai/models/user_model.dart';
 import 'package:kanpai/repositories/user_repository.dart';

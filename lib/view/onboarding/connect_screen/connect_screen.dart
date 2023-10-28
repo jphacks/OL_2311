@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:kanpai/view/onboarding/onboarding_layout.dart';
-import 'package:kanpai/viewmodel/connect_viewmodel.dart';
+import 'package:kanpai/view_models/connect_view_model.dart';
 
 class ConnectScreen extends HookConsumerWidget {
   const ConnectScreen({super.key});

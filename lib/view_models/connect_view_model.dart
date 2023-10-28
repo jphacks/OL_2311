@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:kanpai/models/connect_state.dart';
 import 'package:kanpai/util/ble_connector.dart';
-import 'package:kanpai/viewmodel/connect_state.dart';
 
 final connectViewModelProvider =
     StateNotifierProvider<ConnectViewModel, ConnectState>(
