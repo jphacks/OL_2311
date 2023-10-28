@@ -3,7 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:kanpai/components/select_option.dart';
 import 'package:kanpai/view/onboarding/onboarding_layout.dart';
-import 'package:kanpai/view/onboarding/question2_screen/tech_field.dart';
+import 'package:kanpai/view/onboarding/question2_screen/tech_area.dart';
 import 'package:kanpai/view/onboarding/question3_screen/question3_screen.dart';
 
 class Question2Screen extends HookConsumerWidget {
