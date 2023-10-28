@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:kanpai/components/profile_card/profile_card_tag.dart';
 
@@ -68,7 +69,7 @@ class ProfileCard extends HookConsumerWidget {
             ],
           ),
           Text(
-            "10/29 16:55",
+            "10/29 14:55",
             style: TextStyle(
                 fontSize: 14,
                 color: Colors.white.withOpacity(0.6),
@@ -83,26 +84,26 @@ class ProfileCard extends HookConsumerWidget {
     return const Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        Icon(
-          Icons.edit,
-          size: 16,
+        FaIcon(
+          FontAwesomeIcons.instagram,
           color: Colors.white,
+          size: 18,
         ),
         SizedBox(
-          width: 8,
+          width: 12,
         ),
-        Icon(
-          Icons.edit,
-          size: 16,
+        FaIcon(
+          FontAwesomeIcons.github,
           color: Colors.white,
+          size: 18,
         ),
         SizedBox(
-          width: 8,
+          width: 12,
         ),
-        Icon(
-          Icons.edit,
-          size: 16,
+        FaIcon(
+          FontAwesomeIcons.xTwitter,
           color: Colors.white,
+          size: 18,
         ),
       ],
     );
