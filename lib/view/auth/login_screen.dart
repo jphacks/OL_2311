@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:kanpai/auth/login.dart';
+import 'package:kanpai/view/auth/ble_config_screen.dart';
 import 'package:kanpai/view/onboarding/profile_screen/profile_screen.dart';
+import 'package:kanpai/view_models/auth_view_model.dart';
 
 class LoginScreen extends HookConsumerWidget {
   const LoginScreen({super.key});
@@ -13,6 +14,21 @@ class LoginScreen extends HookConsumerWidget {
     final appbar = AppBar(
       elevation: 0,
       backgroundColor: Colors.transparent,
+      actions: [
+        IconButton(
+          onPressed: () {
+            showModalBottomSheet(
+              context: context,
+              builder: (context) => const BleConfigScreen(),
+            );
+          },
+          icon: const Icon(
+            Icons.settings,
+            color: Colors.black,
+          ),
+        ),
+        const SizedBox(width: 10),
+      ],
     );
     return Scaffold(
         appBar: appbar,
@@ -49,11 +65,11 @@ class LoginScreen extends HookConsumerWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    _buildGoogleLoginButton(context),
+                    _buildGoogleLoginButton(context, ref),
                     const SizedBox(
                       height: 24,
                     ),
-                    _buildGitHubLoginButton(context),
+                    _buildGitHubLoginButton(context, ref),
                   ],
                 ),
               )
@@ -62,13 +78,15 @@ class LoginScreen extends HookConsumerWidget {
         ));
   }
 
-  SizedBox _buildGitHubLoginButton(BuildContext context) {
+  SizedBox _buildGitHubLoginButton(BuildContext context, WidgetRef ref) {
+    final loginViewModel = ref.watch(authViewModelProvider.notifier);
+
     return SizedBox(
       width: double.infinity,
       child: FilledButton.icon(
           onPressed: () async {
             // TODO: GitHubログインに変更
-            await signInWithGoogle();
+            await loginViewModel.signUpWithGoogle();
             if (!context.mounted) return;
             Navigator.push(
               context,
@@ -86,7 +104,9 @@ class LoginScreen extends HookConsumerWidget {
     );
   }
 
-  SizedBox _buildGoogleLoginButton(BuildContext context) {
+  SizedBox _buildGoogleLoginButton(BuildContext context, WidgetRef ref) {
+    final loginViewModel = ref.watch(authViewModelProvider.notifier);
+
     return SizedBox(
       width: double.infinity,
       child: FilledButton.icon(
@@ -100,7 +120,7 @@ class LoginScreen extends HookConsumerWidget {
               foregroundColor: MaterialStateProperty.all(Colors.black87),
               backgroundColor: MaterialStateProperty.all(Colors.transparent)),
           onPressed: () async {
-            await signInWithGoogle();
+            await loginViewModel.signUpWithGoogle();
             if (!context.mounted) return;
             Navigator.push(
               context,

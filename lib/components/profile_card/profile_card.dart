@@ -15,12 +15,13 @@ class ProfileCard extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       decoration: const BoxDecoration(
-          color: Color.fromRGBO(66, 66, 66, 1),
-          borderRadius: BorderRadius.all(Radius.circular(12)),
-          image: DecorationImage(
-            image: AssetImage("assets/images/card-bg.png"),
-            fit: BoxFit.cover,
-          )),
+        color: Color.fromRGBO(66, 66, 66, 1),
+        borderRadius: BorderRadius.all(Radius.circular(12)),
+        image: DecorationImage(
+          image: AssetImage("assets/images/card-bg.png"),
+          fit: BoxFit.cover,
+        ),
+      ),
       padding: const EdgeInsets.all(20),
       child: Column(
         children: [

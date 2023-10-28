@@ -1,4 +1,8 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -6,6 +10,8 @@ import 'package:kanpai/components/profile_card/profile_card.dart';
 import 'package:kanpai/components/tab_button.dart';
 import 'package:kanpai/components/user_icon_panel.dart';
 import 'package:kanpai/models/user_model.dart';
+import 'package:kanpai/util/bluetooth_ext.dart';
+import 'package:kanpai/view_models/kanpai_view_model.dart';
 
 enum KanpaiTab {
   all,
@@ -33,7 +39,33 @@ final _mockUsers = List.generate(10, (i) => i).map((i) => User(
 final _me = _mockUsers.first;
 
 class KanpaiScreen extends HookConsumerWidget {
-  const KanpaiScreen({super.key});
+  KanpaiScreen({
+    super.key,
+    required this.targetDevice,
+  });
+
+  final BluetoothDevice targetDevice;
+  late StreamSubscription<List<int>> _kanpaiSubscription;
+
+  void startKanpaiListener(
+    void Function(String fromId, String toId) handler,
+  ) async {
+    await targetDevice.connectAndUpdateStream();
+    final characteristic = await targetDevice.getNotifyCharacteristic();
+    if (characteristic == null) return;
+    await characteristic.setNotifyValue(true);
+
+    _kanpaiSubscription = characteristic.lastValueStream.listen((value) {
+      if (value.isEmpty) return;
+
+      final toUserId = utf8.decode(value);
+      const fromUserId = "4ZzFqTo9NXcSHQwhct8Y";
+
+      debugPrint('cheers occurred from $fromUserId to $toUserId');
+      handler(fromUserId, toUserId);
+    });
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedTab = useState<KanpaiTab>(KanpaiTab.all);
@@ -81,6 +113,12 @@ class KanpaiScreen extends HookConsumerWidget {
         return users.toList().reversed;
       }
     }, [_mockUsers, selectedTab.value, ascending.value]);
+    final viewmodel = ref.watch(homeViewModelProvider.notifier);
+
+    useEffect(() {
+      startKanpaiListener(viewmodel.cheers);
+      return () => _kanpaiSubscription.cancel();
+    }, []);
 
     final appbar = AppBar(
       elevation: 0,

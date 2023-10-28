@@ -5,12 +5,14 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:kanpai/components/form_item.dart';
 import 'package:kanpai/view/onboarding/onboarding_layout.dart';
 import 'package:kanpai/view/onboarding/question1_screen/question1_screen.dart';
+import 'package:kanpai/view_models/profile_view_model.dart';
 
 class ProfileScreen extends HookConsumerWidget {
   const ProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final ProfileViewModel = ref.watch(profileViewModelProvider.notifier);
     final displayName = FirebaseAuth.instance.currentUser!.displayName;
 
     final nameController = useTextEditingController(text: displayName);
@@ -18,6 +20,9 @@ class ProfileScreen extends HookConsumerWidget {
     return OnboardingLayout(
       title: "プロフィールはこちらで\nよろしいですか？",
       onNextPressed: () {
+        // TODO: 画像を更新できるようにする
+        ProfileViewModel.updateMe(
+            nameController.text, FirebaseAuth.instance.currentUser!.photoURL!);
         Navigator.of(context)
             .push(MaterialPageRoute(builder: (_) => const Question1Screen()));
       },

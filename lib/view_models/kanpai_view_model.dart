@@ -11,11 +11,9 @@ final homeViewModelProvider =
 class HomeViewModel extends StateNotifier<AsyncValue<List<User>>> {
   final UserRepository _userRepository;
 
-  HomeViewModel(this._userRepository) : super(const AsyncValue.loading()) {
-    _fetchUsers();
-  }
+  HomeViewModel(this._userRepository) : super(const AsyncValue.loading());
 
-  void _fetchUsers() {
+  void fetchUsers() {
     final usersStream = _userRepository.getUsersStream();
     usersStream.listen((users) {
       state = AsyncValue.data(users);
@@ -27,13 +25,14 @@ class HomeViewModel extends StateNotifier<AsyncValue<List<User>>> {
     String toUserId,
   ) async {
     final user = await _userRepository.getUser(fromUserId);
-    final cheerUserIds = user.cheerUserIds ?? [];
-    cheerUserIds.add(toUserId);
+    final cheerUserIds = user?.cheerUserIds ?? [];
+    final newCheerUserIds = [...cheerUserIds, toUserId];
+    if (user == null) return;
     _userRepository.updateUser(
       fromUserId,
       user.copyWith(
         lastCheersUserId: toUserId,
-        cheerUserIds: cheerUserIds,
+        cheerUserIds: newCheerUserIds,
       ),
     );
   }
