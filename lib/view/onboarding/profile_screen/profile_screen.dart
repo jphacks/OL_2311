@@ -11,7 +11,9 @@ class ProfileScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final nameController = useTextEditingController();
+    final displayName = FirebaseAuth.instance.currentUser!.displayName;
+
+    final nameController = useTextEditingController(text: displayName);
 
     return OnboardingLayout(
       title: "プロフィールはこちらで\nよろしいですか？",
@@ -51,17 +53,18 @@ class ProfileScreen extends HookConsumerWidget {
           const SizedBox(
             height: 8,
           ),
+          Text(
+            // TODO: 正しい値を入れる
+            "Google ID : 03840_kanpai",
+            style: Theme.of(context).textTheme.labelLarge,
+          ),
+          const SizedBox(
+            height: 32,
+          ),
           FormItem(
               label: "名前",
               helperText: "乾杯する相手に表示される名前です",
               controller: nameController),
-          const SizedBox(
-            height: 32,
-          ),
-          Text(
-            "GitHub ID : 03840_kanpai ",
-            style: Theme.of(context).textTheme.labelLarge,
-          ),
         ],
       ),
     );
