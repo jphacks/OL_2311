@@ -38,7 +38,7 @@ class UserRepository {
     await _db.collection('users').doc(user.id).set(user.toJson());
   }
 
-  Future<void> updateUser(User user) async {
+  Future<void> updateUser(String userId, User user) async {
     await _db.collection('users').doc(user.id).update(user.toJson());
   }
 }
