@@ -1,12 +1,17 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:kanpai/util/bluetooth_ext.dart';
 
-final bleConnectorProvider = Provider((ref) => BleConnector());
+final bleConnectorProvider = Provider(
+  (ref) => BleConnector(),
+);
 
 class BleConnector {
   static const targetUuid = "B616EAC0-9CB1-4453-F93F-6DFBAB1F18B4";
+  static const userId = "kurikinUserId";
 
   Future<BluetoothDevice> connect() async {
     BluetoothDevice? targetDevice;
@@ -40,6 +45,9 @@ class BleConnector {
         throw Exception("Cannot connect target device");
       });
     }
+
+    final writeCharacteristic = await targetDevice!.getWriteCharacteristic();
+    await writeCharacteristic!.write(utf8.encode(userId));
 
     return targetDevice!;
   }
