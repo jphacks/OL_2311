@@ -9,7 +9,7 @@ import 'package:url_launcher/link.dart';
 class ProfileCard extends HookConsumerWidget {
   const ProfileCard({super.key, required this.user});
 
-  final User user;
+  final User? user;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -29,12 +29,12 @@ class ProfileCard extends HookConsumerWidget {
           const Divider(
             height: 1,
           ),
-          const SizedBox(
-            height: 35,
+          SizedBox(
+            height: user == null ? 25 : 35,
           ),
           _buildBody(),
-          const SizedBox(
-            height: 35,
+          SizedBox(
+            height: user == null ? 25 : 35,
           ),
           _buildFooter()
         ],
@@ -73,24 +73,64 @@ class ProfileCard extends HookConsumerWidget {
               ),
             ],
           ),
-          Text(
-            "10/29 14:55",
-            style: TextStyle(
-                fontSize: 14,
-                color: Colors.white.withOpacity(0.6),
-                fontWeight: FontWeight.bold),
-          ),
+          if (user != null)
+            Text(
+              "10/29 14:55",
+              style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.white.withOpacity(0.6),
+                  fontWeight: FontWeight.bold),
+            ),
         ],
       ),
     );
   }
 
-  Row _buildFooter() {
+  Widget _buildFooter() {
+    if (user == null) {
+      return Wrap(
+        runSpacing: 6,
+        children: [
+          const Text(
+            "まだ ",
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 14,
+            ),
+          ),
+          SvgPicture.asset(
+            "assets/svgs/kanpai-logo.svg",
+            height: 20,
+            theme: const SvgTheme(currentColor: Colors.white),
+          ),
+          const Text(
+            " した人がいません。近くの人と ",
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 14,
+            ),
+          ),
+          SvgPicture.asset(
+            "assets/svgs/kanpai-logo.svg",
+            height: 20,
+            theme: const SvgTheme(currentColor: Colors.white),
+          ),
+          const Text(
+            " してみましょう！",
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 14,
+            ),
+          ),
+        ],
+      );
+    }
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         Link(
-            uri: Uri.parse("https://www.instagram.com/${user.instagramId}"),
+            uri: Uri.parse("https://www.instagram.com/${user!.instagramId}"),
             builder: (BuildContext context, FollowLink? followLink) => InkWell(
                   onTap: followLink,
                   child: const FaIcon(
@@ -117,7 +157,7 @@ class ProfileCard extends HookConsumerWidget {
           width: 12,
         ),
         Link(
-          uri: Uri.parse("https://twitter.com/${user.xId}"),
+          uri: Uri.parse("https://twitter.com/${user!.xId}"),
           builder: (BuildContext context, FollowLink? followLink) => InkWell(
             onTap: followLink,
             child: const FaIcon(
@@ -134,32 +174,51 @@ class ProfileCard extends HookConsumerWidget {
   Row _buildBody() {
     return Row(
       children: [
-        CircleAvatar(
-            radius: 30, backgroundImage: NetworkImage(user.profileImageUrl!)),
+        if (user != null)
+          CircleAvatar(
+              radius: 30, backgroundImage: NetworkImage(user!.profileImageUrl!))
+        else
+          Container(
+            width: 60,
+            height: 60,
+            decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(999)),
+          ),
         const SizedBox(
           width: 12,
         ),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              user.name!,
-              style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(
-              height: 6,
-            ),
-            Wrap(
-              spacing: 8,
-              children: [
-                ProfileCardTag(label: user.location!),
-                ProfileCardTag(label: user.techArea!)
-              ],
-            )
-          ],
+          children: user == null
+              ? [
+                  const Text(
+                    "まだ見ぬだれか",
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ]
+              : [
+                  Text(
+                    user!.name!,
+                    style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(
+                    height: 6,
+                  ),
+                  Wrap(
+                    spacing: 8,
+                    children: [
+                      ProfileCardTag(label: user!.location!),
+                      ProfileCardTag(label: user!.techArea!)
+                    ],
+                  )
+                ],
         )
       ],
     );
