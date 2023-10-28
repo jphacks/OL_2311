@@ -1,16 +1,57 @@
-# kanpai
+# サンプル（プロダクト名）
 
-A new Flutter project.
+[![IMAGE ALT TEXT HERE](https://jphacks.com/wp-content/uploads/2023/07/JPHACKS2023_ogp.png)](https://www.youtube.com/watch?v=yYRQEdfGjEg)
 
-## Getting Started
+## 製品概要
 
-This project is a starting point for a Flutter application.
+### 背景(製品開発のきっかけ、課題等）
 
-A few resources to get you started if this is your first Flutter project:
+### 製品説明（具体的な製品の説明）
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+### 特長
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+#### 1. 特長 1
+
+#### 2. 特長 2
+
+#### 3. 特長 3
+
+### 解決出来ること
+
+### 今後の展望
+
+### 注力したこと（こだわり等）
+
+-
+-
+
+## 開発技術
+
+### 活用した技術
+
+#### API・データ
+
+-
+-
+
+#### フレームワーク・ライブラリ・モジュール
+
+-
+-
+
+#### デバイス
+
+-
+-
+
+### 独自技術
+
+#### ハッカソンで開発した独自機能・技術
+
+- 独自で開発したものの内容をこちらに記載してください
+- 特に力を入れた部分をファイルリンク、または commit_id を記載してください。
+
+#### 製品に取り入れた研究内容（データ・ソフトウェアなど）（※アカデミック部門の場合のみ提出必須）
+
+-
+-
