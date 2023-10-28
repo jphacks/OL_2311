@@ -1,4 +1,4 @@
-enum ResidenceArea {
+enum Location {
   hokkaidoTohoku,
   kanto,
   chubu,
@@ -9,19 +9,19 @@ enum ResidenceArea {
 
   String get label {
     switch (this) {
-      case ResidenceArea.hokkaidoTohoku:
+      case Location.hokkaidoTohoku:
         return "北海道・東北";
-      case ResidenceArea.kanto:
+      case Location.kanto:
         return "関東";
-      case ResidenceArea.chubu:
+      case Location.chubu:
         return "中部";
-      case ResidenceArea.kinki:
+      case Location.kinki:
         return "近畿";
-      case ResidenceArea.chugokuShikoku:
+      case Location.chugokuShikoku:
         return "中国・四国";
-      case ResidenceArea.kyushuOkinawa:
+      case Location.kyushuOkinawa:
         return "九州・沖縄";
-      case ResidenceArea.overseas:
+      case Location.overseas:
         return "海外";
     }
   }
