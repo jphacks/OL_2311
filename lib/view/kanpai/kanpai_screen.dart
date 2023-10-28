@@ -5,6 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:kanpai/components/profile_card/profile_card.dart';
 import 'package:kanpai/components/tab_button.dart';
 import 'package:kanpai/components/user_icon_panel.dart';
+import 'package:kanpai/models/user_model.dart';
 
 enum KanpaiTab {
   all,
@@ -12,15 +13,65 @@ enum KanpaiTab {
   notDone;
 }
 
+// Userコレクションから取得されるデータを想定
+final _mockUsers = List.generate(10, (i) => i).map((i) => User(
+        id: i == 0 ? "me" : "id-$i",
+        name: "まろすけ $i",
+        profileImageUrl:
+            "https://img.freepik.com/free-photo/closeup-of-a-cute-cat-sitting-on-the-carpet-against-a-blurred-background_181624-53498.jpg",
+        location: "近畿",
+        techArea: "フロントエンド",
+        xId: "twitter",
+        instagramId: "instagram",
+        homepageLink: "https://example.com",
+        deviceUuid: "1a0e8d92-756b-11ee-b962-0242ac120002",
+        bleUserId: "ABCDEF",
+        lastCheersUserId: "d309306d-2095-4562-ba38-bc54d88f8a64",
+        cheerUserIds: [
+          "d309306d-2095-4562-ba38-bc54d88f8a64",
+          if (i % 2 == 1) "me",
+          "d309306d-2095-4562-ba38-bc54d88f8a64",
+          if (i % 2 == 1) "me"
+        ]));
+
+// ログインしているユーザーのデータを想定
+final _me = _mockUsers.first;
+
 class KanpaiScreen extends HookConsumerWidget {
   const KanpaiScreen({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedTab = useState<KanpaiTab>(KanpaiTab.all);
+    final ascending = useState<bool>(true);
 
-    final deviceWidth = MediaQuery.of(context).size.width;
+    final kanpaiCount = useMemoized(
+        () =>
+            _mockUsers.firstWhere((u) => u.id == _me.id).cheerUserIds?.length ??
+            0,
+        [_mockUsers]);
 
-    const kanpaiCount = 23;
+    final alreadyCheersUserCount = useMemoized(
+        () => _mockUsers
+            .where((u) => u.cheerUserIds?.contains(_me.id) ?? false)
+            .length,
+        [_mockUsers]);
+
+    final allUserCount = useMemoized(() => _mockUsers.length, [_mockUsers]);
+
+    final users = useMemoized(() {
+      final users = switch (selectedTab.value) {
+        KanpaiTab.all => _mockUsers.where((u) => u.id != _me.id),
+        KanpaiTab.done => _mockUsers.where((u) =>
+            u.id != _me.id && (u.cheerUserIds?.contains(_me.id) ?? false)),
+        KanpaiTab.notDone => _mockUsers.where((u) =>
+            u.id != _me.id && (!(u.cheerUserIds?.contains(_me.id) ?? false))),
+      };
+      if (ascending.value) {
+        return users.toList();
+      } else {
+        return users.toList().reversed;
+      }
+    }, [_mockUsers, selectedTab.value, ascending.value]);
 
     final appbar = AppBar(
       elevation: 0,
@@ -81,8 +132,8 @@ class KanpaiScreen extends HookConsumerWidget {
                                     .textTheme
                                     .labelMedium
                                     ?.copyWith(fontWeight: FontWeight.bold)),
-                            const Text("5 / 12",
-                                style: TextStyle(
+                            Text("$alreadyCheersUserCount / $allUserCount",
+                                style: const TextStyle(
                                     fontSize: 24,
                                     fontFamily: "Chillax",
                                     fontWeight: FontWeight.w600)),
@@ -91,11 +142,12 @@ class KanpaiScreen extends HookConsumerWidget {
                         const SizedBox(
                           height: 20,
                         ),
-                        _buildTabbar(selectedTab, context),
+                        _buildTabbar(context,
+                            selectedTab: selectedTab, ascending: ascending),
                         const SizedBox(
                           height: 24,
                         ),
-                        _buildUserGrid(deviceWidth),
+                        _buildUserGrid(context, me: _me, users: users),
                       ],
                     ),
                   ),
@@ -134,7 +186,9 @@ class KanpaiScreen extends HookConsumerWidget {
     );
   }
 
-  Row _buildTabbar(ValueNotifier<KanpaiTab> selectedTab, BuildContext context) {
+  Row _buildTabbar(BuildContext context,
+      {required ValueNotifier<KanpaiTab> selectedTab,
+      required ValueNotifier<bool> ascending}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -188,41 +242,35 @@ class KanpaiScreen extends HookConsumerWidget {
               foregroundColor: MaterialStateProperty.all(Colors.black87),
               overlayColor: MaterialStateProperty.all(Colors.black12),
             ),
-            icon: const Icon(
-              Icons.arrow_downward,
+            icon: Icon(
+              ascending.value ? Icons.arrow_downward : Icons.arrow_upward,
               size: 16,
             ),
-            onPressed: () {},
+            onPressed: () {
+              ascending.value = !ascending.value;
+            },
             label: const Text("名前"))
       ],
     );
   }
 
-  Wrap _buildUserGrid(double deviceWidth) {
+  Wrap _buildUserGrid(BuildContext context,
+      {required User me, required Iterable<User> users}) {
+    final deviceWidth = MediaQuery.of(context).size.width;
+
     return Wrap(
-      spacing: 16,
-      runSpacing: 24,
-      children: [
-        SizedBox(
-            width: (deviceWidth - 60) / 2,
-            child: const UserIconPanel(
-              isUnlocked: false,
-              count: 4,
-            )),
-        SizedBox(
-            width: (deviceWidth - 60) / 2,
-            child: const UserIconPanel(
-              isUnlocked: false,
-              count: 4,
-            )),
-        SizedBox(
-            width: (deviceWidth - 60) / 2,
-            child: const UserIconPanel(
-              isUnlocked: false,
-              count: 4,
-            )),
-      ],
-    );
+        spacing: 16,
+        runSpacing: 24,
+        children: users.map((user) {
+          final cheersCount =
+              user.cheerUserIds?.where((id) => id == me.id).length ?? 0;
+          return SizedBox(
+              width: (deviceWidth - 60) / 2,
+              child: UserIconPanel(
+                user: user,
+                count: cheersCount,
+              ));
+        }).toList());
   }
 
   SvgPicture _buildTabButtonIcon(bool isSelected) {
