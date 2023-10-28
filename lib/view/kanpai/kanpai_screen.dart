@@ -15,24 +15,19 @@ enum KanpaiTab {
 
 // Userコレクションから取得されるデータを想定
 final _mockUsers = List.generate(10, (i) => i).map((i) => User(
-        id: i == 0 ? "me" : "id-$i",
-        name: "まろすけ $i",
-        profileImageUrl:
-            "https://img.freepik.com/free-photo/closeup-of-a-cute-cat-sitting-on-the-carpet-against-a-blurred-background_181624-53498.jpg",
-        location: "近畿",
-        techArea: "フロントエンド",
-        xId: "twitter",
-        instagramId: "instagram",
-        homepageLink: "https://example.com",
-        deviceUuid: "1a0e8d92-756b-11ee-b962-0242ac120002",
-        bleUserId: "ABCDEF",
-        lastCheersUserId: "d309306d-2095-4562-ba38-bc54d88f8a64",
-        cheerUserIds: [
-          "d309306d-2095-4562-ba38-bc54d88f8a64",
-          if (i % 2 == 1) "me",
-          "d309306d-2095-4562-ba38-bc54d88f8a64",
-          if (i % 2 == 1) "me"
-        ]));
+    id: i == 0 ? "me" : "id-$i",
+    name: "まろすけ $i",
+    profileImageUrl:
+        "https://img.freepik.com/free-photo/closeup-of-a-cute-cat-sitting-on-the-carpet-against-a-blurred-background_181624-53498.jpg",
+    location: "近畿",
+    techArea: "フロントエンド",
+    xId: "twitter",
+    instagramId: "instagram",
+    homepageLink: "https://example.com",
+    deviceUuid: "1a0e8d92-756b-11ee-b962-0242ac120002",
+    bleUserId: "ABCDEF",
+    lastCheersUserId: "d309306d-2095-4562-ba38-bc54d88f8a64",
+    cheerUserIds: ["id-2", if (i % 2 == 1) "me", "id-2", if (i % 2 == 1) "me"]));
 
 // ログインしているユーザーのデータを想定
 final _me = _mockUsers.first;
@@ -57,6 +52,20 @@ class KanpaiScreen extends HookConsumerWidget {
         [_mockUsers]);
 
     final allUserCount = useMemoized(() => _mockUsers.length, [_mockUsers]);
+
+    final latestCheeredUser = useMemoized(() {
+      try {
+        final latestCheeredUserId = _mockUsers
+            .firstWhere((u) => u.id == _me.id)
+            .cheerUserIds
+            ?.lastWhere((id) => id != _me.id);
+        print("latestCheeredUserId ===========");
+        print(latestCheeredUserId);
+        return _mockUsers.firstWhere((u) => u.id == latestCheeredUserId);
+      } on StateError catch (_) {
+        return null;
+      }
+    }, [_mockUsers]);
 
     final users = useMemoized(() {
       final users = switch (selectedTab.value) {
@@ -120,7 +129,8 @@ class KanpaiScreen extends HookConsumerWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        const ProfileCard(),
+                        if (latestCheeredUser != null)
+                          ProfileCard(user: latestCheeredUser),
                         const SizedBox(
                           height: 52,
                         ),
