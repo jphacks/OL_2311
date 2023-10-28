@@ -23,9 +23,17 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(
           primarySwatch: Colors.blue,
+          primaryColor: const Color.fromRGBO(22, 55, 252, 1),
           filledButtonTheme: FilledButtonThemeData(
             style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.black87),
+                backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                  (states) {
+                    if (states.contains(MaterialState.disabled)) {
+                      return Colors.black26;
+                    }
+                    return Colors.black87;
+                  },
+                ),
                 foregroundColor: MaterialStateProperty.all(Colors.white),
                 textStyle: MaterialStateProperty.all(const TextStyle(
                     fontSize: 18,
@@ -42,6 +50,16 @@ class MyApp extends StatelessWidget {
                 height: 1.5,
                 color: Colors.black87,
               ),
+              bodyMedium: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.normal,
+                  height: 1.5,
+                  color: Colors.black87),
+              labelLarge: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.normal,
+                  height: 1.5,
+                  color: Colors.black54),
               labelMedium: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.normal,

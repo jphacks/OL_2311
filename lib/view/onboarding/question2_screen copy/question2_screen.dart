@@ -4,7 +4,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:kanpai/components/select_option.dart';
 import 'package:kanpai/view/onboarding/onboarding_layout.dart';
 import 'package:kanpai/view/onboarding/question2_screen/tech_field.dart';
-import 'package:kanpai/view/onboarding/question3_screen/question3_screen.dart';
 
 class Question2Screen extends HookConsumerWidget {
   const Question2Screen({super.key});
@@ -18,7 +17,7 @@ class Question2Screen extends HookConsumerWidget {
       hide: techArea.value == null,
       onNextPressed: () {
         Navigator.of(context)
-            .push(MaterialPageRoute(builder: (_) => const Question3Screen()));
+            .push(MaterialPageRoute(builder: (_) => const Question2Screen()));
       },
       child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
