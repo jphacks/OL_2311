@@ -3,9 +3,13 @@ import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:kanpai/components/profile_card/profile_card_tag.dart';
+import 'package:kanpai/models/user_model.dart';
+import 'package:url_launcher/link.dart';
 
 class ProfileCard extends HookConsumerWidget {
-  const ProfileCard({super.key});
+  const ProfileCard({super.key, required this.user});
+
+  final User user;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -81,29 +85,46 @@ class ProfileCard extends HookConsumerWidget {
   }
 
   Row _buildFooter() {
-    return const Row(
+    return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        FaIcon(
-          FontAwesomeIcons.instagram,
-          color: Colors.white,
-          size: 18,
-        ),
-        SizedBox(
+        Link(
+            uri: Uri.parse("https://www.instagram.com/${user.instagramId}"),
+            builder: (BuildContext context, FollowLink? followLink) => InkWell(
+                  onTap: followLink,
+                  child: const FaIcon(
+                    FontAwesomeIcons.instagram,
+                    color: Colors.white,
+                    size: 18,
+                  ),
+                )),
+        const SizedBox(
           width: 12,
         ),
-        FaIcon(
-          FontAwesomeIcons.github,
-          color: Colors.white,
-          size: 18,
-        ),
-        SizedBox(
+        Link(
+            // TODO: githubアカウント
+            uri: Uri.parse("https://github.com"),
+            builder: (BuildContext context, FollowLink? followLink) => InkWell(
+                  onTap: followLink,
+                  child: const FaIcon(
+                    FontAwesomeIcons.github,
+                    color: Colors.white,
+                    size: 18,
+                  ),
+                )),
+        const SizedBox(
           width: 12,
         ),
-        FaIcon(
-          FontAwesomeIcons.xTwitter,
-          color: Colors.white,
-          size: 18,
+        Link(
+          uri: Uri.parse("https://twitter.com/${user.xId}"),
+          builder: (BuildContext context, FollowLink? followLink) => InkWell(
+            onTap: followLink,
+            child: const FaIcon(
+              FontAwesomeIcons.xTwitter,
+              color: Colors.white,
+              size: 18,
+            ),
+          ),
         ),
       ],
     );
@@ -112,32 +133,29 @@ class ProfileCard extends HookConsumerWidget {
   Row _buildBody() {
     return Row(
       children: [
-        Image.asset(
-          'assets/images/unlock.png',
-          width: 60,
-          height: 60,
-        ),
+        CircleAvatar(
+            radius: 30, backgroundImage: NetworkImage(user.profileImageUrl!)),
         const SizedBox(
           width: 12,
         ),
-        const Column(
+        Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "なまえ",
-              style: TextStyle(
+              user.name!,
+              style: const TextStyle(
                   color: Colors.white,
                   fontSize: 18,
                   fontWeight: FontWeight.bold),
             ),
-            SizedBox(
+            const SizedBox(
               height: 6,
             ),
             Wrap(
               spacing: 8,
               children: [
-                ProfileCardTag(label: "中部"),
-                ProfileCardTag(label: "インフラ")
+                ProfileCardTag(label: user.location!),
+                ProfileCardTag(label: user.techArea!)
               ],
             )
           ],
