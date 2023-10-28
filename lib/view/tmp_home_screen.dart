@@ -35,6 +35,7 @@ class _TmpHomeScreenState extends ConsumerState<TmpHomeScreen> {
 
     _kanpaiListener = characteristic.lastValueStream.listen((value) {
       final decodedValue = utf8.decode(value);
+      print(decodedValue);
     });
     characteristic.setNotifyValue(true);
   }
