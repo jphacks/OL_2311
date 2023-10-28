@@ -24,10 +24,7 @@ class DefaultFirebaseOptions {
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for android - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return android;
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
@@ -52,12 +49,22 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyCiysgoq1MQ_kCE5ONGioBplyyD3jxJOKA',
-    appId: '1:842498702263:ios:d05bb060b54554c9ad4632',
+  static const FirebaseOptions android = FirebaseOptions(
+    apiKey: 'AIzaSyAcZWvdWjLie6-g2kIa9ENN_wk_d_yTn5Q',
+    appId: '1:842498702263:android:547e5e802d918f36ad4632',
     messagingSenderId: '842498702263',
     projectId: 'kanpai-5128e',
     storageBucket: 'kanpai-5128e.appspot.com',
-    iosBundleId: 'com.example.kanpai',
+  );
+
+  static const FirebaseOptions ios = FirebaseOptions(
+    apiKey: 'AIzaSyCiysgoq1MQ_kCE5ONGioBplyyD3jxJOKA',
+    appId: '1:842498702263:ios:9db46a6be6d6a3a5ad4632',
+    messagingSenderId: '842498702263',
+    projectId: 'kanpai-5128e',
+    storageBucket: 'kanpai-5128e.appspot.com',
+    androidClientId: '842498702263-3bfj9bq3rfmjq2hqe615524j6k5977be.apps.googleusercontent.com',
+    iosClientId: '842498702263-v2i970gi5a4eq9enrbgqec2pdi64fss7.apps.googleusercontent.com',
+    iosBundleId: 'com.gomadango.kanpai',
   );
 }

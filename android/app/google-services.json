@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "842498702263",
+    "project_id": "kanpai-5128e",
+    "storage_bucket": "kanpai-5128e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:842498702263:android:547e5e802d918f36ad4632",
+        "android_client_info": {
+          "package_name": "com.example.kanpai"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "842498702263-3bfj9bq3rfmjq2hqe615524j6k5977be.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.kanpai",
+            "certificate_hash": "b60b23887f2a98e8da09f01bbfdd6ee69786fb2c"
+          }
+        },
+        {
+          "client_id": "842498702263-u8vmd103d9jgudpjdlauj1eio0cbehm6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAcZWvdWjLie6-g2kIa9ENN_wk_d_yTn5Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "842498702263-u8vmd103d9jgudpjdlauj1eio0cbehm6.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "842498702263-h6vhdbigqnp9n7v0urg4itga2nn1250e.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.kanpai"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
