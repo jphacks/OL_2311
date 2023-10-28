@@ -22,12 +22,14 @@ class ConnectScreen extends HookConsumerWidget {
       onNextPressed: () async {
         // ignore: unused_local_variable
         final connectedDevice = await viewmodel.connect();
-        if (!context.mounted) {
+        if (!context.mounted || connectedDevice == null) {
           return;
         }
-        // TODO: connectedDevice を渡して画面遷移する
-        Navigator.of(context)
-            .push(MaterialPageRoute(builder: (_) => const KanpaiScreen()));
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => KanpaiScreen(targetDevice: connectedDevice),
+          ),
+        );
       },
       child: SizedBox(
         height: double.infinity,

@@ -1,10 +1,15 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:kanpai/components/profile_card/profile_card.dart';
 import 'package:kanpai/components/tab_button.dart';
 import 'package:kanpai/components/user_icon_panel.dart';
+import 'package:kanpai/util/bluetooth_ext.dart';
 
 enum KanpaiTab {
   all,
@@ -13,7 +18,26 @@ enum KanpaiTab {
 }
 
 class KanpaiScreen extends HookConsumerWidget {
-  const KanpaiScreen({super.key});
+  KanpaiScreen({
+    super.key,
+    required this.targetDevice,
+  });
+
+  final BluetoothDevice targetDevice;
+  late StreamSubscription<List<int>> _kanpaiSubscription;
+
+  void startKanpaiListener() async {
+    await targetDevice.connectAndUpdateStream();
+    final characteristic = await targetDevice.getNotifyCharacteristic();
+    if (characteristic == null) return;
+    await characteristic.setNotifyValue(true);
+
+    _kanpaiSubscription = characteristic.lastValueStream.listen((value) {
+      final decodedValue = utf8.decode(value);
+      print('value: $decodedValue');
+    });
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedTab = useState<KanpaiTab>(KanpaiTab.all);
@@ -21,6 +45,11 @@ class KanpaiScreen extends HookConsumerWidget {
     final deviceWidth = MediaQuery.of(context).size.width;
 
     const kanpaiCount = 23;
+
+    useEffect(() {
+      startKanpaiListener();
+      return () => _kanpaiSubscription.cancel();
+    });
 
     final appbar = AppBar(
       elevation: 0,
