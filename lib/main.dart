@@ -3,7 +3,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:kanpai/view/auth/login_screen.dart';
-import 'package:kanpai/view/kanpai/kanpai_screen.dart';
 
 import 'firebase_options.dart';
 
@@ -21,13 +20,14 @@ class RootWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // NOTE: ログインしている場合はホーム画面、そうでない場合はログイン画面を表示する
     return StreamBuilder<User?>(
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.active) {
-          final user = snapshot.data;
-          return user == null ? const LoginScreen() : const KanpaiScreen();
+          return const LoginScreen();
+          // NOTE: ここでログイン状態によってデフォルトの画面を切り替えることができる
+          // final user = snapshot.data;
+          // return user == null ? const LoginScreen() : const KanpaiScreen();
         }
         // Show a loading spinner while waiting for the auth state to change
         return const Scaffold(
