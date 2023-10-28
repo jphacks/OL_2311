@@ -25,7 +25,7 @@ class HomeViewModel extends StateNotifier<AsyncValue<List<User>>> {
     });
   }
 
-  void cheers(
+  Future<void> cheers(
     String fromUserId,
     String toUserId,
   ) async {
