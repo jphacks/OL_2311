@@ -65,6 +65,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
           primarySwatch: Colors.blue,
           primaryColor: const Color.fromRGBO(22, 55, 252, 1),
+          fontFamily: "San Francisco",
+          fontFamilyFallback: const ["Hiragino Sans"],
           filledButtonTheme: FilledButtonThemeData(
             style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.resolveWith<Color>(
@@ -77,12 +79,12 @@ class MyApp extends StatelessWidget {
                 ),
                 foregroundColor: MaterialStateProperty.all(Colors.white),
                 textStyle: MaterialStateProperty.all(const TextStyle(
-                    fontSize: 18,
+                    fontSize: 15,
                     fontWeight: FontWeight.bold,
                     height: 1.5,
                     color: Colors.black87)),
                 padding: MaterialStateProperty.all(
-                    const EdgeInsets.symmetric(vertical: 16, horizontal: 32))),
+                    const EdgeInsets.symmetric(vertical: 14, horizontal: 32))),
           ),
           textTheme: const TextTheme(
               headlineLarge: TextStyle(
