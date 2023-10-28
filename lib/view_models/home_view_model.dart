@@ -27,8 +27,9 @@ class HomeViewModel extends StateNotifier<AsyncValue<List<User>>> {
     String toUserId,
   ) async {
     final user = await _userRepository.getUser(fromUserId);
-    final cheerUserIds = user.cheerUserIds ?? [];
+    final cheerUserIds = user?.cheerUserIds ?? [];
     cheerUserIds.add(toUserId);
+    if (user == null) return;
     _userRepository.updateUser(
       fromUserId,
       user.copyWith(

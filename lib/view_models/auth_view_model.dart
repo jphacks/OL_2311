@@ -27,19 +27,10 @@ class AuthViewModel extends StateNotifier<AuthState> {
     });
   }
 
-  /// firestoreにあるModelのUserインスタンスを返す（firebase authenticationのuserを取得ではない）
-  Future<User?> fetchCurrentUser() async {
-    final currentUser = _authRepository.getCurrentUser();
-    if (currentUser == null) return null;
-
-    final User? user = await _userRepository.getUser(currentUser.uid);
-    return user;
-  }
-
   Future<void> signUpWithGoogle() async {
     await _authRepository.signUpWithGoogle();
     // firestoreにuserが存在しない場合は作成する
-    final user = await fetchCurrentUser();
+    final user = await _userRepository.getMe();
     if (user == null) {
       final currentUser = _authRepository.getCurrentUser();
       final newUser = User(
