@@ -63,7 +63,7 @@ class AuthViewModel extends StateNotifier<AuthState> {
       await _userRepository.createUser(newUser);
       return currentUser.uid;
     }
-    return null;
+    return user.id;
   }
 
   Future<void> signInWithGoogle() async {
