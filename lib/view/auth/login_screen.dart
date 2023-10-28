@@ -8,7 +8,7 @@ class LoginScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final LoginViewModel = ref.watch(authViewModelProvider.notifier);
+    final authViewModel = ref.watch(authViewModelProvider.notifier);
     final appbar = AppBar(
       title: const Text("ログイン"),
       elevation: 0,
@@ -37,7 +37,7 @@ class LoginScreen extends HookConsumerWidget {
                     width: double.infinity,
                     child: FilledButton(
                         onPressed: () async {
-                          await LoginViewModel.signUpWithGoogle();
+                          await authViewModel.signUpOrSignInWithGithub();
                           if (!context.mounted) return;
                           Navigator.push(
                             context,

@@ -22,23 +22,33 @@ class AuthRepository {
 
   Stream<User?> get authStateChanges => _firebaseAuth.authStateChanges();
 
-  Future<void> signUpWithGoogle() async {
-    final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-    if (googleUser == null) return; // The user canceled the sign-in process
+  Future<void> signUpOrSignInWithGoogle() async {
+    try {
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      if (googleUser == null) return; // The user canceled the sign-in process
 
-    final GoogleSignInAuthentication googleAuth =
-        await googleUser.authentication;
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+      final OAuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
 
-    final OAuthCredential credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth.accessToken,
-      idToken: googleAuth.idToken,
-    );
-
-    await _firebaseAuth.signInWithCredential(credential);
+      await _firebaseAuth.signInWithCredential(credential);
+    } catch (error) {
+      print('Failed to sign up/sign in with Google: $error');
+      rethrow;
+    }
   }
 
-  Future<void> signInWithGoogle() async {
-    await signUpWithGoogle(); // In Google Auth, sign-in and sign-up are the same.
+  Future<void> signUpOrSignInWithGitHub() async {
+    try {
+      GithubAuthProvider githubProvider = GithubAuthProvider();
+      await _firebaseAuth.signInWithProvider(githubProvider);
+    } on FirebaseAuthException catch (e) {
+      print('Failed to sign up/sign in with GitHub: ${e.message}');
+      rethrow;
+    }
   }
 
   Future<void> signOut() async {

@@ -32,23 +32,14 @@ class AuthViewModel extends StateNotifier<AuthState> {
     return _userRepository.getMe();
   }
 
-  Future<void> signUpWithGoogle() async {
-    await _authRepository.signUpWithGoogle();
-    // firestoreにuserが存在しない場合は作成する
-    final user = await _userRepository.getMe();
-    if (user == null) {
-      final currentUser = _authRepository.getCurrentUser();
-      final newUser = User(
-        id: currentUser!.uid,
-        name: currentUser.displayName ?? '',
-        profileImageUrl: currentUser.photoURL ?? '',
-      );
-      await _userRepository.createUser(newUser);
-    }
+  Future<void> signUpOrSignInWithGoogle() async {
+    await _authRepository.signUpOrSignInWithGoogle();
+    _afterSignUp();
   }
 
-  Future<void> signInWithGoogle() async {
-    await _authRepository.signInWithGoogle();
+  Future<void> signUpOrSignInWithGithub() async {
+    await _authRepository.signUpOrSignInWithGitHub();
+    _afterSignUp();
   }
 
   Future<void> signOut() async {
@@ -59,5 +50,19 @@ class AuthViewModel extends StateNotifier<AuthState> {
   void dispose() {
     _authStateChangesSubscription.cancel();
     super.dispose();
+  }
+
+  // firestoreにuserが存在しない場合は作成する
+  void _afterSignUp() async {
+    final user = await _userRepository.getMe();
+    if (user == null) {
+      final currentUser = _authRepository.getCurrentUser();
+      final newUser = User(
+        id: currentUser!.uid,
+        name: currentUser.displayName ?? '',
+        profileImageUrl: currentUser.photoURL ?? '',
+      );
+      await _userRepository.createUser(newUser);
+    }
   }
 }
