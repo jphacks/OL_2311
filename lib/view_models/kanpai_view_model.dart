@@ -11,11 +11,9 @@ final homeViewModelProvider =
 class HomeViewModel extends StateNotifier<AsyncValue<List<User>>> {
   final UserRepository _userRepository;
 
-  HomeViewModel(this._userRepository) : super(const AsyncValue.loading()) {
-    _fetchUsers();
-  }
+  HomeViewModel(this._userRepository) : super(const AsyncValue.loading());
 
-  void _fetchUsers() {
+  void fetchUsers() {
     final usersStream = _userRepository.getUsersStream();
     usersStream.listen((users) {
       state = AsyncValue.data(users);
