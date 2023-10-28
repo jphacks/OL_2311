@@ -46,6 +46,7 @@ dependencies:
   flutter_svg: ^2.0.8
   freezed: ^2.4.5
   json_annotation: ^4.8.1
+  font_awesome_flutter: ^10.6.0
 
 dev_dependencies:
   # The "flutter_lints" package below contains a set of recommended lints to

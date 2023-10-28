@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:kanpai/view/kanpai/kanpai_screen.dart';
 import 'package:kanpai/view/onboarding/onboarding_layout.dart';
 import 'package:kanpai/view_models/connect_view_model.dart';
 
@@ -19,8 +20,14 @@ class ConnectScreen extends HookConsumerWidget {
       loading: isConnecting,
       nextLabel: isConnecting ? "接続中..." : "接続を開始",
       onNextPressed: () async {
+        // ignore: unused_local_variable
         final connectedDevice = await viewmodel.connect();
-        // connectedDevice を渡して画面遷移する
+        if (!context.mounted) {
+          return;
+        }
+        // TODO: connectedDevice を渡して画面遷移する
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (_) => const KanpaiScreen()));
       },
       child: SizedBox(
         height: double.infinity,
