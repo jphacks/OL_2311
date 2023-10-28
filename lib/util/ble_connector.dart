@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:kanpai/util/bluetooth_ext.dart';
@@ -33,7 +34,7 @@ class BleConnector {
     }
 
     if (targetDevice!.isConnected) {
-      print('Target device is already connected');
+      debugPrint('Target device is already connected');
     } else {
       targetDevice!.connectAndUpdateStream().catchError((e) {
         throw Exception("Cannot connect target device");

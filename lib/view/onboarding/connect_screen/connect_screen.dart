@@ -12,36 +12,22 @@ class ConnectScreen extends HookConsumerWidget {
     final viewmodel = ref.watch(connectViewModelProvider.notifier);
     final hasError = ref.watch(connectViewModelProvider).hasError;
 
-    return hasError
-        ? OnboardingLayout(
-            title: "接続に失敗しました",
-            loading: isConnecting,
-            nextLabel: isConnecting ? "接続中..." : "再接続する",
-            onNextPressed: () async {
-              final connectedDevice = await viewmodel.connect();
-            },
-            child: SizedBox(
-              height: double.infinity,
-              child: Center(
-                child: Image.asset('assets/images/cup-image.png'),
-              ),
-            ),
-          )
-        : OnboardingLayout(
-            title: "接続を開始しますか？",
-            // TODO: 注意書きがあれば追加
-            // description: "注意書き",
-            loading: isConnecting,
-            nextLabel: isConnecting ? "接続中..." : "接続を開始",
-            onNextPressed: () async {
-              final connectedDevice = await viewmodel.connect();
-            },
-            child: SizedBox(
-              height: double.infinity,
-              child: Center(
-                child: Image.asset('assets/images/cup-image.png'),
-              ),
-            ),
-          );
+    return OnboardingLayout(
+      title: hasError ? "接続に失敗しました" : "接続を開始しますか？",
+      // TODO: 注意書きがあれば追加
+      // description: "注意書き",
+      loading: isConnecting,
+      nextLabel: isConnecting ? "接続中..." : "接続を開始",
+      onNextPressed: () async {
+        final connectedDevice = await viewmodel.connect();
+        // connectedDevice を渡して画面遷移する
+      },
+      child: SizedBox(
+        height: double.infinity,
+        child: Center(
+          child: Image.asset('assets/images/cup-image.png'),
+        ),
+      ),
+    );
   }
 }
