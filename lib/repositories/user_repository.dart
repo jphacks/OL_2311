@@ -20,9 +20,10 @@ class UserRepository {
   }
 
   // userIdでuserを取得
-  Future<User> getUser(String userId) async {
-    final snapshot = await _db.collection('users').doc(userId).get();
-    return User.fromJson(snapshot.data()!);
+  Future<User?> getUser(String userId) async {
+    final res = await _db.collection('users').doc(userId).get();
+    if (res.data() == null) return null;
+    return User.fromJson(res.data()!);
   }
 
   // userIDでuserを取得したらstreamで監視

@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -12,6 +13,31 @@ void main() async {
   );
 
   runApp(const ProviderScope(child: MyApp()));
+}
+
+class RootWidget extends StatelessWidget {
+  const RootWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<User?>(
+      stream: FirebaseAuth.instance.authStateChanges(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.active) {
+          return const LoginScreen();
+          // NOTE: ここでログイン状態によってデフォルトの画面を切り替えることができる
+          // final user = snapshot.data;
+          // return user == null ? const LoginScreen() : const KanpaiScreen();
+        }
+        // Show a loading spinner while waiting for the auth state to change
+        return const Scaffold(
+          body: Center(
+            child: CircularProgressIndicator(),
+          ),
+        );
+      },
+    );
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -66,7 +92,7 @@ class MyApp extends StatelessWidget {
                   fontWeight: FontWeight.normal,
                   height: 1.5,
                   color: Colors.black54))),
-      home: const LoginScreen(),
+      home: const RootWidget(),
     );
   }
 }
