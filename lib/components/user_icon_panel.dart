@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:kanpai/models/user_model.dart';
 
 class UserIconPanel extends HookConsumerWidget {
   const UserIconPanel({
     super.key,
-    required this.isUnlocked,
+    required this.user,
     required this.count,
-  });
+  }) : isUnlocked = 0 < count;
 
+  final User user;
   final bool isUnlocked;
   final int count;
 
@@ -44,11 +46,15 @@ class UserIconPanel extends HookConsumerWidget {
         children: [
           Container(
             padding: const EdgeInsets.all(24),
-            child: Image.asset(
-              "assets/images/unlock.png",
-              width: 80,
-              height: 80,
-            ),
+            child: isUnlocked
+                ? CircleAvatar(
+                    radius: 40,
+                    backgroundImage: NetworkImage(user.profileImageUrl!))
+                : Image.asset(
+                    "assets/images/unlock.png",
+                    width: 80,
+                    height: 80,
+                  ),
           ),
           Container(
             padding: const EdgeInsets.all(16),
@@ -56,7 +62,7 @@ class UserIconPanel extends HookConsumerWidget {
             child: Column(
               children: [
                 Text(
-                  "まろすけ",
+                  user.name!,
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
                 const SizedBox(
