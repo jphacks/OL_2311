@@ -18,22 +18,26 @@ class AuthViewModel extends StateNotifier<AuthState> {
   final UserRepository _userRepository;
   var _authStateChangesSubscription;
 
-  // TODO: この辺りのロジックは正しく実装できていない可能性が高い
   AuthViewModel(this._authRepository, this._userRepository)
-      : super(AuthState(_authRepository.getCurrentUser())) {
-    _authStateChangesSubscription =
-        _authRepository.authStateChanges.listen((user) {
-      state = AuthState(user);
-    });
+      : super(AuthState(
+          firebaseUser: _authRepository.getCurrentUser(),
+          appUser: null, // Initially, appUser is null
+        )) {
+    _fetchAppUser();
   }
 
   // getMe()はfirestoreからuserを取得する
-  Future<User?> fetchMe() async {
-    return _userRepository.getMe();
+  Future<void> _fetchAppUser() async {
+    final firebaseUser = _authRepository.getCurrentUser();
+    if (firebaseUser != null) {
+      final appUser = await _userRepository.getMe();
+      state = AuthState(firebaseUser: firebaseUser, appUser: appUser);
+    }
   }
 
   Future<void> signUpWithGoogle() async {
     await _authRepository.signUpWithGoogle();
+    await _fetchAppUser();
     // firestoreにuserが存在しない場合は作成する
     final user = await _userRepository.getMe();
     if (user == null) {
