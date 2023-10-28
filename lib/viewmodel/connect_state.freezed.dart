@@ -18,6 +18,7 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$ConnectState {
   bool get isConnecting => throw _privateConstructorUsedError;
   BluetoothDevice? get connectedDevice => throw _privateConstructorUsedError;
+  bool get hasError => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $ConnectStateCopyWith<ConnectState> get copyWith =>
@@ -30,7 +31,8 @@ abstract class $ConnectStateCopyWith<$Res> {
           ConnectState value, $Res Function(ConnectState) then) =
       _$ConnectStateCopyWithImpl<$Res, ConnectState>;
   @useResult
-  $Res call({bool isConnecting, BluetoothDevice? connectedDevice});
+  $Res call(
+      {bool isConnecting, BluetoothDevice? connectedDevice, bool hasError});
 }
 
 /// @nodoc
@@ -48,6 +50,7 @@ class _$ConnectStateCopyWithImpl<$Res, $Val extends ConnectState>
   $Res call({
     Object? isConnecting = null,
     Object? connectedDevice = freezed,
+    Object? hasError = null,
   }) {
     return _then(_value.copyWith(
       isConnecting: null == isConnecting
@@ -58,6 +61,10 @@ class _$ConnectStateCopyWithImpl<$Res, $Val extends ConnectState>
           ? _value.connectedDevice
           : connectedDevice // ignore: cast_nullable_to_non_nullable
               as BluetoothDevice?,
+      hasError: null == hasError
+          ? _value.hasError
+          : hasError // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 }
@@ -70,7 +77,8 @@ abstract class _$$ConnectStateImplCopyWith<$Res>
       __$$ConnectStateImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({bool isConnecting, BluetoothDevice? connectedDevice});
+  $Res call(
+      {bool isConnecting, BluetoothDevice? connectedDevice, bool hasError});
 }
 
 /// @nodoc
@@ -86,6 +94,7 @@ class __$$ConnectStateImplCopyWithImpl<$Res>
   $Res call({
     Object? isConnecting = null,
     Object? connectedDevice = freezed,
+    Object? hasError = null,
   }) {
     return _then(_$ConnectStateImpl(
       isConnecting: null == isConnecting
@@ -96,6 +105,10 @@ class __$$ConnectStateImplCopyWithImpl<$Res>
           ? _value.connectedDevice
           : connectedDevice // ignore: cast_nullable_to_non_nullable
               as BluetoothDevice?,
+      hasError: null == hasError
+          ? _value.hasError
+          : hasError // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -103,7 +116,10 @@ class __$$ConnectStateImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$ConnectStateImpl implements _ConnectState {
-  _$ConnectStateImpl({this.isConnecting = false, this.connectedDevice = null});
+  _$ConnectStateImpl(
+      {this.isConnecting = false,
+      this.connectedDevice = null,
+      this.hasError = false});
 
   @override
   @JsonKey()
@@ -111,10 +127,13 @@ class _$ConnectStateImpl implements _ConnectState {
   @override
   @JsonKey()
   final BluetoothDevice? connectedDevice;
+  @override
+  @JsonKey()
+  final bool hasError;
 
   @override
   String toString() {
-    return 'ConnectState(isConnecting: $isConnecting, connectedDevice: $connectedDevice)';
+    return 'ConnectState(isConnecting: $isConnecting, connectedDevice: $connectedDevice, hasError: $hasError)';
   }
 
   @override
@@ -125,11 +144,14 @@ class _$ConnectStateImpl implements _ConnectState {
             (identical(other.isConnecting, isConnecting) ||
                 other.isConnecting == isConnecting) &&
             (identical(other.connectedDevice, connectedDevice) ||
-                other.connectedDevice == connectedDevice));
+                other.connectedDevice == connectedDevice) &&
+            (identical(other.hasError, hasError) ||
+                other.hasError == hasError));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, isConnecting, connectedDevice);
+  int get hashCode =>
+      Object.hash(runtimeType, isConnecting, connectedDevice, hasError);
 
   @JsonKey(ignore: true)
   @override
@@ -141,12 +163,15 @@ class _$ConnectStateImpl implements _ConnectState {
 abstract class _ConnectState implements ConnectState {
   factory _ConnectState(
       {final bool isConnecting,
-      final BluetoothDevice? connectedDevice}) = _$ConnectStateImpl;
+      final BluetoothDevice? connectedDevice,
+      final bool hasError}) = _$ConnectStateImpl;
 
   @override
   bool get isConnecting;
   @override
   BluetoothDevice? get connectedDevice;
+  @override
+  bool get hasError;
   @override
   @JsonKey(ignore: true)
   _$$ConnectStateImplCopyWith<_$ConnectStateImpl> get copyWith =>

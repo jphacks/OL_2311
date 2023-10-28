@@ -8,5 +8,6 @@ class ConnectState with _$ConnectState {
   factory ConnectState({
     @Default(false) bool isConnecting,
     @Default(null) BluetoothDevice? connectedDevice,
+    @Default(false) bool hasError,
   }) = _ConnectState;
 }

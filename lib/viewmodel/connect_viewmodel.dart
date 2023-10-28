@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:kanpai/util/ble_connector.dart';
 import 'package:kanpai/viewmodel/connect_state.dart';
@@ -18,13 +20,20 @@ class ConnectViewModel extends StateNotifier<ConnectState> {
 
   final BleConnector _bleConnector;
 
-  Future<void> connect() async {
+  Future<BluetoothDevice?> connect() async {
     state = state.copyWith(isConnecting: true);
+
     try {
+      debugPrint('Connected device found, disconnecting...');
+      await state.connectedDevice?.disconnect();
+
       final device = await _bleConnector.connect();
       state = state.copyWith(connectedDevice: device);
+      debugPrint('Connected device: $device');
+      return device;
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
+      return null;
     } finally {
       state = state.copyWith(isConnecting: false);
     }
