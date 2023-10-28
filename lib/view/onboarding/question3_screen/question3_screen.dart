@@ -23,8 +23,11 @@ class Question3Screen extends HookConsumerWidget {
         onNextPressed: () {
           question3ViewModel.updateMe(xController.text,
               instagramController.text, homepageController.text);
-          Navigator.of(context)
-              .push(MaterialPageRoute(builder: (_) => const ConnectScreen()));
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) => const ConnectScreen(),
+            ),
+          );
         },
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,

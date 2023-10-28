@@ -9,6 +9,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:kanpai/components/profile_card/profile_card.dart';
 import 'package:kanpai/components/tab_button.dart';
 import 'package:kanpai/components/user_icon_panel.dart';
+import 'package:kanpai/main.dart';
 import 'package:kanpai/models/user_model.dart';
 import 'package:kanpai/util/bluetooth_ext.dart';
 import 'package:kanpai/view_models/kanpai_view_model.dart';
@@ -49,6 +50,7 @@ class KanpaiScreen extends HookConsumerWidget {
 
   void startKanpaiListener(
     void Function(String fromId, String toId) handler,
+    String currentUserId,
   ) async {
     await targetDevice.connectAndUpdateStream();
     final characteristic = await targetDevice.getNotifyCharacteristic();
@@ -59,7 +61,7 @@ class KanpaiScreen extends HookConsumerWidget {
       if (value.isEmpty) return;
 
       final toUserId = utf8.decode(value);
-      const fromUserId = "4ZzFqTo9NXcSHQwhct8Y";
+      final fromUserId = currentUserId;
 
       debugPrint('cheers occurred from $fromUserId to $toUserId');
       handler(fromUserId, toUserId);
@@ -70,6 +72,8 @@ class KanpaiScreen extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedTab = useState<KanpaiTab>(KanpaiTab.all);
     final ascending = useState<bool>(true);
+    final prefs = ref.watch(sharedPreferencesProvider);
+    final currentUserId = prefs.getString("currentUserId");
 
     final kanpaiCount = useMemoized(
         () =>
@@ -116,7 +120,7 @@ class KanpaiScreen extends HookConsumerWidget {
     final viewmodel = ref.watch(homeViewModelProvider.notifier);
 
     useEffect(() {
-      startKanpaiListener(viewmodel.cheers);
+      startKanpaiListener(viewmodel.cheers, currentUserId!);
       return () => _kanpaiSubscription.cancel();
     }, []);
 

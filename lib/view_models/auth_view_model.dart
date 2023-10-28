@@ -46,7 +46,7 @@ class AuthViewModel extends StateNotifier<AuthState> {
     return bleUserId;
   }
 
-  Future<void> signUpWithGoogle() async {
+  Future<String?> signUpWithGoogle() async {
     await _authRepository.signUpWithGoogle();
     await _fetchAppUser();
     // firestoreにuserが存在しない場合は作成する
@@ -61,7 +61,9 @@ class AuthViewModel extends StateNotifier<AuthState> {
         bleUserId: bleUserId,
       );
       await _userRepository.createUser(newUser);
+      return currentUser.uid;
     }
+    return null;
   }
 
   Future<void> signInWithGoogle() async {

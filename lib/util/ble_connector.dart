@@ -10,16 +10,14 @@ final bleConnectorProvider = Provider(
 );
 
 class BleConnector {
-  static const targetUuid = "B616EAC0-9CB1-4453-F93F-6DFBAB1F18B4";
-  static const userId = "kurikinUserId";
-
-  Future<BluetoothDevice> connect() async {
+  Future<BluetoothDevice> connect(
+      String deviceUuid, String currentUserId) async {
     BluetoothDevice? targetDevice;
 
     final scanResultsSubscription = FlutterBluePlus.scanResults.listen(
       (results) {
         targetDevice = results
-            .where((elt) => elt.device.remoteId.str == targetUuid)
+            .where((elt) => elt.device.remoteId.str == deviceUuid)
             .firstOrNull
             ?.device;
       },
@@ -47,7 +45,7 @@ class BleConnector {
     }
 
     final writeCharacteristic = await targetDevice!.getWriteCharacteristic();
-    await writeCharacteristic!.write(utf8.encode(userId));
+    await writeCharacteristic!.write(utf8.encode(currentUserId));
 
     return targetDevice!;
   }

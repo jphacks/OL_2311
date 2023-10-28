@@ -20,14 +20,15 @@ class ConnectViewModel extends StateNotifier<ConnectState> {
 
   final BleConnector _bleConnector;
 
-  Future<BluetoothDevice?> connect() async {
+  Future<BluetoothDevice?> connect(
+      String deviceUuid, String currentUserId) async {
     state = state.copyWith(isConnecting: true, hasError: false);
 
     try {
       debugPrint('Connected device found, disconnecting...');
       await state.connectedDevice?.disconnect();
 
-      final device = await _bleConnector.connect();
+      final device = await _bleConnector.connect(deviceUuid, currentUserId);
       state = state.copyWith(connectedDevice: device);
       debugPrint('Connected device: $device');
       return device;
