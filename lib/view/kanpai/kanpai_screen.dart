@@ -10,6 +10,7 @@ import 'package:kanpai/components/profile_card/profile_card.dart';
 import 'package:kanpai/components/tab_button.dart';
 import 'package:kanpai/components/user_icon_panel.dart';
 import 'package:kanpai/util/bluetooth_ext.dart';
+import 'package:kanpai/view_models/home_view_model.dart';
 
 enum KanpaiTab {
   all,
@@ -26,15 +27,22 @@ class KanpaiScreen extends HookConsumerWidget {
   final BluetoothDevice targetDevice;
   late StreamSubscription<List<int>> _kanpaiSubscription;
 
-  void startKanpaiListener() async {
+  void startKanpaiListener(
+    void Function(String fromId, String toId) handler,
+  ) async {
     await targetDevice.connectAndUpdateStream();
     final characteristic = await targetDevice.getNotifyCharacteristic();
     if (characteristic == null) return;
     await characteristic.setNotifyValue(true);
 
     _kanpaiSubscription = characteristic.lastValueStream.listen((value) {
-      final decodedValue = utf8.decode(value);
-      print('value: $decodedValue');
+      if (value.isEmpty) return;
+
+      final toUserId = utf8.decode(value);
+      const fromUserId = "4ZzFqTo9NXcSHQwhct8Y";
+
+      debugPrint('cheers occurred from $fromUserId to $toUserId');
+      handler(fromUserId, toUserId);
     });
   }
 
@@ -45,11 +53,12 @@ class KanpaiScreen extends HookConsumerWidget {
     final deviceWidth = MediaQuery.of(context).size.width;
 
     const kanpaiCount = 23;
+    final viewmodel = ref.watch(homeViewModelProvider.notifier);
 
     useEffect(() {
-      startKanpaiListener();
+      startKanpaiListener(viewmodel.cheers);
       return () => _kanpaiSubscription.cancel();
-    });
+    }, []);
 
     final appbar = AppBar(
       elevation: 0,
