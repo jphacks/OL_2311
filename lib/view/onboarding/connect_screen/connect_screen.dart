@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:kanpai/view/onboarding/onboarding_layout.dart';
+import 'package:kanpai/view/tmp_home_screen.dart';
 import 'package:kanpai/view_models/connect_view_model.dart';
 
 class ConnectScreen extends HookConsumerWidget {
@@ -20,7 +21,15 @@ class ConnectScreen extends HookConsumerWidget {
       nextLabel: isConnecting ? "接続中..." : "接続を開始",
       onNextPressed: () async {
         final connectedDevice = await viewmodel.connect();
-        // connectedDevice を渡して画面遷移する
+        if (connectedDevice != null) {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) => TmpHomeScreen(
+                targetDevice: connectedDevice,
+              ),
+            ),
+          );
+        }
       },
       child: SizedBox(
         height: double.infinity,
