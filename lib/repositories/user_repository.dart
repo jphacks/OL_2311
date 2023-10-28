@@ -6,9 +6,33 @@ class UserRepository {
 
   UserRepository(this._db);
 
-  Stream<List<User>> getUsers() {
-    return _db.collection('users').snapshots().map((snapshot) {
-      return snapshot.docs.map((doc) => User.fromJson(doc.data())).toList();
-    });
+  // userを全件取得
+  Stream<List<User>> getUsersStream() {
+    return _db.collection('users').snapshots().map((snapshot) => snapshot.docs
+        .map((doc) => User.fromJson(doc.data()))
+        .toList()); // snapshot.docsをUserに変換
+  }
+
+  // userIdでuserを取得
+  Future<User> getUser(String userId) async {
+    final snapshot = await _db.collection('users').doc(userId).get();
+    return User.fromJson(snapshot.data()!);
+  }
+
+  // userIDでuserを取得したらstreamで監視
+  Stream<User> getUserStream(String userId) {
+    return _db
+        .collection('users')
+        .doc(userId)
+        .snapshots()
+        .map((snapshot) => User.fromJson(snapshot.data()!));
+  }
+
+  Future<void> createUser(User user) async {
+    await _db.collection('users').doc(user.id).set(user.toJson());
+  }
+
+  Future<void> updateUser(User user) async {
+    await _db.collection('users').doc(user.id).update(user.toJson());
   }
 }
