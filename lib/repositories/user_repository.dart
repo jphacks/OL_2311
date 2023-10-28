@@ -20,8 +20,9 @@ class UserRepository {
   }
 
   // userIdでuserを取得
-  Future<User> getUser(String userId) async {
+  Future<User?> getUser(String userId) async {
     final res = await _db.collection('users').doc(userId).get();
+    if (res.data() == null) return null;
     return User.fromJson(res.data()!);
   }
 
