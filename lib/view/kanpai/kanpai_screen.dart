@@ -12,6 +12,7 @@ import 'package:kanpai/components/user_icon_panel.dart';
 import 'package:kanpai/main.dart';
 import 'package:kanpai/models/user_model.dart';
 import 'package:kanpai/util/bluetooth_ext.dart';
+import 'package:kanpai/view_models/auth_view_model.dart';
 import 'package:kanpai/view_models/kanpai_view_model.dart';
 
 enum KanpaiTab {
@@ -20,40 +21,21 @@ enum KanpaiTab {
   notDone;
 }
 
-// Userコレクションから取得されるデータを想定
-final _mockUsers = List.generate(10, (i) => i).map((i) => User(
-    id: i == 0 ? "me" : "id-$i",
-    name: "まろすけ $i",
-    profileImageUrl:
-        "https://img.freepik.com/free-photo/closeup-of-a-cute-cat-sitting-on-the-carpet-against-a-blurred-background_181624-53498.jpg",
-    location: "近畿",
-    techArea: "フロントエンド",
-    xId: "twitter",
-    instagramId: "instagram",
-    homepageLink: "https://example.com",
-    deviceUuid: "1a0e8d92-756b-11ee-b962-0242ac120002",
-    bleUserId: "ABCDEF",
-    lastCheersUserId: "d309306d-2095-4562-ba38-bc54d88f8a64",
-    cheerUserIds: ["id-2", if (i % 2 == 1) "me", "id-2", if (i % 2 == 1) "me"]));
-
-// ログインしているユーザーのデータを想定
-final _me = _mockUsers.first;
-
 class KanpaiScreen extends HookConsumerWidget {
   KanpaiScreen({
     super.key,
     required this.targetDevice,
   });
 
-  final BluetoothDevice targetDevice;
+  final BluetoothDevice? targetDevice;
   late StreamSubscription<List<int>> _kanpaiSubscription;
 
   void startKanpaiListener(
     void Function(String fromId, String toId) handler,
     String currentUserId,
   ) async {
-    await targetDevice.connectAndUpdateStream();
-    final characteristic = await targetDevice.getNotifyCharacteristic();
+    await targetDevice!.connectAndUpdateStream();
+    final characteristic = await targetDevice!.getNotifyCharacteristic();
     if (characteristic == null) return;
     await characteristic.setNotifyValue(true);
 
@@ -70,6 +52,10 @@ class KanpaiScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final authState = ref.watch(authViewModelProvider);
+    final me = authState.appUser!;
+    final meId = authState.appUser?.id;
+
     final selectedTab = useState<KanpaiTab>(KanpaiTab.all);
     final ascending = useState<bool>(true);
     final prefs = ref.watch(sharedPreferencesProvider);
@@ -86,42 +72,38 @@ class KanpaiScreen extends HookConsumerWidget {
 
     final kanpaiCount = useMemoized(() {
       try {
-        return users.firstWhere((u) => u.id == _me.id).cheerUserIds?.length ??
-            0;
+        return users.firstWhere((u) => u.id == meId).cheerUserIds?.length ?? 0;
       } on StateError catch (_) {
         return 0;
       }
-    }, [users]);
+    }, [users, meId]);
 
     final alreadyCheersUserCount = useMemoized(
-        () => users
-            .where((u) => u.cheerUserIds?.contains(_me.id) ?? false)
-            .length,
-        [users]);
+        () =>
+            users.where((u) => u.cheerUserIds?.contains(meId) ?? false).length,
+        [users, meId]);
 
-    final allUserCount = useMemoized(() => users.length, [users]);
+    final allUserCount = useMemoized(() => users.length - 1, [users]);
 
     final latestCheeredUser = useMemoized(() {
       try {
         final latestCheeredUserId = users
-            .firstWhere((u) => u.id == _me.id)
+            .firstWhere((u) => u.id == meId)
             .cheerUserIds
-            ?.lastWhere((id) => id != _me.id);
-        print("latestCheeredUserId ===========");
-        print(latestCheeredUserId);
+            ?.lastWhere((id) => id != meId);
         return users.firstWhere((u) => u.id == latestCheeredUserId);
       } on StateError catch (_) {
         return null;
       }
-    }, [users]);
+    }, [users, meId]);
 
     final filteredUsers = useMemoized(() {
       final filteredUsers = switch (selectedTab.value) {
-        KanpaiTab.all => users.where((u) => u.id != _me.id),
-        KanpaiTab.done => users.where((u) =>
-            u.id != _me.id && (u.cheerUserIds?.contains(_me.id) ?? false)),
+        KanpaiTab.all => users.where((u) => u.id != meId),
+        KanpaiTab.done => users.where(
+            (u) => u.id != meId && (u.cheerUserIds?.contains(meId) ?? false)),
         KanpaiTab.notDone => users.where((u) =>
-            u.id != _me.id && (!(u.cheerUserIds?.contains(_me.id) ?? false))),
+            u.id != meId && (!(u.cheerUserIds?.contains(meId) ?? false))),
       };
       if (ascending.value) {
         return filteredUsers.toList();
@@ -132,6 +114,9 @@ class KanpaiScreen extends HookConsumerWidget {
     final viewmodel = ref.watch(homeViewModelProvider.notifier);
 
     useEffect(() {
+      if (targetDevice == null) {
+        return () {};
+      }
       startKanpaiListener(viewmodel.cheers, currentUserId!);
       return () => _kanpaiSubscription.cancel();
     }, []);
@@ -165,9 +150,11 @@ class KanpaiScreen extends HookConsumerWidget {
         backgroundColor: Colors.white,
         body: SingleChildScrollView(
           child: Container(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
                 image: DecorationImage(
-                    image: AssetImage("assets/images/kanpai-bg-blue.png"),
+                    image: AssetImage(kanpaiCount == 0
+                        ? "assets/images/kanpai-bg-black.png"
+                        : "assets/images/kanpai-bg-blue.png"),
                     fit: BoxFit.contain,
                     alignment: Alignment.topCenter)),
             child: Padding(
@@ -211,7 +198,7 @@ class KanpaiScreen extends HookConsumerWidget {
                         const SizedBox(
                           height: 24,
                         ),
-                        _buildUserGrid(context, me: _me, users: filteredUsers),
+                        _buildUserGrid(context, me: me, users: filteredUsers),
                       ],
                     ),
                   ),
