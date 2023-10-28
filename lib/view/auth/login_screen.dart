@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:kanpai/view/auth/ble_config_screen.dart';
 import 'package:kanpai/view/onboarding/profile_screen/profile_screen.dart';
 import 'package:kanpai/view_models/auth_view_model.dart';
 
@@ -8,11 +9,27 @@ class LoginScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final LoginViewModel = ref.watch(authViewModelProvider.notifier);
+    final loginViewModel = ref.watch(authViewModelProvider.notifier);
+
     final appbar = AppBar(
       title: const Text("ログイン"),
       elevation: 0,
       backgroundColor: Colors.transparent,
+      actions: [
+        IconButton(
+          onPressed: () {
+            showModalBottomSheet(
+              context: context,
+              builder: (context) => const BleConfigScreen(),
+            );
+          },
+          icon: const Icon(
+            Icons.settings,
+            color: Colors.black,
+          ),
+        ),
+        const SizedBox(width: 10),
+      ],
     );
     return Scaffold(
         appBar: appbar,
@@ -37,7 +54,7 @@ class LoginScreen extends HookConsumerWidget {
                     width: double.infinity,
                     child: FilledButton(
                         onPressed: () async {
-                          await LoginViewModel.signUpWithGoogle();
+                          await loginViewModel.signUpWithGoogle();
                           if (!context.mounted) return;
                           Navigator.push(
                             context,
