@@ -5,6 +5,7 @@ import 'package:kanpai/models/auth_state.dart';
 import 'package:kanpai/models/user_model.dart';
 import 'package:kanpai/repositories/auth_repository.dart';
 import 'package:kanpai/repositories/user_repository.dart';
+import 'package:kanpai/util/string.dart';
 
 final authViewModelProvider =
     StateNotifierProvider<AuthViewModel, AuthState>((ref) {
@@ -35,17 +36,29 @@ class AuthViewModel extends StateNotifier<AuthState> {
     }
   }
 
+  Future<String> _generateUniqueBleUserId() async {
+    String bleUserId = 'hogehoge';
+    bool isUnique = false;
+    while (!isUnique) {
+      bleUserId = StringUtils.generateRandomString(6);
+      isUnique = await _userRepository.isUniqueBleUserId(bleUserId);
+    }
+    return bleUserId;
+  }
+
   Future<void> signUpWithGoogle() async {
     await _authRepository.signUpWithGoogle();
     await _fetchAppUser();
     // firestoreにuserが存在しない場合は作成する
     final user = await _userRepository.getMe();
+    final bleUserId = await _generateUniqueBleUserId();
     if (user == null) {
       final currentUser = _authRepository.getCurrentUser();
       final newUser = User(
         id: currentUser!.uid,
         name: currentUser.displayName ?? '',
         profileImageUrl: currentUser.photoURL ?? '',
+        bleUserId: bleUserId,
       );
       await _userRepository.createUser(newUser);
     }
