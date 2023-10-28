@@ -19,7 +19,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.19.6 <3.0.0"
+  sdk: ">=3.0.0 <4.0.0"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -43,11 +43,11 @@ dependencies:
   cloud_firestore: ^4.12.1
   json_serializable: ^6.7.1
   flutter_blue_plus: ^1.20.7
+  freezed: ^2.4.5
+  freezed_annotation: ^2.4.1
+  json_annotation: ^4.8.1
 
 dev_dependencies:
-  flutter_test:
-    sdk: flutter
-
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
@@ -56,8 +56,9 @@ dev_dependencies:
   flutter_lints: ^2.0.0
   custom_lint: ^0.5.0
   build_runner: ^2.4.6
+  json_serializable: ^6.7.1
   freezed: ^2.4.5
-
+  
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
