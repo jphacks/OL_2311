@@ -6,7 +6,7 @@ part 'user_model.g.dart';
 @freezed
 class User with _$User {
   factory User({
-    required String? id, // Firebase Authenticationのuid
+    required String id, // Firebase Authenticationのuid
     String? name, // 名前
     String? profileImageUrl, // 画像のurl
     String? location, // 出身地

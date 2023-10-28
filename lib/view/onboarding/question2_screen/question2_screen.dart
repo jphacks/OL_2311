@@ -5,18 +5,21 @@ import 'package:kanpai/components/select_option.dart';
 import 'package:kanpai/view/onboarding/onboarding_layout.dart';
 import 'package:kanpai/view/onboarding/question2_screen/tech_area.dart';
 import 'package:kanpai/view/onboarding/question3_screen/question3_screen.dart';
+import 'package:kanpai/view_models/question2_view_model.dart';
 
 class Question2Screen extends HookConsumerWidget {
   const Question2Screen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final question2ViewModel = ref.watch(question2ViewModelProvider.notifier);
     final techArea = useState<TechArea?>(null);
 
     return OnboardingLayout(
       title: "好き・得意な領域は？",
       hide: techArea.value == null,
       onNextPressed: () {
+        question2ViewModel.updateMe(techArea.value!.label);
         Navigator.of(context)
             .push(MaterialPageRoute(builder: (_) => const Question3Screen()));
       },
