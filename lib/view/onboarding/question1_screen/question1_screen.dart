@@ -3,7 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:kanpai/components/select_option.dart';
 import 'package:kanpai/view/onboarding/onboarding_layout.dart';
-import 'package:kanpai/view/onboarding/question1_screen/residence_area.dart';
+import 'package:kanpai/view/onboarding/question1_screen/location.dart';
 import 'package:kanpai/view/onboarding/question2_screen/question2_screen.dart';
 
 class Question1Screen extends HookConsumerWidget {
@@ -11,7 +11,7 @@ class Question1Screen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final residenceArea = useState<ResidenceArea?>(null);
+    final residenceArea = useState<Location?>(null);
 
     return OnboardingLayout(
       title: "出身地はどこですか？",
@@ -22,7 +22,7 @@ class Question1Screen extends HookConsumerWidget {
       },
       child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: ResidenceArea.values.map((item) {
+          children: Location.values.map((item) {
             final isSelected = residenceArea.value == item;
             return Padding(
               padding: const EdgeInsets.only(bottom: 8),
