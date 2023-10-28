@@ -41,7 +41,7 @@ class BleConnector {
     if (targetDevice!.isConnected) {
       debugPrint('Target device is already connected');
     } else {
-      targetDevice!.connectAndUpdateStream().catchError((e) {
+      await targetDevice!.connectAndUpdateStream().catchError((e) {
         throw Exception("Cannot connect target device");
       });
     }
