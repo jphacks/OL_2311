@@ -22,21 +22,21 @@ User _$UserFromJson(Map<String, dynamic> json) {
 mixin _$User {
   String get id =>
       throw _privateConstructorUsedError; // Firebase Authenticationのuid
-  String get name => throw _privateConstructorUsedError; // 名前
-  String get profileImageUrl => throw _privateConstructorUsedError; // 画像のurl
-  String get location => throw _privateConstructorUsedError; // 出身地
-  String get techArea => throw _privateConstructorUsedError; // 好き・得意な技術領域
-  String get xId => throw _privateConstructorUsedError; // SNS Xのid
-  String get instagramId =>
+  String? get name => throw _privateConstructorUsedError; // 名前
+  String? get profileImageUrl => throw _privateConstructorUsedError; // 画像のurl
+  String? get location => throw _privateConstructorUsedError; // 出身地
+  String? get techArea => throw _privateConstructorUsedError; // 好き・得意な技術領域
+  String? get xId => throw _privateConstructorUsedError; // SNS Xのid
+  String? get instagramId =>
       throw _privateConstructorUsedError; // SNSのInstagramのid
-  String get homepageLink => throw _privateConstructorUsedError; // ホームページのリンク
-  String get deviceUuid =>
+  String? get homepageLink => throw _privateConstructorUsedError; // ホームページのリンク
+  String? get deviceUuid =>
       throw _privateConstructorUsedError; // BluetoothデバイスのUUID
-  String get bleUserId =>
+  String? get bleUserId =>
       throw _privateConstructorUsedError; // Bluetoothデバイスに渡すユーザーID
-  String get lastCheersUserId =>
+  String? get lastCheersUserId =>
       throw _privateConstructorUsedError; // 最後に乾杯したuserのid
-  List<String> get cheerUserIds => throw _privateConstructorUsedError;
+  List<String>? get cheerUserIds => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -50,17 +50,17 @@ abstract class $UserCopyWith<$Res> {
   @useResult
   $Res call(
       {String id,
-      String name,
-      String profileImageUrl,
-      String location,
-      String techArea,
-      String xId,
-      String instagramId,
-      String homepageLink,
-      String deviceUuid,
-      String bleUserId,
-      String lastCheersUserId,
-      List<String> cheerUserIds});
+      String? name,
+      String? profileImageUrl,
+      String? location,
+      String? techArea,
+      String? xId,
+      String? instagramId,
+      String? homepageLink,
+      String? deviceUuid,
+      String? bleUserId,
+      String? lastCheersUserId,
+      List<String>? cheerUserIds});
 }
 
 /// @nodoc
@@ -77,67 +77,67 @@ class _$UserCopyWithImpl<$Res, $Val extends User>
   @override
   $Res call({
     Object? id = null,
-    Object? name = null,
-    Object? profileImageUrl = null,
-    Object? location = null,
-    Object? techArea = null,
-    Object? xId = null,
-    Object? instagramId = null,
-    Object? homepageLink = null,
-    Object? deviceUuid = null,
-    Object? bleUserId = null,
-    Object? lastCheersUserId = null,
-    Object? cheerUserIds = null,
+    Object? name = freezed,
+    Object? profileImageUrl = freezed,
+    Object? location = freezed,
+    Object? techArea = freezed,
+    Object? xId = freezed,
+    Object? instagramId = freezed,
+    Object? homepageLink = freezed,
+    Object? deviceUuid = freezed,
+    Object? bleUserId = freezed,
+    Object? lastCheersUserId = freezed,
+    Object? cheerUserIds = freezed,
   }) {
     return _then(_value.copyWith(
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as String,
-      name: null == name
+      name: freezed == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
-              as String,
-      profileImageUrl: null == profileImageUrl
+              as String?,
+      profileImageUrl: freezed == profileImageUrl
           ? _value.profileImageUrl
           : profileImageUrl // ignore: cast_nullable_to_non_nullable
-              as String,
-      location: null == location
+              as String?,
+      location: freezed == location
           ? _value.location
           : location // ignore: cast_nullable_to_non_nullable
-              as String,
-      techArea: null == techArea
+              as String?,
+      techArea: freezed == techArea
           ? _value.techArea
           : techArea // ignore: cast_nullable_to_non_nullable
-              as String,
-      xId: null == xId
+              as String?,
+      xId: freezed == xId
           ? _value.xId
           : xId // ignore: cast_nullable_to_non_nullable
-              as String,
-      instagramId: null == instagramId
+              as String?,
+      instagramId: freezed == instagramId
           ? _value.instagramId
           : instagramId // ignore: cast_nullable_to_non_nullable
-              as String,
-      homepageLink: null == homepageLink
+              as String?,
+      homepageLink: freezed == homepageLink
           ? _value.homepageLink
           : homepageLink // ignore: cast_nullable_to_non_nullable
-              as String,
-      deviceUuid: null == deviceUuid
+              as String?,
+      deviceUuid: freezed == deviceUuid
           ? _value.deviceUuid
           : deviceUuid // ignore: cast_nullable_to_non_nullable
-              as String,
-      bleUserId: null == bleUserId
+              as String?,
+      bleUserId: freezed == bleUserId
           ? _value.bleUserId
           : bleUserId // ignore: cast_nullable_to_non_nullable
-              as String,
-      lastCheersUserId: null == lastCheersUserId
+              as String?,
+      lastCheersUserId: freezed == lastCheersUserId
           ? _value.lastCheersUserId
           : lastCheersUserId // ignore: cast_nullable_to_non_nullable
-              as String,
-      cheerUserIds: null == cheerUserIds
+              as String?,
+      cheerUserIds: freezed == cheerUserIds
           ? _value.cheerUserIds
           : cheerUserIds // ignore: cast_nullable_to_non_nullable
-              as List<String>,
+              as List<String>?,
     ) as $Val);
   }
 }
@@ -151,17 +151,17 @@ abstract class _$$UserImplCopyWith<$Res> implements $UserCopyWith<$Res> {
   @useResult
   $Res call(
       {String id,
-      String name,
-      String profileImageUrl,
-      String location,
-      String techArea,
-      String xId,
-      String instagramId,
-      String homepageLink,
-      String deviceUuid,
-      String bleUserId,
-      String lastCheersUserId,
-      List<String> cheerUserIds});
+      String? name,
+      String? profileImageUrl,
+      String? location,
+      String? techArea,
+      String? xId,
+      String? instagramId,
+      String? homepageLink,
+      String? deviceUuid,
+      String? bleUserId,
+      String? lastCheersUserId,
+      List<String>? cheerUserIds});
 }
 
 /// @nodoc
@@ -175,67 +175,67 @@ class __$$UserImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? id = null,
-    Object? name = null,
-    Object? profileImageUrl = null,
-    Object? location = null,
-    Object? techArea = null,
-    Object? xId = null,
-    Object? instagramId = null,
-    Object? homepageLink = null,
-    Object? deviceUuid = null,
-    Object? bleUserId = null,
-    Object? lastCheersUserId = null,
-    Object? cheerUserIds = null,
+    Object? name = freezed,
+    Object? profileImageUrl = freezed,
+    Object? location = freezed,
+    Object? techArea = freezed,
+    Object? xId = freezed,
+    Object? instagramId = freezed,
+    Object? homepageLink = freezed,
+    Object? deviceUuid = freezed,
+    Object? bleUserId = freezed,
+    Object? lastCheersUserId = freezed,
+    Object? cheerUserIds = freezed,
   }) {
     return _then(_$UserImpl(
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as String,
-      name: null == name
+      name: freezed == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
-              as String,
-      profileImageUrl: null == profileImageUrl
+              as String?,
+      profileImageUrl: freezed == profileImageUrl
           ? _value.profileImageUrl
           : profileImageUrl // ignore: cast_nullable_to_non_nullable
-              as String,
-      location: null == location
+              as String?,
+      location: freezed == location
           ? _value.location
           : location // ignore: cast_nullable_to_non_nullable
-              as String,
-      techArea: null == techArea
+              as String?,
+      techArea: freezed == techArea
           ? _value.techArea
           : techArea // ignore: cast_nullable_to_non_nullable
-              as String,
-      xId: null == xId
+              as String?,
+      xId: freezed == xId
           ? _value.xId
           : xId // ignore: cast_nullable_to_non_nullable
-              as String,
-      instagramId: null == instagramId
+              as String?,
+      instagramId: freezed == instagramId
           ? _value.instagramId
           : instagramId // ignore: cast_nullable_to_non_nullable
-              as String,
-      homepageLink: null == homepageLink
+              as String?,
+      homepageLink: freezed == homepageLink
           ? _value.homepageLink
           : homepageLink // ignore: cast_nullable_to_non_nullable
-              as String,
-      deviceUuid: null == deviceUuid
+              as String?,
+      deviceUuid: freezed == deviceUuid
           ? _value.deviceUuid
           : deviceUuid // ignore: cast_nullable_to_non_nullable
-              as String,
-      bleUserId: null == bleUserId
+              as String?,
+      bleUserId: freezed == bleUserId
           ? _value.bleUserId
           : bleUserId // ignore: cast_nullable_to_non_nullable
-              as String,
-      lastCheersUserId: null == lastCheersUserId
+              as String?,
+      lastCheersUserId: freezed == lastCheersUserId
           ? _value.lastCheersUserId
           : lastCheersUserId // ignore: cast_nullable_to_non_nullable
-              as String,
-      cheerUserIds: null == cheerUserIds
+              as String?,
+      cheerUserIds: freezed == cheerUserIds
           ? _value._cheerUserIds
           : cheerUserIds // ignore: cast_nullable_to_non_nullable
-              as List<String>,
+              as List<String>?,
     ));
   }
 }
@@ -245,17 +245,17 @@ class __$$UserImplCopyWithImpl<$Res>
 class _$UserImpl implements _User {
   _$UserImpl(
       {required this.id,
-      required this.name,
-      required this.profileImageUrl,
-      required this.location,
-      required this.techArea,
-      required this.xId,
-      required this.instagramId,
-      required this.homepageLink,
-      required this.deviceUuid,
-      required this.bleUserId,
-      required this.lastCheersUserId,
-      required final List<String> cheerUserIds})
+      this.name,
+      this.profileImageUrl,
+      this.location,
+      this.techArea,
+      this.xId,
+      this.instagramId,
+      this.homepageLink,
+      this.deviceUuid,
+      this.bleUserId,
+      this.lastCheersUserId,
+      final List<String>? cheerUserIds})
       : _cheerUserIds = cheerUserIds;
 
   factory _$UserImpl.fromJson(Map<String, dynamic> json) =>
@@ -265,42 +265,44 @@ class _$UserImpl implements _User {
   final String id;
 // Firebase Authenticationのuid
   @override
-  final String name;
+  final String? name;
 // 名前
   @override
-  final String profileImageUrl;
+  final String? profileImageUrl;
 // 画像のurl
   @override
-  final String location;
+  final String? location;
 // 出身地
   @override
-  final String techArea;
+  final String? techArea;
 // 好き・得意な技術領域
   @override
-  final String xId;
+  final String? xId;
 // SNS Xのid
   @override
-  final String instagramId;
+  final String? instagramId;
 // SNSのInstagramのid
   @override
-  final String homepageLink;
+  final String? homepageLink;
 // ホームページのリンク
   @override
-  final String deviceUuid;
+  final String? deviceUuid;
 // BluetoothデバイスのUUID
   @override
-  final String bleUserId;
+  final String? bleUserId;
 // Bluetoothデバイスに渡すユーザーID
   @override
-  final String lastCheersUserId;
+  final String? lastCheersUserId;
 // 最後に乾杯したuserのid
-  final List<String> _cheerUserIds;
+  final List<String>? _cheerUserIds;
 // 最後に乾杯したuserのid
   @override
-  List<String> get cheerUserIds {
+  List<String>? get cheerUserIds {
+    final value = _cheerUserIds;
+    if (value == null) return null;
     if (_cheerUserIds is EqualUnmodifiableListView) return _cheerUserIds;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_cheerUserIds);
+    return EqualUnmodifiableListView(value);
   }
 
   @override
@@ -370,44 +372,44 @@ class _$UserImpl implements _User {
 abstract class _User implements User {
   factory _User(
       {required final String id,
-      required final String name,
-      required final String profileImageUrl,
-      required final String location,
-      required final String techArea,
-      required final String xId,
-      required final String instagramId,
-      required final String homepageLink,
-      required final String deviceUuid,
-      required final String bleUserId,
-      required final String lastCheersUserId,
-      required final List<String> cheerUserIds}) = _$UserImpl;
+      final String? name,
+      final String? profileImageUrl,
+      final String? location,
+      final String? techArea,
+      final String? xId,
+      final String? instagramId,
+      final String? homepageLink,
+      final String? deviceUuid,
+      final String? bleUserId,
+      final String? lastCheersUserId,
+      final List<String>? cheerUserIds}) = _$UserImpl;
 
   factory _User.fromJson(Map<String, dynamic> json) = _$UserImpl.fromJson;
 
   @override
   String get id;
   @override // Firebase Authenticationのuid
-  String get name;
+  String? get name;
   @override // 名前
-  String get profileImageUrl;
+  String? get profileImageUrl;
   @override // 画像のurl
-  String get location;
+  String? get location;
   @override // 出身地
-  String get techArea;
+  String? get techArea;
   @override // 好き・得意な技術領域
-  String get xId;
+  String? get xId;
   @override // SNS Xのid
-  String get instagramId;
+  String? get instagramId;
   @override // SNSのInstagramのid
-  String get homepageLink;
+  String? get homepageLink;
   @override // ホームページのリンク
-  String get deviceUuid;
+  String? get deviceUuid;
   @override // BluetoothデバイスのUUID
-  String get bleUserId;
+  String? get bleUserId;
   @override // Bluetoothデバイスに渡すユーザーID
-  String get lastCheersUserId;
+  String? get lastCheersUserId;
   @override // 最後に乾杯したuserのid
-  List<String> get cheerUserIds;
+  List<String>? get cheerUserIds;
   @override
   @JsonKey(ignore: true)
   _$$UserImplCopyWith<_$UserImpl> get copyWith =>
