@@ -1,7 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:kanpai/models/user_model.dart' as model;
 
-// NOTE: LoginViewModelで正しく実装できていない可能性が高いため、正常な値が入っていない可能性がある
 class AuthState {
-  final User? user;
-  const AuthState(this.user);
+  final User? firebaseUser;
+  final model.User? appUser;
+
+  AuthState({
+    required this.firebaseUser,
+    required this.appUser,
+  });
 }
