@@ -27,6 +27,11 @@ class AuthViewModel extends StateNotifier<AuthState> {
     });
   }
 
+  // getMe()はfirestoreからuserを取得する
+  Future<User?> fetchMe() async {
+    return _userRepository.getMe();
+  }
+
   Future<void> signUpWithGoogle() async {
     await _authRepository.signUpWithGoogle();
     // firestoreにuserが存在しない場合は作成する
