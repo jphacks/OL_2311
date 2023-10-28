@@ -31,4 +31,23 @@ extension Extra on BluetoothDevice {
       _stream.add(false);
     }
   }
+
+  Future<BluetoothCharacteristic?> getNotifyCharacteristic() async {
+    final services = await discoverServices();
+    if (services.isEmpty) return null;
+    final service = services.first;
+    final characteristic = service.characteristics
+        .where((c) => c.properties.notify || c.properties.indicate)
+        .firstOrNull;
+    return characteristic;
+  }
+
+  Future<BluetoothCharacteristic?> getWriteCharacteristic() async {
+    final services = await discoverServices();
+    if (services.isEmpty) return null;
+    final service = services.first;
+    final characteristic =
+        service.characteristics.where((c) => c.properties.write).firstOrNull;
+    return characteristic;
+  }
 }
