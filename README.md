@@ -39,8 +39,6 @@
 
 ### UI
 
-# UI
-
 <img width="200" src="https://github.com/jphacks/OL_2311/assets/38308823/23d7d67e-c603-4561-ba09-884aceebb903">
 <img width="200" src="https://github.com/jphacks/OL_2311/assets/38308823/01204810-a522-405d-885b-730120cdf596">
 <img width="200" src="https://github.com/jphacks/OL_2311/assets/38308823/e9e4a8b6-0f9c-49d4-b832-e139e5c1431c">
