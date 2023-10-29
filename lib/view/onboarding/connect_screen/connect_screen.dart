@@ -41,7 +41,7 @@ class ConnectScreen extends HookConsumerWidget {
         // ignore: unused_local_variable
         final connectedDevice =
             await viewmodel.connect(deviceId!, currentUserId!);
-        if (!context.mounted) {
+        if (!context.mounted || connectedDevice == null) {
           return;
         }
         Navigator.of(context).push(
