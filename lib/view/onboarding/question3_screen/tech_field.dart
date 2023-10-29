@@ -5,6 +5,7 @@ enum TechArea {
   infra,
   game,
   machineLearning,
+  hardware,
   other;
 
   String get label {
@@ -21,6 +22,8 @@ enum TechArea {
         return "ゲーム";
       case TechArea.machineLearning:
         return "機械学習";
+      case TechArea.hardware:
+        return "ハードウェア";
       case TechArea.other:
         return "その他";
     }
