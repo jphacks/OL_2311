@@ -3,6 +3,7 @@
 乾杯すると友達になれる新しいサービス、**Kanpai!**
 
 ![Kanpai!](https://github.com/jphacks/OL_2311/assets/38308823/b931b346-5b2e-4581-955b-daa478bd6e96)
+![Slide 16_9 - 62](https://github.com/jphacks/OL_2311/assets/115207246/fb04edf3-be7f-4d16-a021-38361eae6f49)
 
 
 #### レポジトリ
