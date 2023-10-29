@@ -17,7 +17,7 @@ class UserRepository {
 
   Stream<List<User>> getUsersStream() {
     return _db.collection('users').snapshots().map((snapshot) => snapshot.docs
-        .map((doc) => User.fromJson(doc.data()..addAll({"id": doc.id})))
+        .map((doc) => User.fromJson(doc.data()))
         .toList()); // snapshot.docsをUserに変換
   }
 
@@ -25,7 +25,7 @@ class UserRepository {
     final res = await _db.collection('users').doc(userId).get();
     print(res.data());
     if (res.data() == null) return null;
-    return User.fromJson(res.data()!..addAll({"id": userId}));
+    return User.fromJson(res.data()!);
   }
 
   Future<User?> getMe() async {
@@ -37,8 +37,11 @@ class UserRepository {
 
   // userIDでuserを取得したらstreamで監視
   Stream<User> getUserStream(String userId) {
-    return _db.collection('users').doc(userId).snapshots().map(
-        (snapshot) => User.fromJson(snapshot.data()!..addAll({"id": userId})));
+    return _db
+        .collection('users')
+        .doc(userId)
+        .snapshots()
+        .map((snapshot) => User.fromJson(snapshot.data()!));
   }
 
   Future<void> createUser(User user) async {
