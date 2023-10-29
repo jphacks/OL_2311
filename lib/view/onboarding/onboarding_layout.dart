@@ -11,6 +11,7 @@ class OnboardingLayout extends HookConsumerWidget {
     this.nextLabel = "次へ",
     this.hide = false,
     this.loading = false,
+    this.actions,
   });
 
   final String title;
@@ -20,6 +21,7 @@ class OnboardingLayout extends HookConsumerWidget {
   final String nextLabel;
   final bool hide;
   final bool loading;
+  final List<Widget>? actions;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -35,6 +37,7 @@ class OnboardingLayout extends HookConsumerWidget {
           color: Colors.black87,
         ),
       ),
+      actions: actions,
     );
 
     return Scaffold(

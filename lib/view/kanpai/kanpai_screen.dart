@@ -125,7 +125,8 @@ class KanpaiScreen extends HookConsumerWidget {
       elevation: 0,
       backgroundColor: Colors.transparent,
       leading: IconButton(
-        onPressed: () {
+        onPressed: () async {
+          await targetDevice?.disconnect();
           Navigator.of(context).pop();
         },
         icon: const Icon(
