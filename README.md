@@ -2,7 +2,8 @@
 
 乾杯すると友達になれる新しいサービス、**Kanpai!**
 
-[![IMAGE ALT TEXT HERE](https://jphacks.com/wp-content/uploads/2023/07/JPHACKS2023_ogp.png)](https://www.youtube.com/watch?v=yYRQEdfGjEg)
+![Kanpai!](https://github.com/jphacks/OL_2311/assets/38308823/b931b346-5b2e-4581-955b-daa478bd6e96)
+
 
 #### レポジトリ
 
