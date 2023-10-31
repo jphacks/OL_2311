@@ -4,7 +4,9 @@
 
 ![Slide 16_9 - 62](https://github.com/jphacks/OL_2311/assets/115207246/fb04edf3-be7f-4d16-a021-38361eae6f49)
 
-[デモ動画](https://drive.google.com/file/d/1FYyo7Yo9lxRiCTlFi62DzhLUGpRbl4ek/view?usp=sharing)
+# デモ動画
+
+デモ動画は[こちら](https://drive.google.com/file/d/1FYyo7Yo9lxRiCTlFi62DzhLUGpRbl4ek/view?usp=sharing)
 
 #### レポジトリ
 
