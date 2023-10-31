@@ -6,7 +6,7 @@
 
 # デモ動画
 
-デモ動画は[こちら](https://drive.google.com/file/d/1FYyo7Yo9lxRiCTlFi62DzhLUGpRbl4ek/view?usp=sharing)
+**デモ動画は[こちら](https://drive.google.com/file/d/1FYyo7Yo9lxRiCTlFi62DzhLUGpRbl4ek/view?usp=sharing)**
 
 #### レポジトリ
 
