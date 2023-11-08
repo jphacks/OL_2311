@@ -23,21 +23,23 @@ class Question1Screen extends HookConsumerWidget {
         Navigator.of(context)
             .push(MaterialPageRoute(builder: (_) => const Question2Screen()));
       },
-      child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: Location.values.map((item) {
-            final isSelected = residenceArea.value == item;
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 8),
-              child: SelectOption(
-                isSelected: isSelected,
-                onSelected: () {
-                  residenceArea.value = item;
-                },
-                child: Text(item.label),
-              ),
-            );
-          }).toList()),
+      child: SingleChildScrollView(
+        child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: Location.values.map((item) {
+              final isSelected = residenceArea.value == item;
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: SelectOption(
+                  isSelected: isSelected,
+                  onSelected: () {
+                    residenceArea.value = item;
+                  },
+                  child: Text(item.label),
+                ),
+              );
+            }).toList()),
+      ),
     );
   }
 }
