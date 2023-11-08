@@ -53,7 +53,6 @@ class KanpaiScreen extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final authState = ref.watch(authViewModelProvider);
-    final me = authState.appUser!;
     final meId = authState.appUser?.id;
 
     final selectedTab = useState<KanpaiTab>(KanpaiTab.all);
@@ -62,8 +61,11 @@ class KanpaiScreen extends HookConsumerWidget {
     final currentUserId = prefs.getString("currentUserId");
 
     final homeViewModel = ref.watch(homeViewModelProvider.notifier);
-    final users =
-        ref.watch(homeViewModelProvider).whenOrNull(data: (data) => data) ?? [];
+    final users = ref
+        .watch(homeViewModelProvider)
+        .maybeWhen(data: (data) => data, orElse: () => <User>[]);
+
+    final me = users.where((u) => u.id == meId).firstOrNull;
 
     useEffect(() {
       homeViewModel.fetchUsers();
@@ -72,7 +74,7 @@ class KanpaiScreen extends HookConsumerWidget {
 
     final kanpaiCount = useMemoized(() {
       try {
-        return users.firstWhere((u) => u.id == meId).cheerUserIds?.length ?? 0;
+        return me?.cheerUserIds?.length ?? 0;
       } on StateError catch (_) {
         return 0;
       }
@@ -87,10 +89,8 @@ class KanpaiScreen extends HookConsumerWidget {
 
     final latestCheeredUser = useMemoized(() {
       try {
-        final latestCheeredUserId = users
-            .firstWhere((u) => u.id == meId)
-            .cheerUserIds
-            ?.lastWhere((id) => id != meId);
+        final latestCheeredUserId =
+            me?.cheerUserIds?.lastWhere((id) => id != meId);
         return users.firstWhere((u) => u.id == latestCheeredUserId);
       } on StateError catch (_) {
         return null;
@@ -99,11 +99,11 @@ class KanpaiScreen extends HookConsumerWidget {
 
     final filteredUsers = useMemoized(() {
       final filteredUsers = switch (selectedTab.value) {
-        KanpaiTab.all => users.where((u) => u.id != meId),
-        KanpaiTab.done => users.where(
-            (u) => u.id != meId && (u.cheerUserIds?.contains(meId) ?? false)),
-        KanpaiTab.notDone => users.where((u) =>
-            u.id != meId && (!(u.cheerUserIds?.contains(meId) ?? false))),
+        KanpaiTab.all => users,
+        KanpaiTab.done =>
+          users.where((u) => (u.cheerUserIds?.contains(meId) ?? false)),
+        KanpaiTab.notDone =>
+          users.where((u) => (!(u.cheerUserIds?.contains(meId) ?? false))),
       };
       if (ascending.value) {
         return filteredUsers.toList();
@@ -111,6 +111,7 @@ class KanpaiScreen extends HookConsumerWidget {
         return filteredUsers.toList().reversed;
       }
     }, [users, selectedTab.value, ascending.value]);
+
     final viewmodel = ref.watch(homeViewModelProvider.notifier);
 
     useEffect(() {
@@ -127,6 +128,9 @@ class KanpaiScreen extends HookConsumerWidget {
       leading: IconButton(
         onPressed: () async {
           await targetDevice?.disconnect();
+          if (!context.mounted) {
+            return;
+          }
           Navigator.of(context).pop();
         },
         icon: const Icon(
@@ -199,7 +203,8 @@ class KanpaiScreen extends HookConsumerWidget {
                         const SizedBox(
                           height: 24,
                         ),
-                        _buildUserGrid(context, me: me, users: filteredUsers),
+                        if (me != null)
+                          _buildUserGrid(context, me: me, users: filteredUsers),
                       ],
                     ),
                   ),
@@ -329,7 +334,7 @@ class KanpaiScreen extends HookConsumerWidget {
         runSpacing: 24,
         children: users.map((user) {
           final cheersCount =
-              user.cheerUserIds?.where((id) => id == me.id).length ?? 0;
+              me.cheerUserIds?.where((id) => id == user.id).length ?? 0;
           return SizedBox(
               width: (deviceWidth - 60) / 2,
               child: UserIconPanel(
