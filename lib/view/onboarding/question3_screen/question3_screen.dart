@@ -29,27 +29,29 @@ class Question3Screen extends HookConsumerWidget {
             ),
           );
         },
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            FormItem(
-              label: "X",
-              controller: xController,
-              hintText: "IDを入力してください",
-            ),
-            const SizedBox(height: 16),
-            FormItem(
-              label: "Instagram",
-              controller: instagramController,
-              hintText: "IDを入力してください",
-            ),
-            const SizedBox(height: 16),
-            FormItem(
-              label: "ホームページ",
-              controller: homepageController,
-              hintText: "リンクを入力してください",
-            ),
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              FormItem(
+                label: "X",
+                controller: xController,
+                hintText: "IDを入力してください",
+              ),
+              const SizedBox(height: 16),
+              FormItem(
+                label: "Instagram",
+                controller: instagramController,
+                hintText: "IDを入力してください",
+              ),
+              const SizedBox(height: 16),
+              FormItem(
+                label: "ホームページ",
+                controller: homepageController,
+                hintText: "リンクを入力してください",
+              ),
+            ],
+          ),
         ));
   }
 }
