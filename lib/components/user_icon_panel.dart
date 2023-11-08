@@ -8,14 +8,15 @@ class UserIconPanel extends HookConsumerWidget {
     super.key,
     required this.user,
     required this.count,
-  }) : isUnlocked = 0 < count;
+  });
 
   final User user;
-  final bool isUnlocked;
   final int count;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final isUnlocked = 0 < count;
+
     return Container(
       width: double.infinity,
       clipBehavior: Clip.antiAlias,
@@ -49,7 +50,11 @@ class UserIconPanel extends HookConsumerWidget {
             child: isUnlocked
                 ? CircleAvatar(
                     radius: 40,
-                    backgroundImage: NetworkImage(user.profileImageUrl!))
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(999),
+                      child: Image.network(user.profileImageUrl!),
+                    ),
+                  )
                 : Image.asset(
                     "assets/images/unlock.png",
                     width: 80,
