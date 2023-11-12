@@ -8,6 +8,7 @@ class Cheer with _$Cheer {
   factory Cheer({
     required String fromUserId,
     required String toUserId,
+    List<String>? keywords,
   }) = _Cheer;
 
   factory Cheer.fromJson(Map<String, dynamic> json) => _$CheerFromJson(json);

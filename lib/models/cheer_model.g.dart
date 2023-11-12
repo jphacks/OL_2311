@@ -9,10 +9,14 @@ part of 'cheer_model.dart';
 _$CheerImpl _$$CheerImplFromJson(Map<String, dynamic> json) => _$CheerImpl(
       fromUserId: json['fromUserId'] as String,
       toUserId: json['toUserId'] as String,
+      keywords: (json['keywords'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
     );
 
 Map<String, dynamic> _$$CheerImplToJson(_$CheerImpl instance) =>
     <String, dynamic>{
       'fromUserId': instance.fromUserId,
       'toUserId': instance.toUserId,
+      'keywords': instance.keywords,
     };
