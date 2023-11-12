@@ -37,10 +37,9 @@ class ConnectScreen extends HookConsumerWidget {
       ],
       onNextPressed: () async {
         final deviceId = prefs.getString("deviceUuid");
-        final currentUserId = prefs.getString("currentUserId");
+        final bleUserId = prefs.getString("bleUserId");
         // ignore: unused_local_variable
-        final connectedDevice =
-            await viewmodel.connect(deviceId!, currentUserId!);
+        final connectedDevice = await viewmodel.connect(deviceId!, bleUserId!);
         if (!context.mounted || connectedDevice == null) {
           return;
         }
