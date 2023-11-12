@@ -34,12 +34,14 @@ class KanpaiScreen extends HookConsumerWidget {
     void Function(String fromId, String toId) handler,
     String currentUserId,
   ) async {
+    print('start listener');
     await targetDevice!.connectAndUpdateStream();
     final characteristic = await targetDevice!.getNotifyCharacteristic();
+    print('characteristic: $characteristic');
     if (characteristic == null) return;
-    await characteristic.setNotifyValue(true);
 
     _kanpaiSubscription = characteristic.lastValueStream.listen((value) {
+      print('arrive value: $value');
       if (value.isEmpty) return;
 
       final toUserId = utf8.decode(value);
@@ -48,6 +50,9 @@ class KanpaiScreen extends HookConsumerWidget {
       debugPrint('cheers occurred from $fromUserId to $toUserId');
       handler(fromUserId, toUserId);
     });
+
+    await characteristic.setNotifyValue(true);
+    print('isNotifying: ${characteristic.isNotifying}');
   }
 
   @override
