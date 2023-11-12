@@ -61,9 +61,9 @@ class AuthViewModel extends StateNotifier<AuthState> {
         bleUserId: bleUserId,
       );
       await _userRepository.createUser(newUser);
-      return currentUser.uid;
+      return bleUserId;
     }
-    return user.id;
+    return bleUserId;
   }
 
   Future<void> signInWithGoogle() async {

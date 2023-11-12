@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:firebase_auth/firebase_auth.dart' as fba;
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -9,7 +10,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:kanpai/components/profile_card/profile_card.dart';
 import 'package:kanpai/components/tab_button.dart';
 import 'package:kanpai/components/user_icon_panel.dart';
-import 'package:kanpai/main.dart';
 import 'package:kanpai/models/user_model.dart';
 import 'package:kanpai/util/bluetooth_ext.dart';
 import 'package:kanpai/view_models/auth_view_model.dart';
@@ -31,39 +31,40 @@ class KanpaiScreen extends HookConsumerWidget {
   late StreamSubscription<List<int>> _kanpaiSubscription;
 
   void startKanpaiListener(
-    void Function(String fromId, String toId) handler,
-    String currentUserId,
+    void Function(String fromUserId, String toBleUserId) handler,
   ) async {
     await targetDevice!.connectAndUpdateStream();
     final characteristic = await targetDevice!.getNotifyCharacteristic();
-    if (characteristic == null) return;
-    await characteristic.setNotifyValue(true);
+    final fromUserId = fba.FirebaseAuth.instance.currentUser?.uid;
+    if (characteristic == null || fromUserId == null) return;
 
     _kanpaiSubscription = characteristic.lastValueStream.listen((value) {
+      print('arrive value: $value');
       if (value.isEmpty) return;
 
-      final toUserId = utf8.decode(value);
-      final fromUserId = currentUserId;
+      final toBleUserId = utf8.decode(value);
 
-      debugPrint('cheers occurred from $fromUserId to $toUserId');
-      handler(fromUserId, toUserId);
+      debugPrint('cheers occurred from $fromUserId to $toBleUserId');
+      handler(fromUserId, toBleUserId);
     });
+
+    await characteristic.setNotifyValue(true);
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final authState = ref.watch(authViewModelProvider);
-    final me = authState.appUser!;
     final meId = authState.appUser?.id;
 
     final selectedTab = useState<KanpaiTab>(KanpaiTab.all);
     final ascending = useState<bool>(true);
-    final prefs = ref.watch(sharedPreferencesProvider);
-    final currentUserId = prefs.getString("currentUserId");
 
     final homeViewModel = ref.watch(homeViewModelProvider.notifier);
-    final users =
-        ref.watch(homeViewModelProvider).whenOrNull(data: (data) => data) ?? [];
+    final users = ref
+        .watch(homeViewModelProvider)
+        .maybeWhen(data: (data) => data, orElse: () => <User>[]);
+
+    final me = users.where((u) => u.id == meId).firstOrNull;
 
     useEffect(() {
       homeViewModel.fetchUsers();
@@ -72,7 +73,7 @@ class KanpaiScreen extends HookConsumerWidget {
 
     final kanpaiCount = useMemoized(() {
       try {
-        return users.firstWhere((u) => u.id == meId).cheerUserIds?.length ?? 0;
+        return me?.cheerUserIds?.length ?? 0;
       } on StateError catch (_) {
         return 0;
       }
@@ -87,10 +88,8 @@ class KanpaiScreen extends HookConsumerWidget {
 
     final latestCheeredUser = useMemoized(() {
       try {
-        final latestCheeredUserId = users
-            .firstWhere((u) => u.id == meId)
-            .cheerUserIds
-            ?.lastWhere((id) => id != meId);
+        final latestCheeredUserId =
+            me?.cheerUserIds?.lastWhere((id) => id != meId);
         return users.firstWhere((u) => u.id == latestCheeredUserId);
       } on StateError catch (_) {
         return null;
@@ -99,11 +98,11 @@ class KanpaiScreen extends HookConsumerWidget {
 
     final filteredUsers = useMemoized(() {
       final filteredUsers = switch (selectedTab.value) {
-        KanpaiTab.all => users.where((u) => u.id != meId),
-        KanpaiTab.done => users.where(
-            (u) => u.id != meId && (u.cheerUserIds?.contains(meId) ?? false)),
-        KanpaiTab.notDone => users.where((u) =>
-            u.id != meId && (!(u.cheerUserIds?.contains(meId) ?? false))),
+        KanpaiTab.all => users,
+        KanpaiTab.done =>
+          users.where((u) => (u.cheerUserIds?.contains(meId) ?? false)),
+        KanpaiTab.notDone =>
+          users.where((u) => (!(u.cheerUserIds?.contains(meId) ?? false))),
       };
       if (ascending.value) {
         return filteredUsers.toList();
@@ -111,13 +110,14 @@ class KanpaiScreen extends HookConsumerWidget {
         return filteredUsers.toList().reversed;
       }
     }, [users, selectedTab.value, ascending.value]);
+
     final viewmodel = ref.watch(homeViewModelProvider.notifier);
 
     useEffect(() {
       if (targetDevice == null) {
         return () {};
       }
-      startKanpaiListener(viewmodel.cheers, currentUserId!);
+      startKanpaiListener(viewmodel.cheers);
       return () => _kanpaiSubscription.cancel();
     }, []);
 
@@ -125,7 +125,11 @@ class KanpaiScreen extends HookConsumerWidget {
       elevation: 0,
       backgroundColor: Colors.transparent,
       leading: IconButton(
-        onPressed: () {
+        onPressed: () async {
+          await targetDevice?.disconnect();
+          if (!context.mounted) {
+            return;
+          }
           Navigator.of(context).pop();
         },
         icon: const Icon(
@@ -198,7 +202,8 @@ class KanpaiScreen extends HookConsumerWidget {
                         const SizedBox(
                           height: 24,
                         ),
-                        _buildUserGrid(context, me: me, users: filteredUsers),
+                        if (me != null)
+                          _buildUserGrid(context, me: me, users: filteredUsers),
                       ],
                     ),
                   ),
@@ -328,7 +333,7 @@ class KanpaiScreen extends HookConsumerWidget {
         runSpacing: 24,
         children: users.map((user) {
           final cheersCount =
-              user.cheerUserIds?.where((id) => id == me.id).length ?? 0;
+              me.cheerUserIds?.where((id) => id == user.id).length ?? 0;
           return SizedBox(
               width: (deviceWidth - 60) / 2,
               child: UserIconPanel(

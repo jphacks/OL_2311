@@ -21,13 +21,26 @@ class ConnectScreen extends HookConsumerWidget {
       // description: "注意書き",
       loading: isConnecting,
       nextLabel: isConnecting ? "接続中..." : "接続を開始",
+      actions: [
+        IconButton(
+          icon: const Icon(
+            Icons.arrow_forward,
+            size: 30,
+            color: Colors.transparent,
+          ),
+          onPressed: () => Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) => KanpaiScreen(targetDevice: null),
+            ),
+          ),
+        ),
+      ],
       onNextPressed: () async {
         final deviceId = prefs.getString("deviceUuid");
-        final currentUserId = prefs.getString("currentUserId");
+        final bleUserId = prefs.getString("bleUserId");
         // ignore: unused_local_variable
-        final connectedDevice =
-            await viewmodel.connect(deviceId!, currentUserId!);
-        if (!context.mounted) {
+        final connectedDevice = await viewmodel.connect(deviceId!, bleUserId!);
+        if (!context.mounted || connectedDevice == null) {
           return;
         }
         Navigator.of(context).push(
