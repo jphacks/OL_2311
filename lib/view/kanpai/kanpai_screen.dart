@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:firebase_auth/firebase_auth.dart' as fba;
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -31,28 +32,25 @@ class KanpaiScreen extends HookConsumerWidget {
   late StreamSubscription<List<int>> _kanpaiSubscription;
 
   void startKanpaiListener(
-    void Function(String fromId, String toId) handler,
+    void Function(String fromUserId, String toBleUserId) handler,
     String currentUserId,
   ) async {
-    print('start listener');
     await targetDevice!.connectAndUpdateStream();
     final characteristic = await targetDevice!.getNotifyCharacteristic();
-    print('characteristic: $characteristic');
-    if (characteristic == null) return;
+    final fromUserId = fba.FirebaseAuth.instance.currentUser?.uid;
+    if (characteristic == null || fromUserId == null) return;
 
     _kanpaiSubscription = characteristic.lastValueStream.listen((value) {
       print('arrive value: $value');
       if (value.isEmpty) return;
 
-      final toUserId = utf8.decode(value);
-      final fromUserId = currentUserId;
+      final toBleUserId = utf8.decode(value);
 
-      debugPrint('cheers occurred from $fromUserId to $toUserId');
-      handler(fromUserId, toUserId);
+      debugPrint('cheers occurred from $fromUserId to $toBleUserId');
+      handler(fromUserId, toBleUserId);
     });
 
     await characteristic.setNotifyValue(true);
-    print('isNotifying: ${characteristic.isNotifying}');
   }
 
   @override
