@@ -10,8 +10,7 @@ final bleConnectorProvider = Provider(
 );
 
 class BleConnector {
-  Future<BluetoothDevice> connect(
-      String deviceUuid, String currentUserId) async {
+  Future<BluetoothDevice> connect(String deviceUuid, String bleUserId) async {
     BluetoothDevice? targetDevice;
 
     final scanResultsSubscription = FlutterBluePlus.scanResults.listen(
@@ -45,7 +44,7 @@ class BleConnector {
     }
 
     final writeCharacteristic = await targetDevice!.getWriteCharacteristic();
-    await writeCharacteristic!.write(utf8.encode(currentUserId));
+    await writeCharacteristic!.write(utf8.encode(bleUserId));
 
     return targetDevice!;
   }
