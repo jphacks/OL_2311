@@ -10,7 +10,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:kanpai/components/profile_card/profile_card.dart';
 import 'package:kanpai/components/tab_button.dart';
 import 'package:kanpai/components/user_icon_panel.dart';
-import 'package:kanpai/main.dart';
 import 'package:kanpai/models/user_model.dart';
 import 'package:kanpai/util/bluetooth_ext.dart';
 import 'package:kanpai/view_models/auth_view_model.dart';
@@ -33,7 +32,6 @@ class KanpaiScreen extends HookConsumerWidget {
 
   void startKanpaiListener(
     void Function(String fromUserId, String toBleUserId) handler,
-    String currentUserId,
   ) async {
     await targetDevice!.connectAndUpdateStream();
     final characteristic = await targetDevice!.getNotifyCharacteristic();
@@ -60,8 +58,6 @@ class KanpaiScreen extends HookConsumerWidget {
 
     final selectedTab = useState<KanpaiTab>(KanpaiTab.all);
     final ascending = useState<bool>(true);
-    final prefs = ref.watch(sharedPreferencesProvider);
-    final currentUserId = prefs.getString("currentUserId");
 
     final homeViewModel = ref.watch(homeViewModelProvider.notifier);
     final users = ref
@@ -121,7 +117,7 @@ class KanpaiScreen extends HookConsumerWidget {
       if (targetDevice == null) {
         return () {};
       }
-      startKanpaiListener(viewmodel.cheers, currentUserId!);
+      startKanpaiListener(viewmodel.cheers);
       return () => _kanpaiSubscription.cancel();
     }, []);
 
