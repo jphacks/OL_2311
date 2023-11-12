@@ -14,6 +14,7 @@ import 'package:kanpai/models/user_model.dart';
 import 'package:kanpai/util/bluetooth_ext.dart';
 import 'package:kanpai/view_models/auth_view_model.dart';
 import 'package:kanpai/view_models/kanpai_view_model.dart';
+import 'package:speech_to_text/speech_to_text.dart';
 
 enum KanpaiTab {
   all,
@@ -29,27 +30,7 @@ class KanpaiScreen extends HookConsumerWidget {
 
   final BluetoothDevice? targetDevice;
   late StreamSubscription<List<int>> _kanpaiSubscription;
-
-  void startKanpaiListener(
-    void Function(String fromUserId, String toBleUserId) handler,
-  ) async {
-    await targetDevice!.connectAndUpdateStream();
-    final characteristic = await targetDevice!.getNotifyCharacteristic();
-    final fromUserId = fba.FirebaseAuth.instance.currentUser?.uid;
-    if (characteristic == null || fromUserId == null) return;
-
-    _kanpaiSubscription = characteristic.lastValueStream.listen((value) {
-      print('arrive value: $value');
-      if (value.isEmpty) return;
-
-      final toBleUserId = utf8.decode(value);
-
-      debugPrint('cheers occurred from $fromUserId to $toBleUserId');
-      handler(fromUserId, toBleUserId);
-    });
-
-    await characteristic.setNotifyValue(true);
-  }
+  final _speechToText = SpeechToText();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -58,6 +39,8 @@ class KanpaiScreen extends HookConsumerWidget {
 
     final selectedTab = useState<KanpaiTab>(KanpaiTab.all);
     final ascending = useState<bool>(true);
+    final speechText = useState<String>("");
+    final latestCheeredBleUserId = useState<String?>(null);
 
     final homeViewModel = ref.watch(homeViewModelProvider.notifier);
     final users = ref
@@ -65,6 +48,50 @@ class KanpaiScreen extends HookConsumerWidget {
         .maybeWhen(data: (data) => data, orElse: () => <User>[]);
 
     final me = users.where((u) => u.id == meId).firstOrNull;
+
+    // 録音のハンドリング
+    void handleRecording(String fromUserId, String toBleUserId) async {
+      if (_speechToText.isListening) {
+        await _speechToText.stop();
+      } else {
+        var stt = await _speechToText.initialize();
+        if (stt) {
+          _speechToText.listen(
+            onResult: (result) {
+              speechText.value = result.recognizedWords;
+              if (result.finalResult) {
+                debugPrint("final result: ${result.recognizedWords}");
+                homeViewModel.extractKeywords(
+                    result.recognizedWords, fromUserId, toBleUserId);
+              }
+            },
+          );
+        }
+      }
+    }
+
+    void startKanpaiListener(
+      void Function(String fromUserId, String toBleUserId) handler,
+    ) async {
+      await targetDevice!.connectAndUpdateStream();
+      final characteristic = await targetDevice!.getNotifyCharacteristic();
+      final fromUserId = fba.FirebaseAuth.instance.currentUser?.uid;
+      if (characteristic == null || fromUserId == null) return;
+
+      _kanpaiSubscription = characteristic.lastValueStream.listen((value) {
+        print('arrive value: $value');
+        if (value.isEmpty) return;
+
+        final toBleUserId = utf8.decode(value);
+        latestCheeredBleUserId.value = toBleUserId;
+
+        debugPrint('cheers occurred from $fromUserId to $toBleUserId');
+        handler(fromUserId, toBleUserId);
+        handleRecording(fromUserId, toBleUserId);
+      });
+
+      await characteristic.setNotifyValue(true);
+    }
 
     useEffect(() {
       homeViewModel.fetchUsers();
@@ -118,7 +145,25 @@ class KanpaiScreen extends HookConsumerWidget {
         return () {};
       }
       startKanpaiListener(viewmodel.cheers);
-      return () => _kanpaiSubscription.cancel();
+
+      return () async {
+        // NOTE: 画面遷移時にBLEのリスナーを解除する
+        _kanpaiSubscription.cancel();
+
+        // NOTE: 画面遷移時にもし録音中だったら労音を停止し、キーワードを抽出を行う
+        if (_speechToText.isListening) {
+          _speechToText.stop();
+
+          if (meId == null || latestCheeredBleUserId.value == null) {
+            debugPrint("meId or latestCheeredBleUserId is null");
+            return;
+          }
+          debugPrint(wrapWidth: 100, "speechText: ${speechText.value}");
+          debugPrint("latestCheeredBleUserId: ${latestCheeredBleUserId.value}");
+          await homeViewModel.extractKeywords(
+              speechText.value, meId, latestCheeredBleUserId.value!);
+        }
+      };
     }, []);
 
     final appbar = AppBar(
