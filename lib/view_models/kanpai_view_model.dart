@@ -27,23 +27,27 @@ class HomeViewModel extends StateNotifier<AsyncValue<List<User>>> {
 
   Future<void> cheers(
     String fromUserId,
-    String toUserId,
+    String toBleUserId,
   ) async {
-    final user = await _userRepository.getUser(fromUserId);
-    final cheerUserIds = user?.cheerUserIds ?? [];
-    final newCheerUserIds = [...cheerUserIds, toUserId];
-    if (user == null) return;
+    final fromUser = await _userRepository.getUser(fromUserId);
+    final toUser = await _userRepository.getUserByBleUserId(toBleUserId);
+
+    if (toUser == null) return;
+
+    final cheerUserIds = fromUser?.cheerUserIds ?? [];
+    final newCheerUserIds = [...cheerUserIds, toUser.id];
+    if (fromUser == null) return;
     _userRepository.updateUser(
       fromUserId,
-      user.copyWith(
-        lastCheersUserId: toUserId,
+      fromUser.copyWith(
+        lastCheersUserId: toBleUserId,
         cheerUserIds: newCheerUserIds,
       ),
     );
     _cheerRepository.createCheer(
       Cheer(
         fromUserId: fromUserId,
-        toUserId: toUserId,
+        toUserId: toBleUserId,
       ),
     );
   }

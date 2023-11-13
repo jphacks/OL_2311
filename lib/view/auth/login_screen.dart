@@ -122,9 +122,9 @@ class LoginScreen extends HookConsumerWidget {
               foregroundColor: MaterialStateProperty.all(Colors.black87),
               backgroundColor: MaterialStateProperty.all(Colors.transparent)),
           onPressed: () async {
-            final currentUserId = await loginViewModel.signUpWithGoogle();
-            if (currentUserId != null) {
-              await prefs.setString("currentUserId", currentUserId);
+            final bleUserId = await loginViewModel.signUpWithGoogle();
+            if (bleUserId != null) {
+              await prefs.setString("bleUserId", bleUserId);
             }
             if (!context.mounted) return;
             Navigator.push(

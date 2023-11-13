@@ -24,9 +24,10 @@ class ConnectScreen extends HookConsumerWidget {
         return;
       }
 
-      final deviceId = prefs.getString("deviceUuid") ?? "";
-      final currentUserId = prefs.getString("currentUserId") ?? "";
-      final connectedDevice = await viewmodel.connect(deviceId, currentUserId);
+      final deviceId = prefs.getString("deviceUuid");
+      final bleUserId = prefs.getString("bleUserId");
+
+      final connectedDevice = await viewmodel.connect(deviceId!, bleUserId!);
       if (connectedDevice == null) {
         return;
       }
