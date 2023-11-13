@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:kanpai/main.dart';
@@ -47,16 +46,21 @@ class LoginScreen extends HookConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      SvgPicture.asset(
-                        "assets/svgs/main-visual.svg",
+                      Image.asset(
+                        "assets/images/drink.gif",
                         width: 196,
-                        theme: const SvgTheme(currentColor: Color(0xff010103)),
+                        semanticLabel: "kanpai",
                       ),
-                      SvgPicture.asset(
-                        "assets/svgs/kanpai-logo.svg",
-                        width: 132,
-                        theme: const SvgTheme(currentColor: Color(0xff010103)),
-                      ),
+                      // SvgPicture.asset(
+                      //   "assets/svgs/main-visual.svg",
+                      //   width: 196,
+                      //   theme: const SvgTheme(currentColor: Color(0xff010103)),
+                      // ),
+                      // SvgPicture.asset(
+                      //   "assets/svgs/kanpai-logo.svg",
+                      //   width: 132,
+                      //   theme: const SvgTheme(currentColor: Color(0xff010103)),
+                      // ),
                     ],
                   ),
                 ),
