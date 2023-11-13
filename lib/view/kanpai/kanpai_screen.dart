@@ -62,8 +62,10 @@ class KanpaiScreen extends HookConsumerWidget {
               if (result.finalResult) {
                 speechText.value = "";
                 debugPrint("final result: ${result.recognizedWords}");
-                homeViewModel.extractKeywords(
-                    result.recognizedWords, fromUserId, toBleUserId);
+                if (result.recognizedWords.isNotEmpty) {
+                  homeViewModel.extractKeywords(
+                      result.recognizedWords, fromUserId, toBleUserId);
+                }
               }
             },
           );
@@ -155,14 +157,17 @@ class KanpaiScreen extends HookConsumerWidget {
         if (_speechToText.isListening) {
           _speechToText.stop();
 
-          if (meId == null || latestCheeredBleUserId.value == null) {
-            debugPrint("meId or latestCheeredBleUserId is null");
-            return;
-          }
           if (speechText.value.isEmpty) {
             debugPrint("speechText is empty");
             return;
+          } else if (meId == null) {
+            debugPrint("meId is null");
+            return;
+          } else if (latestCheeredBleUserId.value == null) {
+            debugPrint("latestCheeredBleUserId is null");
+            return;
           }
+
           debugPrint(wrapWidth: 100, "speechText: ${speechText.value}");
           debugPrint("latestCheeredBleUserId: ${latestCheeredBleUserId.value}");
           await homeViewModel.extractKeywords(
