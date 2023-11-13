@@ -86,6 +86,23 @@ class MyApp extends StatelessWidget {
                 padding: MaterialStateProperty.all(
                     const EdgeInsets.symmetric(vertical: 14, horizontal: 32))),
           ),
+          outlinedButtonTheme: OutlinedButtonThemeData(
+            style: ButtonStyle(
+                shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(999),
+                    side: const BorderSide(
+                      color: Colors.black87,
+                    ))),
+                overlayColor: MaterialStateProperty.all(Colors.black12),
+                foregroundColor: MaterialStateProperty.all(Colors.black87),
+                textStyle: MaterialStateProperty.all(const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    height: 1.5,
+                    color: Colors.black87)),
+                padding: MaterialStateProperty.all(
+                    const EdgeInsets.symmetric(vertical: 14, horizontal: 32))),
+          ),
           textTheme: const TextTheme(
               headlineLarge: TextStyle(
                 fontSize: 24,

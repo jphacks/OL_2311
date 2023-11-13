@@ -2,18 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class FormItem extends HookConsumerWidget {
-  const FormItem({
-    super.key,
-    required this.label,
-    required this.controller,
-    this.hintText,
-    this.helperText,
-  });
+  const FormItem(
+      {super.key,
+      required this.label,
+      required this.controller,
+      this.hintText,
+      this.helperText,
+      this.autofocus = false});
 
   final String label;
   final String? hintText;
   final String? helperText;
   final TextEditingController controller;
+  final bool autofocus;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -32,6 +33,7 @@ class FormItem extends HookConsumerWidget {
         ),
         TextFormField(
           controller: controller,
+          autofocus: autofocus,
           decoration: InputDecoration(
             contentPadding: const EdgeInsets.all(16),
             filled: true,
