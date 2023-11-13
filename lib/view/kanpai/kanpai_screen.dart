@@ -60,6 +60,7 @@ class KanpaiScreen extends HookConsumerWidget {
             onResult: (result) {
               speechText.value = result.recognizedWords;
               if (result.finalResult) {
+                speechText.value = "";
                 debugPrint("final result: ${result.recognizedWords}");
                 homeViewModel.extractKeywords(
                     result.recognizedWords, fromUserId, toBleUserId);
@@ -156,6 +157,10 @@ class KanpaiScreen extends HookConsumerWidget {
 
           if (meId == null || latestCheeredBleUserId.value == null) {
             debugPrint("meId or latestCheeredBleUserId is null");
+            return;
+          }
+          if (speechText.value.isEmpty) {
+            debugPrint("speechText is empty");
             return;
           }
           debugPrint(wrapWidth: 100, "speechText: ${speechText.value}");
