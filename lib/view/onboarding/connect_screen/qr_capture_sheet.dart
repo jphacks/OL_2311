@@ -74,7 +74,7 @@ class _QrCaptureSheet extends HookConsumerWidget {
                           ),
                           FilledButton(
                             onPressed: () {
-                              Navigator.pop(context);
+                              Navigator.pop(context, codeController.value.text);
                             },
                             child: const Text("確定"),
                           ),
@@ -127,7 +127,7 @@ class _QrCaptureSheet extends HookConsumerWidget {
                               final value = capture.barcodes.firstOrNull;
                               if (value != null && !isClosing.value) {
                                 isClosing.value = true;
-                                Navigator.pop(context, value.rawValue!);
+                                Navigator.pop(context, value.rawValue);
                               }
                             },
                           ),
