@@ -10,6 +10,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:kanpai/components/profile_card/profile_card.dart';
 import 'package:kanpai/components/tab_button.dart';
 import 'package:kanpai/components/user_icon_panel.dart';
+import 'package:kanpai/components/water_animation.dart';
 import 'package:kanpai/models/user_model.dart';
 import 'package:kanpai/util/bluetooth_ext.dart';
 import 'package:kanpai/view_models/auth_view_model.dart';
@@ -53,6 +54,13 @@ class KanpaiScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final controller = useWaterAnimationController();
+
+    useEffect(() {
+      WidgetsBinding.instance.addPostFrameCallback((_) => controller.start());
+      return null;
+    }, []);
+
     final authState = ref.watch(authViewModelProvider);
     final meId = authState.appUser?.id;
 
@@ -152,62 +160,68 @@ class KanpaiScreen extends HookConsumerWidget {
         appBar: appbar,
         extendBodyBehindAppBar: true,
         backgroundColor: Colors.white,
-        body: SingleChildScrollView(
-          child: Container(
-            decoration: BoxDecoration(
-                image: DecorationImage(
-                    image: AssetImage(kanpaiCount == 0
-                        ? "assets/images/kanpai-bg-black.png"
-                        : "assets/images/kanpai-bg-blue.png"),
-                    fit: BoxFit.contain,
-                    alignment: Alignment.topCenter)),
-            child: Padding(
-              padding: const EdgeInsets.only(top: 50, bottom: 160),
-              child: Column(
-                children: [
-                  SizedBox(
-                    width: double.infinity,
-                    height: 320,
-                    child: _buildCounter(kanpaiCount),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        ProfileCard(user: latestCheeredUser),
-                        const SizedBox(
-                          height: 52,
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text("乾杯した人数",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .labelMedium
-                                    ?.copyWith(fontWeight: FontWeight.bold)),
-                            Text("$alreadyCheersUserCount / $allUserCount",
-                                style: const TextStyle(
-                                    fontSize: 24,
-                                    fontFamily: "Chillax",
-                                    fontWeight: FontWeight.w600)),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        _buildTabbar(context,
-                            selectedTab: selectedTab, ascending: ascending),
-                        const SizedBox(
-                          height: 24,
-                        ),
-                        if (me != null)
-                          _buildUserGrid(context, me: me, users: filteredUsers),
-                      ],
+        body: WaterAnimation(
+          controller: controller,
+          duration: const Duration(milliseconds: 1500),
+          direction: WaterAnimationDirection.down,
+          child: SingleChildScrollView(
+            child: Container(
+              decoration: BoxDecoration(
+                  image: DecorationImage(
+                      image: AssetImage(kanpaiCount == 0
+                          ? "assets/images/kanpai-bg-black.png"
+                          : "assets/images/kanpai-bg-blue.png"),
+                      fit: BoxFit.contain,
+                      alignment: Alignment.topCenter)),
+              child: Padding(
+                padding: const EdgeInsets.only(top: 50, bottom: 160),
+                child: Column(
+                  children: [
+                    SizedBox(
+                      width: double.infinity,
+                      height: 320,
+                      child: _buildCounter(kanpaiCount),
                     ),
-                  ),
-                ],
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          ProfileCard(user: latestCheeredUser),
+                          const SizedBox(
+                            height: 52,
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text("乾杯した人数",
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .labelMedium
+                                      ?.copyWith(fontWeight: FontWeight.bold)),
+                              Text("$alreadyCheersUserCount / $allUserCount",
+                                  style: const TextStyle(
+                                      fontSize: 24,
+                                      fontFamily: "Chillax",
+                                      fontWeight: FontWeight.w600)),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          _buildTabbar(context,
+                              selectedTab: selectedTab, ascending: ascending),
+                          const SizedBox(
+                            height: 24,
+                          ),
+                          if (me != null)
+                            _buildUserGrid(context,
+                                me: me, users: filteredUsers),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
