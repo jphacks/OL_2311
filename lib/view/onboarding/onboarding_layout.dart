@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class OnboardingLayout extends HookConsumerWidget {
@@ -11,6 +12,7 @@ class OnboardingLayout extends HookConsumerWidget {
     this.nextLabel = "次へ",
     this.hide = false,
     this.loading = false,
+    this.indicator,
     this.actions,
   });
 
@@ -21,10 +23,29 @@ class OnboardingLayout extends HookConsumerWidget {
   final String nextLabel;
   final bool hide;
   final bool loading;
+  final int? indicator;
   final List<Widget>? actions;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final initIndicator = useMemoized(() => indicator);
+
+    final controller = useAnimationController(
+        lowerBound: ((indicator ?? 0)) / 3,
+        upperBound: ((indicator ?? 0) + 1) / 3,
+        duration: const Duration(milliseconds: 200));
+
+    useEffect(() {
+      if (initIndicator == null || indicator == null) {
+        return null;
+      }
+
+      if (initIndicator < indicator!) {
+        controller.forward(from: 0);
+      }
+      return null;
+    }, [indicator]);
+
     final appbar = AppBar(
       elevation: 0,
       backgroundColor: Colors.transparent,
@@ -57,6 +78,25 @@ class OnboardingLayout extends HookConsumerWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  const SizedBox(height: 16),
+                  if (indicator != null) ...[
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: AnimatedBuilder(
+                          animation: controller,
+                          builder: (context, _) {
+                            return Hero(
+                              tag: "LinearProgressIndicator",
+                              child: LinearProgressIndicator(
+                                value: controller.value,
+                                color: const Color(0xff1738FD),
+                                backgroundColor: const Color(0xffE0E0E0),
+                              ),
+                            );
+                          }),
+                    ),
+                    const SizedBox(height: 16),
+                  ],
                   Text(
                     title,
                     style: Theme.of(context)
