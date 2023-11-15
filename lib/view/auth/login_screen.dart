@@ -134,7 +134,7 @@ class LoginScreen extends HookConsumerWidget {
             if (!context.mounted) return;
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (_) => const Tutorial1Screen()),
+              MaterialPageRoute(builder: (_) => const ProfileScreen()),
             );
           },
           icon: const FaIcon(
