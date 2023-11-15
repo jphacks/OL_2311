@@ -139,7 +139,7 @@ class OnboardingLayout extends HookConsumerWidget {
                       label: Text(nextLabel),
                     )
                   : FilledButton(
-                      onPressed: (hide) ? null : onNextPressed,
+                      onPressed: hide ? null : onNextPressed,
                       child: Text(
                         nextLabel,
                       ))),
