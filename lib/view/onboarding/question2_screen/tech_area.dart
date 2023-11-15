@@ -1,12 +1,9 @@
 enum TechArea {
   frontend,
   backend,
-  mobile,
   infra,
-  game,
-  machineLearning,
   hardware,
-  other;
+  designer;
 
   String get label {
     switch (this) {
@@ -14,18 +11,12 @@ enum TechArea {
         return "フロントエンド";
       case TechArea.backend:
         return "バックエンド";
-      case TechArea.mobile:
-        return "モバイル";
       case TechArea.infra:
         return "インフラ";
-      case TechArea.game:
-        return "ゲーム";
-      case TechArea.machineLearning:
-        return "機械学習";
       case TechArea.hardware:
         return "ハードウェア";
-      case TechArea.other:
-        return "その他";
+      case TechArea.designer:
+        return "デザイナー";
     }
   }
 }
