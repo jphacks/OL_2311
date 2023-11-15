@@ -12,14 +12,26 @@ class Question3Screen extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final question3ViewModel = ref.watch(question3ViewModelProvider.notifier);
+
+    final isDirty = useState(false);
+
     final xController = useTextEditingController();
     final instagramController = useTextEditingController();
     final homepageController = useTextEditingController();
+
+    useEffect(() {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        isDirty.value = true;
+      });
+
+      return null;
+    }, []);
 
     return OnboardingLayout(
         title: "SNSで繋がろう",
         description: "※乾杯した相手に公開されます",
         nextLabel: "コップと接続する",
+        indicator: isDirty.value ? 3 : 2,
         onNextPressed: () {
           question3ViewModel.updateMe(xController.text,
               instagramController.text, homepageController.text);
