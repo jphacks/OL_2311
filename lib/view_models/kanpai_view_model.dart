@@ -30,12 +30,9 @@ class HomeViewModel extends StateNotifier<AsyncValue<List<User>>> {
     String toBleUserId,
   ) async {
     final fromUser = await _userRepository.getUser(fromUserId);
-    final toUser = await _userRepository.getUserByBleUserId(toBleUserId);
-
-    if (toUser == null) return;
 
     final cheerUserIds = fromUser?.cheerUserIds ?? [];
-    final newCheerUserIds = [...cheerUserIds, toUser.id];
+    final newCheerUserIds = [...cheerUserIds, toBleUserId];
     if (fromUser == null) return;
     _userRepository.updateUser(
       fromUserId,
