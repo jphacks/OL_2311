@@ -90,7 +90,7 @@ class KanpaiScreen extends HookConsumerWidget {
       try {
         final latestCheeredUserId =
             me?.cheerUserIds?.lastWhere((id) => id != meId);
-        return users.firstWhere((u) => u.id == latestCheeredUserId);
+        return users.firstWhere((u) => u.bleUserId == latestCheeredUserId);
       } on StateError catch (_) {
         return null;
       }
@@ -333,7 +333,7 @@ class KanpaiScreen extends HookConsumerWidget {
         runSpacing: 24,
         children: users.map((user) {
           final cheersCount =
-              me.cheerUserIds?.where((id) => id == user.id).length ?? 0;
+              me.cheerUserIds?.where((id) => id == user.bleUserId).length ?? 0;
           return SizedBox(
               width: (deviceWidth - 60) / 2,
               child: UserIconPanel(
