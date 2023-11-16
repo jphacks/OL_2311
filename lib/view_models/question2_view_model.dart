@@ -19,8 +19,6 @@ class Question2ViewModel extends StateNotifier<AsyncValue<TechArea>> {
 
     state = AsyncData(TechArea.fromName(techArea));
 
-    print(state);
-
     _userRepository.updateUser(
       user.id,
       user.copyWith(techArea: techArea),
