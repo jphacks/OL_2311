@@ -6,6 +6,7 @@ import 'package:kanpai/view/kanpai/kanpai_screen.dart';
 import 'package:kanpai/view/onboarding/connect_screen/qr_capture_sheet.dart';
 import 'package:kanpai/view/onboarding/onboarding_layout.dart';
 import 'package:kanpai/view_models/connect_view_model.dart';
+import 'package:kanpai/view_models/question2_view_model.dart';
 
 class ConnectScreen extends HookConsumerWidget {
   const ConnectScreen({super.key});
@@ -16,6 +17,8 @@ class ConnectScreen extends HookConsumerWidget {
     final viewmodel = ref.watch(connectViewModelProvider.notifier);
     final hasError = ref.watch(connectViewModelProvider).hasError;
     final prefs = ref.watch(sharedPreferencesProvider);
+    final selectedTechArea =
+        ref.watch(question2ViewModelProvider).asData?.value;
 
     final showParingSheet = useCallback(() async {
       final code = await showQrCaptureSheet(context);
@@ -31,7 +34,8 @@ class ConnectScreen extends HookConsumerWidget {
           ? code
           : debugDeviceId;
 
-      final connectedDevice = await viewmodel.connect(deviceId, bleUserId!);
+      final connectedDevice =
+          await viewmodel.connect(deviceId, bleUserId!, selectedTechArea);
       if (connectedDevice == null) {
         return;
       }

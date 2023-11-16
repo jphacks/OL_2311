@@ -20,7 +20,7 @@ class Question2Screen extends HookConsumerWidget {
       hide: techArea.value == null,
       indicator: techArea.value == null ? 1 : 2,
       onNextPressed: () {
-        question2ViewModel.updateMe(techArea.value!.label);
+        question2ViewModel.updateMe(techArea.value!.displayName);
         Navigator.of(context)
             .push(MaterialPageRoute(builder: (_) => const Question3Screen()));
       },
@@ -36,7 +36,7 @@ class Question2Screen extends HookConsumerWidget {
                   onSelected: () {
                     techArea.value = item;
                   },
-                  child: Text(item.label),
+                  child: Text(item.displayName),
                 ),
               );
             }).toList()),
