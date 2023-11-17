@@ -51,6 +51,8 @@ dependencies:
   shared_preferences: ^2.2.2
   mobile_scanner: ^3.5.2
   carousel_slider: ^4.2.1
+  intl: ^0.18.1
+  dotted_border: ^2.1.0
 
 dev_dependencies:
   # The "flutter_lints" package below contains a set of recommended lints to
@@ -92,6 +94,8 @@ flutter:
     - family: Chillax
       fonts:
         - asset: assets/fonts/Chillax-Semibold-sub.otf
+          weight: 600
+        - asset: assets/fonts/Kollektif_sub.ttf
           weight: 600
   #   - family: Trajan Pro
   #     fonts:

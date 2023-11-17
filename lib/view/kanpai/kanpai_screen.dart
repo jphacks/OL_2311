@@ -16,9 +16,8 @@ import 'package:kanpai/view_models/auth_view_model.dart';
 import 'package:kanpai/view_models/kanpai_view_model.dart';
 
 enum KanpaiTab {
-  all,
-  done,
-  notDone;
+  list,
+  history,
 }
 
 class KanpaiScreen extends HookConsumerWidget {
@@ -39,7 +38,7 @@ class KanpaiScreen extends HookConsumerWidget {
     if (characteristic == null || fromUserId == null) return;
 
     _kanpaiSubscription = characteristic.lastValueStream.listen((value) {
-      print('arrive value: $value');
+      print('arrivezvalue: $value');
       if (value.isEmpty) return;
 
       final toBleUserId = utf8.decode(value);
@@ -56,8 +55,7 @@ class KanpaiScreen extends HookConsumerWidget {
     final authState = ref.watch(authViewModelProvider);
     final meId = authState.appUser?.id;
 
-    final selectedTab = useState<KanpaiTab>(KanpaiTab.all);
-    final ascending = useState<bool>(true);
+    final selectedTab = useState<KanpaiTab>(KanpaiTab.list);
 
     final homeViewModel = ref.watch(homeViewModelProvider.notifier);
     final users = ref
@@ -97,19 +95,22 @@ class KanpaiScreen extends HookConsumerWidget {
     }, [users, meId]);
 
     final filteredUsers = useMemoized(() {
-      final filteredUsers = switch (selectedTab.value) {
-        KanpaiTab.all => users,
-        KanpaiTab.done =>
-          users.where((u) => (u.cheerUserIds?.contains(meId) ?? false)),
-        KanpaiTab.notDone =>
-          users.where((u) => (!(u.cheerUserIds?.contains(meId) ?? false))),
-      };
-      if (ascending.value) {
-        return filteredUsers.toList();
-      } else {
-        return filteredUsers.toList().reversed;
+      if (selectedTab.value == KanpaiTab.history) {
+        final cheerUserIds = me?.cheerUserIds ?? [];
+        final cheerUserIdsCountMap = users
+            .map((user) => user.id)
+            .fold<Map<String, int>>({}, (map, id) => {...map, id: 0});
+        for (String userId in cheerUserIds) {
+          cheerUserIdsCountMap[userId] =
+              (cheerUserIdsCountMap[userId] ?? 0) + 1;
+        }
+        final sortedCheerUserIds = cheerUserIdsCountMap.entries.toList();
+        sortedCheerUserIds.sort((a, b) => b.value.compareTo(a.value));
+        return sortedCheerUserIds
+            .map((e) => users.firstWhere((user) => user.id == e.key));
       }
-    }, [users, selectedTab.value, ascending.value]);
+      return users.where((user) => user.id != meId);
+    }, [users, selectedTab.value]);
 
     final viewmodel = ref.watch(homeViewModelProvider.notifier);
 
@@ -124,6 +125,10 @@ class KanpaiScreen extends HookConsumerWidget {
     final appbar = AppBar(
       elevation: 0,
       backgroundColor: Colors.transparent,
+      title: const Text(
+        "JPHACKS 2023",
+        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+      ),
       leading: IconButton(
         onPressed: () async {
           await targetDevice?.disconnect();
@@ -162,43 +167,41 @@ class KanpaiScreen extends HookConsumerWidget {
                     fit: BoxFit.contain,
                     alignment: Alignment.topCenter)),
             child: Padding(
-              padding: const EdgeInsets.only(top: 50, bottom: 160),
+              padding: EdgeInsets.only(
+                  top: appbar.preferredSize.height + 30, bottom: 160),
               child: Column(
                 children: [
-                  SizedBox(
-                    width: double.infinity,
-                    height: 320,
-                    child: _buildCounter(kanpaiCount),
+                  const SizedBox(
+                    height: 40,
                   ),
-                  Padding(
+                  _buildCounter(kanpaiCount),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Stack(
+                    alignment: AlignmentDirectional.bottomCenter,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            left: 20, right: 20, bottom: 28),
+                        child: ProfileCard(
+                          user: latestCheeredUser,
+                          hasBottomPadding: true,
+                        ),
+                      ),
+                      Image.asset(
+                        "assets/images/partition.png",
+                      )
+                    ],
+                  ),
+                  Container(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
+                    color: Colors.white,
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        ProfileCard(user: latestCheeredUser),
-                        const SizedBox(
-                          height: 52,
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text("乾杯した人数",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .labelMedium
-                                    ?.copyWith(fontWeight: FontWeight.bold)),
-                            Text("$alreadyCheersUserCount / $allUserCount",
-                                style: const TextStyle(
-                                    fontSize: 24,
-                                    fontFamily: "Chillax",
-                                    fontWeight: FontWeight.w600)),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
                         _buildTabbar(context,
-                            selectedTab: selectedTab, ascending: ascending),
+                            selectedTab: selectedTab,
+                            label: "$alreadyCheersUserCount / $allUserCount"),
                         const SizedBox(
                           height: 24,
                         ),
@@ -206,7 +209,7 @@ class KanpaiScreen extends HookConsumerWidget {
                           _buildUserGrid(context, me: me, users: filteredUsers),
                       ],
                     ),
-                  ),
+                  )
                 ],
               ),
             ),
@@ -225,17 +228,17 @@ class KanpaiScreen extends HookConsumerWidget {
                 fontSize: 12,
                 height: 1,
                 fontWeight: FontWeight.w600)),
-        const SizedBox(height: 16),
+        const SizedBox(height: 12),
         Text("$kanpaiCount",
             style: const TextStyle(
                 color: Colors.white,
-                fontSize: 54,
+                fontSize: 40,
                 fontFamily: "Chillax",
                 height: 1,
                 fontWeight: FontWeight.w600)),
         SvgPicture.asset(
           "assets/svgs/kanpai-logo.svg",
-          height: 28,
+          height: 20,
           theme: const SvgTheme(currentColor: Colors.white),
         ),
       ],
@@ -243,69 +246,40 @@ class KanpaiScreen extends HookConsumerWidget {
   }
 
   Row _buildTabbar(BuildContext context,
-      {required ValueNotifier<KanpaiTab> selectedTab,
-      required ValueNotifier<bool> ascending}) {
+      {required ValueNotifier<KanpaiTab> selectedTab, required String label}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Row(
           children: [
             TabButton(
-                isSelected: selectedTab.value == KanpaiTab.all,
-                onSelected: () => selectedTab.value = KanpaiTab.all,
+                isSelected: selectedTab.value == KanpaiTab.list,
+                onSelected: () => selectedTab.value = KanpaiTab.list,
                 child: _buildTabButtonText(context,
-                    label: "すべて",
-                    isSelected: selectedTab.value == KanpaiTab.all)),
+                    label: "名前",
+                    isSelected: selectedTab.value == KanpaiTab.list)),
             const SizedBox(
               width: 4,
             ),
             TabButton(
-                isSelected: selectedTab.value == KanpaiTab.notDone,
-                onSelected: () => selectedTab.value = KanpaiTab.notDone,
+                isSelected: selectedTab.value == KanpaiTab.history,
+                onSelected: () => selectedTab.value = KanpaiTab.history,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    _buildTabButtonIcon(selectedTab.value == KanpaiTab.history),
                     _buildTabButtonText(context,
-                        label: "未 ",
-                        isSelected: selectedTab.value == KanpaiTab.notDone),
-                    _buildTabButtonIcon(selectedTab.value == KanpaiTab.notDone),
-                  ],
-                )),
-            const SizedBox(
-              width: 4,
-            ),
-            TabButton(
-                isSelected: selectedTab.value == KanpaiTab.done,
-                onSelected: () => selectedTab.value = KanpaiTab.done,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _buildTabButtonIcon(selectedTab.value == KanpaiTab.done),
-                    _buildTabButtonText(context,
-                        label: " 済",
-                        isSelected: selectedTab.value == KanpaiTab.done),
+                        label: " した順",
+                        isSelected: selectedTab.value == KanpaiTab.history),
                   ],
                 )),
           ],
         ),
-        OutlinedButton.icon(
-            style: ButtonStyle(
-              side: MaterialStateProperty.all(
-                  const BorderSide(color: Colors.black87)),
-              padding: MaterialStateProperty.all(
-                  const EdgeInsets.symmetric(vertical: 0, horizontal: 8)),
-              backgroundColor: MaterialStateProperty.all(Colors.transparent),
-              foregroundColor: MaterialStateProperty.all(Colors.black87),
-              overlayColor: MaterialStateProperty.all(Colors.black12),
-            ),
-            icon: Icon(
-              ascending.value ? Icons.arrow_downward : Icons.arrow_upward,
-              size: 16,
-            ),
-            onPressed: () {
-              ascending.value = !ascending.value;
-            },
-            label: const Text("名前"))
+        Text(label,
+            style: const TextStyle(
+                fontSize: 24,
+                fontFamily: "Chillax",
+                fontWeight: FontWeight.w600))
       ],
     );
   }
