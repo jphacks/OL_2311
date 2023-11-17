@@ -63,23 +63,19 @@ class KanpaiScreen extends HookConsumerWidget {
         .maybeWhen(data: (data) => data, orElse: () => <User>[]);
 
     final me = users.where((u) => u.id == meId).firstOrNull;
+    final meBleUserId = me?.bleUserId;
 
     useEffect(() {
       homeViewModel.fetchUsers();
       return () {};
     }, []);
 
-    final kanpaiCount = useMemoized(() {
-      try {
-        return me?.cheerUserIds?.length ?? 0;
-      } on StateError catch (_) {
-        return 0;
-      }
-    }, [users, meId]);
+    final kanpaiCount = me?.cheerUserIds?.length ?? 0;
 
     final alreadyCheersUserCount = useMemoized(
-        () =>
-            users.where((u) => u.cheerUserIds?.contains(meId) ?? false).length,
+        () => users
+            .where((u) => u.cheerUserIds?.contains(meBleUserId) ?? false)
+            .length,
         [users, meId]);
 
     final allUserCount = useMemoized(() => users.length - 1, [users]);
@@ -87,30 +83,36 @@ class KanpaiScreen extends HookConsumerWidget {
     final latestCheeredUser = useMemoized(() {
       try {
         final latestCheeredUserId =
-            me?.cheerUserIds?.lastWhere((id) => id != meId);
+            me?.cheerUserIds?.lastWhere((id) => id != meBleUserId);
         return users.firstWhere((u) => u.bleUserId == latestCheeredUserId);
       } on StateError catch (_) {
         return null;
       }
-    }, [users, meId]);
+    }, [users, meBleUserId]);
 
     final filteredUsers = useMemoized(() {
       if (selectedTab.value == KanpaiTab.history) {
         final cheerUserIds = me?.cheerUserIds ?? [];
+
+        // 乾杯した回数をカウントする
         final cheerUserIdsCountMap = users
-            .map((user) => user.id)
-            .fold<Map<String, int>>({}, (map, id) => {...map, id: 0});
-        for (String userId in cheerUserIds) {
-          cheerUserIdsCountMap[userId] =
-              (cheerUserIdsCountMap[userId] ?? 0) + 1;
+            .where((user) => user.id != meId && user.bleUserId != null)
+            .map((user) => user.bleUserId!)
+            .fold<Map<String, int>>(
+                {}, (map, bleUserId) => {...map, bleUserId: 0});
+        for (String bleUserId in cheerUserIds) {
+          cheerUserIdsCountMap[bleUserId] =
+              (cheerUserIdsCountMap[bleUserId] ?? 0) + 1;
         }
+
+        // 乾杯した回数に応じてソートする
         final sortedCheerUserIds = cheerUserIdsCountMap.entries.toList();
         sortedCheerUserIds.sort((a, b) => b.value.compareTo(a.value));
         return sortedCheerUserIds
-            .map((e) => users.firstWhere((user) => user.id == e.key));
+            .map((e) => users.firstWhere((user) => user.bleUserId == e.key));
       }
-      return users.where((user) => user.id != meId);
-    }, [users, selectedTab.value]);
+      return users.where((user) => user.id != meBleUserId);
+    }, [users, selectedTab.value, meBleUserId, meId]);
 
     final viewmodel = ref.watch(homeViewModelProvider.notifier);
 
@@ -181,14 +183,17 @@ class KanpaiScreen extends HookConsumerWidget {
                   Stack(
                     alignment: AlignmentDirectional.bottomCenter,
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.only(
-                            left: 20, right: 20, bottom: 28),
-                        child: ProfileCard(
-                          user: latestCheeredUser,
-                          hasBottomPadding: true,
-                        ),
-                      ),
+                      if (latestCheeredUser != null)
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              left: 20, right: 20, bottom: 28),
+                          child: ProfileCard(
+                            user: latestCheeredUser,
+                            hasBottomPadding: true,
+                          ),
+                        )
+                      else
+                        const SizedBox(height: 200),
                       Image.asset(
                         "assets/images/partition.png",
                       )
