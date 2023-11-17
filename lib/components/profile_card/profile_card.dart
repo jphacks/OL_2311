@@ -78,6 +78,18 @@ class ProfileCard extends HookConsumerWidget {
   }
 
   Widget _buildBody(String ringImageUrl) {
+    if (user == null) {
+      return const Center(
+        child: Text(
+          "? ? ?",
+          style: TextStyle(
+              color: Colors.white,
+              fontFamily: "Kollektif_sub",
+              fontSize: 22,
+              fontWeight: FontWeight.bold),
+        ),
+      );
+    }
     return Column(
       children: [
         Row(
@@ -99,48 +111,39 @@ class ProfileCard extends HookConsumerWidget {
             const SizedBox(
               width: 10,
             ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: user == null
-                  ? [
-                      const Text(
-                        "まだ見ぬだれか",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ]
-                  : [
-                      Text(
-                        user!.name!,
-                        style: const TextStyle(
-                            color: Colors.black87,
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold),
-                      ),
-                      Text(
-                        formatDateTime(DateTime.now()),
-                        style: TextStyle(
-                          color: Colors.black.withOpacity(0.6),
-                          fontSize: 12,
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 8,
-                      ),
-                      Wrap(
-                        spacing: 8,
-                        children: tags
-                            .map((tag) => Text("#$tag",
-                                style: const TextStyle(
-                                    fontSize: 12,
-                                    color: Colors.black87,
-                                    fontWeight: FontWeight.bold)))
-                            .toList(),
-                      )
-                    ],
-            ),
+            if (user != null)
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    user!.name!,
+                    style: const TextStyle(
+                        color: Colors.black87,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    formatDateTime(DateTime.now()),
+                    style: TextStyle(
+                      color: Colors.black.withOpacity(0.6),
+                      fontSize: 12,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 8,
+                  ),
+                  Wrap(
+                    spacing: 8,
+                    children: tags
+                        .map((tag) => Text("#$tag",
+                            style: const TextStyle(
+                                fontSize: 12,
+                                color: Colors.black87,
+                                fontWeight: FontWeight.bold)))
+                        .toList(),
+                  )
+                ],
+              ),
           ],
         ),
         const SizedBox(

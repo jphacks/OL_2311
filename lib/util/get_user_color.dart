@@ -40,10 +40,6 @@ class FrontendStruct implements TechAreaStruct {
   @override
   final Color cardBgGradientEnd = const Color(0xFFCEE8CA);
   @override
-  final Color panelBgGradientBegin = const Color(0xffBBDFA0);
-  @override
-  final Color panelBgGradientEnd = const Color(0xFFD4E8DC);
-  @override
   final Color panelUnderTextBgGradientBegin = const Color(0xff94E992);
   @override
   final Color panelUnderTextBgGradientEnd =
@@ -66,10 +62,6 @@ class BackendStruct implements TechAreaStruct {
   final Color cardBgGradientBegin = const Color(0xFFB9B5E2);
   @override
   final Color cardBgGradientEnd = const Color(0xFFD9D0EC);
-  @override
-  final Color panelBgGradientBegin = const Color(0xffC9A6EB);
-  @override
-  final Color panelBgGradientEnd = const Color(0xFFDAC5F4);
   @override
   final Color panelUnderTextBgGradientBegin = const Color(0xffB992E9);
   @override
@@ -94,10 +86,6 @@ class DesignerStruct implements TechAreaStruct {
   @override
   final Color cardBgGradientEnd = const Color(0xFFEBD2CA);
   @override
-  final Color panelBgGradientBegin = const Color(0xffEBA6A7);
-  @override
-  final Color panelBgGradientEnd = const Color(0xFFF4C5C8);
-  @override
   final Color panelUnderTextBgGradientBegin = const Color(0xffE99298);
   @override
   final Color panelUnderTextBgGradientEnd =
@@ -120,10 +108,6 @@ class HardwareStruct implements TechAreaStruct {
   final Color cardBgGradientBegin = const Color(0xFF86DFE6);
   @override
   final Color cardBgGradientEnd = const Color(0xFFB8E5EA);
-  @override
-  final Color panelBgGradientBegin = const Color(0xffA0E0FD);
-  @override
-  final Color panelBgGradientEnd = const Color(0xFFBBE6F4);
   @override
   final Color panelUnderTextBgGradientBegin = const Color(0xff7BD7F6);
   @override
