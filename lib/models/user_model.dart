@@ -18,6 +18,7 @@ class User with _$User {
     String? bleUserId, // Bluetoothデバイスに渡すユーザーID
     String? lastCheersUserId, // 最後に乾杯したuserのid
     List<String>? cheerUserIds, // 過去に乾杯したことのあるuserのids
+    List<String>? keywords, // 乾杯のトピック
   }) = _User;
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);

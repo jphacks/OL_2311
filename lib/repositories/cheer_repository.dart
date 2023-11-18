@@ -14,6 +14,8 @@ class CheerRepository {
 
   Stream<List<Cheer>> getCheersStream() {
     return _db.collection('cheers').snapshots().map((snapshot) => snapshot.docs
+        .where((doc) => doc.exists)
+        .where((doc) => doc.data().isNotEmpty)
         .map((doc) => Cheer.fromJson(doc.data()))
         .toList()); // snapshot.docsをCheerに変換
   }
@@ -31,7 +33,7 @@ class CheerRepository {
         .collection('cheers')
         .where('fromUserId', isEqualTo: fromUserId)
         .where('toUserId', isEqualTo: toUserId)
-        .orderBy('createdAt', descending: true)
+        .orderBy('timestampS', descending: true)
         .limit(1)
         .get();
     return querySnapshot.docs.first.id;

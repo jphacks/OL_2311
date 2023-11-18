@@ -12,6 +12,7 @@ _$CheerImpl _$$CheerImplFromJson(Map<String, dynamic> json) => _$CheerImpl(
       keywords: (json['keywords'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList(),
+      timestamp: json['timestamp'] as int,
     );
 
 Map<String, dynamic> _$$CheerImplToJson(_$CheerImpl instance) =>
@@ -19,4 +20,5 @@ Map<String, dynamic> _$$CheerImplToJson(_$CheerImpl instance) =>
       'fromUserId': instance.fromUserId,
       'toUserId': instance.toUserId,
       'keywords': instance.keywords,
+      'timestamp': instance.timestamp,
     };
