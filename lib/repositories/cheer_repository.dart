@@ -24,19 +24,6 @@ class CheerRepository {
     return Cheer.fromJson(res.data()!);
   }
 
-  // fromUserIdとtoUserIdが一致する最新のcheerIdを取得
-  Future<String?> getCheerIdByFromUserIdAndToUserId(
-      String fromUserId, String toUserId) async {
-    final querySnapshot = await _db
-        .collection('cheers')
-        .where('fromUserId', isEqualTo: fromUserId)
-        .where('toUserId', isEqualTo: toUserId)
-        .orderBy('createdAt', descending: true)
-        .limit(1)
-        .get();
-    return querySnapshot.docs.first.id;
-  }
-
   Stream<Cheer> getCheerStream(String cheerId) {
     return _db
         .collection('cheers')
@@ -46,13 +33,6 @@ class CheerRepository {
   }
 
   Future<void> createCheer(Cheer cheer) async {
-    await _db.collection('cheers').add({
-      ...cheer.toJson(),
-      'createdAt': FieldValue.serverTimestamp(), // サーバータイムスタンプを追加
-    });
-  }
-
-  Future<void> updateCheer(String cheerId, Cheer cheer) async {
-    await _db.collection('cheers').doc(cheerId).update(cheer.toJson());
+    await _db.collection('cheers').add(cheer.toJson());
   }
 }

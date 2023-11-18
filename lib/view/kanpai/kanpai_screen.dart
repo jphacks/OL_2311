@@ -16,7 +16,6 @@ import 'package:kanpai/util/last_where_or_null.dart';
 import 'package:kanpai/util/use_previous_memorized.dart';
 import 'package:kanpai/view_models/auth_view_model.dart';
 import 'package:kanpai/view_models/kanpai_view_model.dart';
-import 'package:speech_to_text/speech_to_text.dart';
 
 enum KanpaiTab {
   list,
@@ -31,7 +30,6 @@ class KanpaiScreen extends HookConsumerWidget {
 
   final BluetoothDevice? targetDevice;
   late StreamSubscription<List<int>> _kanpaiSubscription;
-  final _speechToText = SpeechToText();
 
   void startKanpaiListener(
     void Function(String fromUserId, String toBleUserId) handler,
@@ -59,10 +57,7 @@ class KanpaiScreen extends HookConsumerWidget {
     final authState = ref.watch(authViewModelProvider);
     final meId = authState.appUser?.id;
 
-    final selectedTab = useState<KanpaiTab>(KanpaiTab.all);
-    final ascending = useState<bool>(true);
-    final speechText = useState<String>("");
-    final latestCheeredBleUserId = useState<String?>(null);
+    final selectedTab = useState<KanpaiTab>(KanpaiTab.list);
 
     final homeViewModel = ref.watch(homeViewModelProvider.notifier);
     final users = ref
@@ -71,53 +66,6 @@ class KanpaiScreen extends HookConsumerWidget {
 
     final me = users.where((u) => u.id == meId).firstOrNull;
     final meBleUserId = me?.bleUserId;
-
-    // 録音のハンドリング
-    void handleRecording(String fromUserId, String toBleUserId) async {
-      if (_speechToText.isListening) {
-        await _speechToText.stop();
-      } else {
-        var stt = await _speechToText.initialize();
-        if (stt) {
-          _speechToText.listen(
-            onResult: (result) {
-              speechText.value = result.recognizedWords;
-              if (result.finalResult) {
-                speechText.value = "";
-                debugPrint("final result: ${result.recognizedWords}");
-                if (result.recognizedWords.isNotEmpty) {
-                  homeViewModel.extractKeywords(
-                      result.recognizedWords, fromUserId, toBleUserId);
-                }
-              }
-            },
-          );
-        }
-      }
-    }
-
-    void startKanpaiListener(
-      void Function(String fromUserId, String toBleUserId) handler,
-    ) async {
-      await targetDevice!.connectAndUpdateStream();
-      final characteristic = await targetDevice!.getNotifyCharacteristic();
-      final fromUserId = fba.FirebaseAuth.instance.currentUser?.uid;
-      if (characteristic == null || fromUserId == null) return;
-
-      _kanpaiSubscription = characteristic.lastValueStream.listen((value) {
-        print('arrive value: $value');
-        if (value.isEmpty) return;
-
-        final toBleUserId = utf8.decode(value);
-        latestCheeredBleUserId.value = toBleUserId;
-
-        debugPrint('cheers occurred from $fromUserId to $toBleUserId');
-        handler(fromUserId, toBleUserId);
-        handleRecording(fromUserId, toBleUserId);
-      });
-
-      await characteristic.setNotifyValue(true);
-    }
 
     useEffect(() {
       homeViewModel.fetchUsers();
@@ -172,32 +120,7 @@ class KanpaiScreen extends HookConsumerWidget {
         return () {};
       }
       startKanpaiListener(viewmodel.cheers);
-
-      return () async {
-        // NOTE: 画面遷移時にBLEのリスナーを解除する
-        _kanpaiSubscription.cancel();
-
-        // NOTE: 画面遷移時にもし録音中だったら労音を停止し、キーワードを抽出を行う
-        if (_speechToText.isListening) {
-          _speechToText.stop();
-
-          if (speechText.value.isEmpty) {
-            debugPrint("speechText is empty");
-            return;
-          } else if (meId == null) {
-            debugPrint("meId is null");
-            return;
-          } else if (latestCheeredBleUserId.value == null) {
-            debugPrint("latestCheeredBleUserId is null");
-            return;
-          }
-
-          debugPrint(wrapWidth: 100, "speechText: ${speechText.value}");
-          debugPrint("latestCheeredBleUserId: ${latestCheeredBleUserId.value}");
-          await homeViewModel.extractKeywords(
-              speechText.value, meId, latestCheeredBleUserId.value!);
-        }
-      };
+      return () => _kanpaiSubscription.cancel();
     }, []);
 
     final showProfileCard = useState(true);

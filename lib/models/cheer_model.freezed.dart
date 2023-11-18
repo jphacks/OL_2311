@@ -22,7 +22,6 @@ Cheer _$CheerFromJson(Map<String, dynamic> json) {
 mixin _$Cheer {
   String get fromUserId => throw _privateConstructorUsedError;
   String get toUserId => throw _privateConstructorUsedError;
-  List<String>? get keywords => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -34,7 +33,7 @@ abstract class $CheerCopyWith<$Res> {
   factory $CheerCopyWith(Cheer value, $Res Function(Cheer) then) =
       _$CheerCopyWithImpl<$Res, Cheer>;
   @useResult
-  $Res call({String fromUserId, String toUserId, List<String>? keywords});
+  $Res call({String fromUserId, String toUserId});
 }
 
 /// @nodoc
@@ -52,7 +51,6 @@ class _$CheerCopyWithImpl<$Res, $Val extends Cheer>
   $Res call({
     Object? fromUserId = null,
     Object? toUserId = null,
-    Object? keywords = freezed,
   }) {
     return _then(_value.copyWith(
       fromUserId: null == fromUserId
@@ -63,10 +61,6 @@ class _$CheerCopyWithImpl<$Res, $Val extends Cheer>
           ? _value.toUserId
           : toUserId // ignore: cast_nullable_to_non_nullable
               as String,
-      keywords: freezed == keywords
-          ? _value.keywords
-          : keywords // ignore: cast_nullable_to_non_nullable
-              as List<String>?,
     ) as $Val);
   }
 }
@@ -78,7 +72,7 @@ abstract class _$$CheerImplCopyWith<$Res> implements $CheerCopyWith<$Res> {
       __$$CheerImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String fromUserId, String toUserId, List<String>? keywords});
+  $Res call({String fromUserId, String toUserId});
 }
 
 /// @nodoc
@@ -94,7 +88,6 @@ class __$$CheerImplCopyWithImpl<$Res>
   $Res call({
     Object? fromUserId = null,
     Object? toUserId = null,
-    Object? keywords = freezed,
   }) {
     return _then(_$CheerImpl(
       fromUserId: null == fromUserId
@@ -105,10 +98,6 @@ class __$$CheerImplCopyWithImpl<$Res>
           ? _value.toUserId
           : toUserId // ignore: cast_nullable_to_non_nullable
               as String,
-      keywords: freezed == keywords
-          ? _value._keywords
-          : keywords // ignore: cast_nullable_to_non_nullable
-              as List<String>?,
     ));
   }
 }
@@ -116,11 +105,7 @@ class __$$CheerImplCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$CheerImpl implements _Cheer {
-  _$CheerImpl(
-      {required this.fromUserId,
-      required this.toUserId,
-      final List<String>? keywords})
-      : _keywords = keywords;
+  _$CheerImpl({required this.fromUserId, required this.toUserId});
 
   factory _$CheerImpl.fromJson(Map<String, dynamic> json) =>
       _$$CheerImplFromJson(json);
@@ -129,19 +114,10 @@ class _$CheerImpl implements _Cheer {
   final String fromUserId;
   @override
   final String toUserId;
-  final List<String>? _keywords;
-  @override
-  List<String>? get keywords {
-    final value = _keywords;
-    if (value == null) return null;
-    if (_keywords is EqualUnmodifiableListView) return _keywords;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(value);
-  }
 
   @override
   String toString() {
-    return 'Cheer(fromUserId: $fromUserId, toUserId: $toUserId, keywords: $keywords)';
+    return 'Cheer(fromUserId: $fromUserId, toUserId: $toUserId)';
   }
 
   @override
@@ -152,14 +128,12 @@ class _$CheerImpl implements _Cheer {
             (identical(other.fromUserId, fromUserId) ||
                 other.fromUserId == fromUserId) &&
             (identical(other.toUserId, toUserId) ||
-                other.toUserId == toUserId) &&
-            const DeepCollectionEquality().equals(other._keywords, _keywords));
+                other.toUserId == toUserId));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, fromUserId, toUserId,
-      const DeepCollectionEquality().hash(_keywords));
+  int get hashCode => Object.hash(runtimeType, fromUserId, toUserId);
 
   @JsonKey(ignore: true)
   @override
@@ -178,8 +152,7 @@ class _$CheerImpl implements _Cheer {
 abstract class _Cheer implements Cheer {
   factory _Cheer(
       {required final String fromUserId,
-      required final String toUserId,
-      final List<String>? keywords}) = _$CheerImpl;
+      required final String toUserId}) = _$CheerImpl;
 
   factory _Cheer.fromJson(Map<String, dynamic> json) = _$CheerImpl.fromJson;
 
@@ -187,8 +160,6 @@ abstract class _Cheer implements Cheer {
   String get fromUserId;
   @override
   String get toUserId;
-  @override
-  List<String>? get keywords;
   @override
   @JsonKey(ignore: true)
   _$$CheerImplCopyWith<_$CheerImpl> get copyWith =>
