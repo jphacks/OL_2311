@@ -206,6 +206,7 @@ class UserIconPanel extends HookConsumerWidget {
                       children: [
                         Text(
                           isUnlocked ? user.name! : "? ? ?",
+                          overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
                               fontFamily: "Kollektif_sub",
                               fontSize: 14,

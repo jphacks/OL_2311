@@ -17,6 +17,7 @@ class Tag extends HookConsumerWidget {
       padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 10),
       child: Text(
         label,
+        overflow: TextOverflow.ellipsis,
         style: const TextStyle(
             fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
       ),
