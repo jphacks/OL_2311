@@ -12,6 +12,8 @@ import 'package:kanpai/components/tab_button.dart';
 import 'package:kanpai/components/user_icon_panel.dart';
 import 'package:kanpai/models/user_model.dart';
 import 'package:kanpai/util/bluetooth_ext.dart';
+import 'package:kanpai/util/last_where_or_null.dart';
+import 'package:kanpai/util/use_previous_memorized.dart';
 import 'package:kanpai/view_models/auth_view_model.dart';
 import 'package:kanpai/view_models/kanpai_view_model.dart';
 
@@ -80,15 +82,12 @@ class KanpaiScreen extends HookConsumerWidget {
 
     final allUserCount = useMemoized(() => users.length - 1, [users]);
 
-    final latestCheeredUser = useMemoized(() {
-      try {
-        final latestCheeredUserId =
-            me?.cheerUserIds?.lastWhere((id) => id != meBleUserId);
-        return users.firstWhere((u) => u.bleUserId == latestCheeredUserId);
-      } on StateError catch (_) {
-        return null;
-      }
-    }, [users, meBleUserId]);
+    final latestCheeredUserId =
+        me?.cheerUserIds?.lastWhereOrNull((id) => id != meBleUserId);
+
+    final (latestCheeredUser, prevLatestCheeredUser) = usePreviousMemorized(() {
+      return users.firstWhere((u) => u.bleUserId == latestCheeredUserId);
+    }, null, [latestCheeredUserId]);
 
     final filteredUsers = useMemoized(() {
       if (selectedTab.value == KanpaiTab.history) {
@@ -123,6 +122,17 @@ class KanpaiScreen extends HookConsumerWidget {
       startKanpaiListener(viewmodel.cheers);
       return () => _kanpaiSubscription.cancel();
     }, []);
+
+    final showProfileCard = useState(true);
+    useEffect(() {
+      if (latestCheeredUser != null) {
+        showProfileCard.value = false;
+        Future.delayed(const Duration(milliseconds: 500)).then((_) {
+          showProfileCard.value = true;
+        });
+      }
+      return null;
+    }, [latestCheeredUser?.bleUserId]);
 
     final appbar = AppBar(
       elevation: 0,
@@ -187,13 +197,31 @@ class KanpaiScreen extends HookConsumerWidget {
                         Padding(
                           padding: const EdgeInsets.only(
                               left: 20, right: 20, bottom: 28),
-                          child: ProfileCard(
-                            user: latestCheeredUser,
-                            hasBottomPadding: true,
+                          child: Stack(
+                            children: [
+                              if (prevLatestCheeredUser != null)
+                                ProfileCard(
+                                  user: prevLatestCheeredUser,
+                                  hasBottomPadding: true,
+                                ),
+                              AnimatedContainer(
+                                duration: showProfileCard.value
+                                    ? const Duration(milliseconds: 500)
+                                    : Duration.zero,
+                                transform: showProfileCard.value
+                                    ? Matrix4.translationValues(0, 0, 0)
+                                    : Matrix4.translationValues(0, 240, 0),
+                                curve: Curves.easeInOut,
+                                child: ProfileCard(
+                                  user: latestCheeredUser,
+                                  hasBottomPadding: true,
+                                ),
+                              ),
+                            ],
                           ),
                         )
                       else
-                        const SizedBox(height: 200),
+                        const SizedBox(height: 260),
                       Image.asset(
                         "assets/images/partition.png",
                       )

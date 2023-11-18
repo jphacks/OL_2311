@@ -13,17 +13,18 @@ class SnsButton extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Link(
         uri: Uri.parse(url),
-        builder: (BuildContext context, FollowLink? followLink) => InkWell(
-              onTap: followLink,
-              child: Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                    color: Colors.black87,
-                    borderRadius: BorderRadius.circular(8)),
-                child: FaIcon(
-                  icon,
-                  color: Colors.white,
-                  size: 20,
+        builder: (BuildContext context, FollowLink? followLink) => Material(
+              color: Colors.black87,
+              borderRadius: BorderRadius.circular(8),
+              child: InkWell(
+                onTap: followLink,
+                child: Container(
+                  padding: const EdgeInsets.all(12),
+                  child: FaIcon(
+                    icon,
+                    color: Colors.white,
+                    size: 20,
+                  ),
                 ),
               ),
             ));
