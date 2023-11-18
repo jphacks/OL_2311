@@ -83,7 +83,7 @@ class KanpaiScreen extends HookConsumerWidget {
     final meBleUserId = me?.bleUserId;
 
     // 録音のハンドリング
-    void handleRecording(String fromUserId, String toBleUserId) async {
+    void handleRecording(String toBleUserId) async {
       if (_speechToText.isListening) {
         await _speechToText.stop();
       } else {
@@ -96,6 +96,7 @@ class KanpaiScreen extends HookConsumerWidget {
                 speechText.value = "";
                 debugPrint("final result: ${result.recognizedWords}");
                 if (result.recognizedWords.isNotEmpty) {
+                  final fromUserId = fba.FirebaseAuth.instance.currentUser!.uid;
                   homeViewModel.extractKeywords(
                       result.recognizedWords, fromUserId, toBleUserId);
                 }
@@ -123,7 +124,7 @@ class KanpaiScreen extends HookConsumerWidget {
 
         debugPrint('cheers occurred from $fromUserId to $toBleUserId');
         handler(fromUserId, toBleUserId);
-        handleRecording(fromUserId, toBleUserId);
+        handleRecording(toBleUserId);
       });
 
       await characteristic.setNotifyValue(true);

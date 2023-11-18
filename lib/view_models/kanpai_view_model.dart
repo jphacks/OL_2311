@@ -88,7 +88,7 @@ class HomeViewModel extends StateNotifier<HomeState> {
     );
     _cheerRepository.createCheer(
       Cheer(
-        fromUserId: fromUserId,
+        fromUserId: fromUser.bleUserId!,
         toUserId: toBleUserId,
         timestamp: DateTime.now().millisecondsSinceEpoch,
       ),
@@ -101,14 +101,14 @@ class HomeViewModel extends StateNotifier<HomeState> {
         await _conversationRepository.extractKeywords(conversation);
     print("keywords: $keywords");
 
-    final toUserId = await _userRepository.getUserIdByBleUserId(toBleUserId);
-    if (toUserId == null) {
-      print("toUserIdがみつかりません");
+    final fromUser = await _userRepository.getUser(fromUserId);
+    if (fromUser == null || fromUser.bleUserId == null) {
+      print("fromUserがみつかりません");
       return [];
     }
 
-    final cheerId = await _cheerRepository.getCheerIdByFromUserIdAndToUserId(
-        fromUserId, toUserId);
+    final cheerId = await _cheerRepository.getCheerIdByBleUserIds(
+        fromUser.bleUserId!, toBleUserId);
     if (cheerId == null) {
       print("cheerIdがみつかりません");
       return [];
