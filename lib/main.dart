@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:kanpai/view/auth/login_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -13,11 +14,16 @@ final sharedPreferencesProvider = Provider<SharedPreferences>(
 );
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
   final prefs = await SharedPreferences.getInstance();
+
+  await Future.delayed(const Duration(seconds: 1));
+  FlutterNativeSplash.remove();
 
   runApp(
     ProviderScope(

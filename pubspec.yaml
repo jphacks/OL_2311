@@ -55,6 +55,7 @@ dependencies:
   carousel_slider: ^4.2.1
   intl: ^0.18.1
   dotted_border: ^2.1.0
+  flutter_native_splash: ^2.3.5
 
 dev_dependencies:
   # The "flutter_lints" package below contains a set of recommended lints to
@@ -73,6 +74,10 @@ dev_dependencies:
 flutter_launcher_icons:
   ios: true
   image_path: "assets/icon/appicon.png"
+
+flutter_native_splash:
+  background_image: "assets/splash/background.png"
+  image: assets/splash/foreground.png
 
 # The following section is specific to Flutter packages.
 flutter:
