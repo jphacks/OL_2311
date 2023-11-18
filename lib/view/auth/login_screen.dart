@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:kanpai/main.dart';
 import 'package:kanpai/view/auth/ble_config_screen.dart';
 import 'package:kanpai/view/onboarding/profile_screen/profile_screen.dart';
 import 'package:kanpai/view/tutorial/tutorial_screen.dart';
@@ -112,7 +111,6 @@ class LoginScreen extends HookConsumerWidget {
 
   SizedBox _buildGoogleLoginButton(BuildContext context, WidgetRef ref) {
     final loginViewModel = ref.watch(authViewModelProvider.notifier);
-    final prefs = ref.watch(sharedPreferencesProvider);
 
     return SizedBox(
       width: double.infinity,
@@ -127,10 +125,7 @@ class LoginScreen extends HookConsumerWidget {
               foregroundColor: MaterialStateProperty.all(Colors.black87),
               backgroundColor: MaterialStateProperty.all(Colors.transparent)),
           onPressed: () async {
-            final bleUserId = await loginViewModel.signUpWithGoogle();
-            if (bleUserId != null) {
-              await prefs.setString("bleUserId", bleUserId);
-            }
+            await loginViewModel.signUpWithGoogle();
             if (!context.mounted) return;
             Navigator.push(
               context,

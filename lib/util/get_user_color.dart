@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 abstract class TechAreaStruct {
+  String get prefix;
   String get label;
   String get ringImage;
   String get lockImage;
@@ -28,6 +29,8 @@ abstract class TechAreaStruct {
 
 class FrontendStruct implements TechAreaStruct {
   @override
+  final String prefix = "A";
+  @override
   final String label = "フロントエンド";
   @override
   final String ringImage = "assets/images/ring-green.png";
@@ -50,6 +53,8 @@ class FrontendStruct implements TechAreaStruct {
 }
 
 class BackendStruct implements TechAreaStruct {
+  @override
+  final String prefix = "B";
   @override
   final String label = "バックエンド";
   @override
@@ -74,6 +79,8 @@ class BackendStruct implements TechAreaStruct {
 
 class DesignerStruct implements TechAreaStruct {
   @override
+  final String prefix = "D";
+  @override
   final String label = "デザイナー";
   @override
   final String ringImage = "assets/images/ring-red.png";
@@ -96,6 +103,8 @@ class DesignerStruct implements TechAreaStruct {
 }
 
 class HardwareStruct implements TechAreaStruct {
+  @override
+  final String prefix = "C";
   @override
   final String label = "ハードウェア";
   @override

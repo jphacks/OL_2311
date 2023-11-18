@@ -69,6 +69,14 @@ class UserRepository {
     await _db.collection('users').doc(userId).update(user.toJson());
   }
 
+  Future<void> updateUserWithBleUserId(
+      String userId, String bleUserId, User user) async {
+    await _db.collection('users').doc(userId).update({
+      ...user.toJson(),
+      'bleUserId': bleUserId,
+    });
+  }
+
   Future<bool> isUniqueBleUserId(String bleUserId) async {
     final querySnapshot = await _db
         .collection('users')
