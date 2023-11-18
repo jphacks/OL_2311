@@ -90,8 +90,6 @@ class ConnectScreen extends HookConsumerWidget {
     final selectedTechArea =
         ref.watch(question2ViewModelProvider).asData?.value;
 
-    final controller = useWaterAnimationController();
-
     final showParingSheet = useCallback(() async {
       final code = await showQrCaptureSheet(context);
 
@@ -112,23 +110,13 @@ class ConnectScreen extends HookConsumerWidget {
         return;
       }
 
-      controller.start();
-      await Future.delayed(const Duration(milliseconds: 4000));
-
       if (!context.mounted) {
         return;
       }
 
-      Navigator.of(context).push(PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) =>
-            KanpaiScreen(targetDevice: null),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return FadeTransition(opacity: animation, child: child);
-        },
-        transitionDuration: const Duration(milliseconds: 1000),
+      Navigator.of(context).push(WaterRoute(
+        builder: (context) => KanpaiScreen(targetDevice: connectedDevice),
       ));
-
-      controller.reset();
     }, []);
 
     useEffect(() {
@@ -152,7 +140,6 @@ class ConnectScreen extends HookConsumerWidget {
             Navigator.of(context).push(WaterRoute(
               builder: (context) => KanpaiScreen(targetDevice: null),
             ));
-            controller.reset();
           },
         ),
       ],
