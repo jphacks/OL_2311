@@ -165,7 +165,9 @@ class ProfileCard extends HookConsumerWidget {
         const SizedBox(
           height: 20,
         ),
-        if (user != null && user?.keywords != null)
+        if (user != null &&
+            user?.keywords != null &&
+            user!.keywords!.isNotEmpty)
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12),
             child: Column(

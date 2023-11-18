@@ -72,6 +72,7 @@ class KanpaiScreen extends HookConsumerWidget {
     final ascending = useState<bool>(true);
     final speechText = useState<String>("");
     final latestCheeredBleUserId = useState<String?>(null);
+    final isListeningFirestoreStream = useState<bool>(false);
 
     final homeViewModel = ref.watch(homeViewModelProvider.notifier);
     final users = ref
@@ -132,9 +133,17 @@ class KanpaiScreen extends HookConsumerWidget {
 
     useEffect(() {
       homeViewModel.fetchUsers();
-      homeViewModel.fetchCheers(me!.bleUserId!);
       return () {};
     }, []);
+
+    useEffect(() {
+      if (!isListeningFirestoreStream.value && meBleUserId != null) {
+        print("start listening firestore stream");
+        homeViewModel.fetchCheers(me!.bleUserId!);
+        isListeningFirestoreStream.value = true;
+      }
+      return () {};
+    }, [isListeningFirestoreStream.value, meBleUserId]);
 
     final kanpaiCount = me?.cheerUserIds?.length ?? 0;
 
@@ -172,7 +181,12 @@ class KanpaiScreen extends HookConsumerWidget {
         final sortedCheerUserIds = cheerUserIdsCountMap.entries.toList();
         sortedCheerUserIds.sort((a, b) => b.value.compareTo(a.value));
         return sortedCheerUserIds
-            .map((e) => users.firstWhere((user) => user.bleUserId == e.key));
+            .where(
+              (e) => users.any((user) => user.bleUserId == e.key),
+            )
+            .map(
+              (e) => users.firstWhere((user) => user.bleUserId == e.key),
+            );
       }
       return users.where((user) => user.id != meBleUserId);
     }, [users, selectedTab.value, meBleUserId, meId]);
