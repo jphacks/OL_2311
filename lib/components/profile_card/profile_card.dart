@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:kanpai/components/profile_card/icon_chip.dart';
 import 'package:kanpai/components/profile_card/sns_button.dart';
+import 'package:kanpai/components/tag.dart';
 import 'package:kanpai/models/user_model.dart';
 import 'package:kanpai/util/format_time.dart';
 import 'package:kanpai/util/get_user_color.dart';
@@ -88,6 +89,8 @@ class ProfileCard extends HookConsumerWidget {
   }
 
   Widget _buildBody(String ringImageUrl) {
+    final techAreaStruct = TechAreaStruct.fromText(user?.techArea);
+
     if (user == null) {
       return const Center(
         child: Text(
@@ -153,7 +156,7 @@ class ProfileCard extends HookConsumerWidget {
                                   color: Colors.black87,
                                   fontWeight: FontWeight.bold)))
                           .toList(),
-                    )
+                    ),
                   ],
                 ),
               ),
@@ -162,28 +165,71 @@ class ProfileCard extends HookConsumerWidget {
         const SizedBox(
           height: 20,
         ),
-        if (user != null)
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              SnsButton(
-                  url: "https://www.instagram.com/${user!.instagramId}",
-                  icon: FontAwesomeIcons.instagram),
-              const SizedBox(
-                width: 12,
-              ),
-              const SnsButton(
-                  // TODO: githubアカウント
-                  url: "https://github.com",
-                  icon: FontAwesomeIcons.github),
-              const SizedBox(
-                width: 12,
-              ),
-              SnsButton(
-                  url: "https://twitter.com/${user!.xId}",
-                  icon: FontAwesomeIcons.xTwitter),
-            ],
-          )
+        if (user != null && user?.keywords != null)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Image.asset(
+                      "assets/images/pencil.png",
+                      height: 22,
+                    ),
+                    SvgPicture.asset(
+                      "assets/svgs/kanpai-logo.svg",
+                      height: 22,
+                    ),
+                    const Text(
+                      "トピック",
+                      style:
+                          TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 8,
+                ),
+                Wrap(
+                  spacing: 8, // 水平方向の間隔
+                  runSpacing: 8, // 垂直方向の間隔
+                  children: [
+                    ...user?.keywords
+                            ?.map((keyword) => Tag(
+                                label: keyword,
+                                color: techAreaStruct.solidBgColor))
+                            .toList() ??
+                        [],
+                  ],
+                )
+              ],
+            ),
+          ),
+        const SizedBox(
+          height: 20,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            SnsButton(
+                url: "https://www.instagram.com/${user!.instagramId}",
+                icon: FontAwesomeIcons.instagram),
+            const SizedBox(
+              width: 12,
+            ),
+            const SnsButton(
+                // TODO: githubアカウント
+                url: "https://github.com",
+                icon: FontAwesomeIcons.github),
+            const SizedBox(
+              width: 12,
+            ),
+            SnsButton(
+                url: "https://twitter.com/${user!.xId}",
+                icon: FontAwesomeIcons.xTwitter),
+          ],
+        )
       ],
     );
   }

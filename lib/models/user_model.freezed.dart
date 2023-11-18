@@ -36,7 +36,9 @@ mixin _$User {
       throw _privateConstructorUsedError; // Bluetoothデバイスに渡すユーザーID
   String? get lastCheersUserId =>
       throw _privateConstructorUsedError; // 最後に乾杯したuserのid
-  List<String>? get cheerUserIds => throw _privateConstructorUsedError;
+  List<String>? get cheerUserIds =>
+      throw _privateConstructorUsedError; // 過去に乾杯したことのあるuserのids
+  List<String>? get keywords => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -60,7 +62,8 @@ abstract class $UserCopyWith<$Res> {
       String? deviceUuid,
       String? bleUserId,
       String? lastCheersUserId,
-      List<String>? cheerUserIds});
+      List<String>? cheerUserIds,
+      List<String>? keywords});
 }
 
 /// @nodoc
@@ -88,6 +91,7 @@ class _$UserCopyWithImpl<$Res, $Val extends User>
     Object? bleUserId = freezed,
     Object? lastCheersUserId = freezed,
     Object? cheerUserIds = freezed,
+    Object? keywords = freezed,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -138,6 +142,10 @@ class _$UserCopyWithImpl<$Res, $Val extends User>
           ? _value.cheerUserIds
           : cheerUserIds // ignore: cast_nullable_to_non_nullable
               as List<String>?,
+      keywords: freezed == keywords
+          ? _value.keywords
+          : keywords // ignore: cast_nullable_to_non_nullable
+              as List<String>?,
     ) as $Val);
   }
 }
@@ -161,7 +169,8 @@ abstract class _$$UserImplCopyWith<$Res> implements $UserCopyWith<$Res> {
       String? deviceUuid,
       String? bleUserId,
       String? lastCheersUserId,
-      List<String>? cheerUserIds});
+      List<String>? cheerUserIds,
+      List<String>? keywords});
 }
 
 /// @nodoc
@@ -186,6 +195,7 @@ class __$$UserImplCopyWithImpl<$Res>
     Object? bleUserId = freezed,
     Object? lastCheersUserId = freezed,
     Object? cheerUserIds = freezed,
+    Object? keywords = freezed,
   }) {
     return _then(_$UserImpl(
       id: null == id
@@ -236,6 +246,10 @@ class __$$UserImplCopyWithImpl<$Res>
           ? _value._cheerUserIds
           : cheerUserIds // ignore: cast_nullable_to_non_nullable
               as List<String>?,
+      keywords: freezed == keywords
+          ? _value._keywords
+          : keywords // ignore: cast_nullable_to_non_nullable
+              as List<String>?,
     ));
   }
 }
@@ -255,8 +269,10 @@ class _$UserImpl implements _User {
       this.deviceUuid,
       this.bleUserId,
       this.lastCheersUserId,
-      final List<String>? cheerUserIds})
-      : _cheerUserIds = cheerUserIds;
+      final List<String>? cheerUserIds,
+      final List<String>? keywords})
+      : _cheerUserIds = cheerUserIds,
+        _keywords = keywords;
 
   factory _$UserImpl.fromJson(Map<String, dynamic> json) =>
       _$$UserImplFromJson(json);
@@ -305,9 +321,21 @@ class _$UserImpl implements _User {
     return EqualUnmodifiableListView(value);
   }
 
+// 過去に乾杯したことのあるuserのids
+  final List<String>? _keywords;
+// 過去に乾杯したことのあるuserのids
+  @override
+  List<String>? get keywords {
+    final value = _keywords;
+    if (value == null) return null;
+    if (_keywords is EqualUnmodifiableListView) return _keywords;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
+  }
+
   @override
   String toString() {
-    return 'User(id: $id, name: $name, profileImageUrl: $profileImageUrl, location: $location, techArea: $techArea, xId: $xId, instagramId: $instagramId, homepageLink: $homepageLink, deviceUuid: $deviceUuid, bleUserId: $bleUserId, lastCheersUserId: $lastCheersUserId, cheerUserIds: $cheerUserIds)';
+    return 'User(id: $id, name: $name, profileImageUrl: $profileImageUrl, location: $location, techArea: $techArea, xId: $xId, instagramId: $instagramId, homepageLink: $homepageLink, deviceUuid: $deviceUuid, bleUserId: $bleUserId, lastCheersUserId: $lastCheersUserId, cheerUserIds: $cheerUserIds, keywords: $keywords)';
   }
 
   @override
@@ -335,7 +363,8 @@ class _$UserImpl implements _User {
             (identical(other.lastCheersUserId, lastCheersUserId) ||
                 other.lastCheersUserId == lastCheersUserId) &&
             const DeepCollectionEquality()
-                .equals(other._cheerUserIds, _cheerUserIds));
+                .equals(other._cheerUserIds, _cheerUserIds) &&
+            const DeepCollectionEquality().equals(other._keywords, _keywords));
   }
 
   @JsonKey(ignore: true)
@@ -353,7 +382,8 @@ class _$UserImpl implements _User {
       deviceUuid,
       bleUserId,
       lastCheersUserId,
-      const DeepCollectionEquality().hash(_cheerUserIds));
+      const DeepCollectionEquality().hash(_cheerUserIds),
+      const DeepCollectionEquality().hash(_keywords));
 
   @JsonKey(ignore: true)
   @override
@@ -382,7 +412,8 @@ abstract class _User implements User {
       final String? deviceUuid,
       final String? bleUserId,
       final String? lastCheersUserId,
-      final List<String>? cheerUserIds}) = _$UserImpl;
+      final List<String>? cheerUserIds,
+      final List<String>? keywords}) = _$UserImpl;
 
   factory _User.fromJson(Map<String, dynamic> json) = _$UserImpl.fromJson;
 
@@ -410,6 +441,8 @@ abstract class _User implements User {
   String? get lastCheersUserId;
   @override // 最後に乾杯したuserのid
   List<String>? get cheerUserIds;
+  @override // 過去に乾杯したことのあるuserのids
+  List<String>? get keywords;
   @override
   @JsonKey(ignore: true)
   _$$UserImplCopyWith<_$UserImpl> get copyWith =>

@@ -76,6 +76,7 @@ class KanpaiScreen extends HookConsumerWidget {
     final homeViewModel = ref.watch(homeViewModelProvider.notifier);
     final users = ref
         .watch(homeViewModelProvider)
+        .users
         .maybeWhen(data: (data) => data, orElse: () => <User>[]);
 
     final me = users.where((u) => u.id == meId).firstOrNull;
@@ -130,6 +131,7 @@ class KanpaiScreen extends HookConsumerWidget {
 
     useEffect(() {
       homeViewModel.fetchUsers();
+      homeViewModel.fetchCheers(meId!);
       return () {};
     }, []);
 
@@ -148,7 +150,7 @@ class KanpaiScreen extends HookConsumerWidget {
 
     final (latestCheeredUser, prevLatestCheeredUser) = usePreviousMemorized(() {
       return users.firstWhereOrNull((u) => u.bleUserId == latestCheeredUserId);
-    }, null, [latestCheeredUserId]);
+    }, null, [latestCheeredUserId, users]);
 
     final filteredUsers = useMemoized(() {
       if (selectedTab.value == KanpaiTab.history) {

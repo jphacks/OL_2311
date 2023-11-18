@@ -21,6 +21,9 @@ _$UserImpl _$$UserImplFromJson(Map<String, dynamic> json) => _$UserImpl(
       cheerUserIds: (json['cheerUserIds'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList(),
+      keywords: (json['keywords'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
     );
 
 Map<String, dynamic> _$$UserImplToJson(_$UserImpl instance) =>
@@ -37,4 +40,5 @@ Map<String, dynamic> _$$UserImplToJson(_$UserImpl instance) =>
       'bleUserId': instance.bleUserId,
       'lastCheersUserId': instance.lastCheersUserId,
       'cheerUserIds': instance.cheerUserIds,
+      'keywords': instance.keywords,
     };

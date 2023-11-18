@@ -9,6 +9,7 @@ class Cheer with _$Cheer {
     required String fromUserId,
     required String toUserId,
     List<String>? keywords,
+    required int timestamp,
   }) = _Cheer;
 
   factory Cheer.fromJson(Map<String, dynamic> json) => _$CheerFromJson(json);
