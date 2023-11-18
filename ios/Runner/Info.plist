@@ -49,6 +49,10 @@
 	<string>Need Location permission</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Need Location permission</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>This app requires to speech recognition</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>This app requires to add file to your photo library your microphone </string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>QRコードの画像を取得するため、写真ライブラリにアクセスします。</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
