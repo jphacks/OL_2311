@@ -26,7 +26,7 @@ class MyPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = const Color.fromARGB(255, 89, 106, 235).withOpacity(0.95)
+      ..color = const Color(0xFF667BFD).withOpacity(0.99)
       ..style = PaintingStyle.fill;
 
     final path = Path()
@@ -63,13 +63,13 @@ class WaterAnimationController {
     };
   }
 
-  start() {
+  void start() {
     for (final listener in _startListeners) {
       listener();
     }
   }
 
-  reset() {
+  void reset() {
     for (final listener in _endListeners) {
       listener();
     }
@@ -82,28 +82,26 @@ class WaterAnimation extends HookConsumerWidget {
   const WaterAnimation({
     super.key,
     required this.child,
-    required this.controller,
     required this.direction,
-    this.duration = const Duration(milliseconds: 5000),
+    required this.animation,
+    this.duration = const Duration(milliseconds: 4000),
   });
 
   final Widget child;
-  final WaterAnimationController controller;
   final WaterAnimationDirection direction;
   final Duration duration;
+  final Animation<double> animation;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final heightController = useAnimationController(duration: duration);
-
     final firstController =
-        useAnimationController(duration: const Duration(milliseconds: 1500));
+        useAnimationController(duration: const Duration(milliseconds: 750));
     final secondController =
-        useAnimationController(duration: const Duration(milliseconds: 1500));
+        useAnimationController(duration: const Duration(milliseconds: 750));
     final thirdController =
-        useAnimationController(duration: const Duration(milliseconds: 1500));
+        useAnimationController(duration: const Duration(milliseconds: 750));
     final fourthController =
-        useAnimationController(duration: const Duration(milliseconds: 1500));
+        useAnimationController(duration: const Duration(milliseconds: 750));
 
     final firstAnimation = useAnimation(Tween<double>(begin: 1.7, end: 2.3)
         .animate(
@@ -149,38 +147,53 @@ class WaterAnimation extends HookConsumerWidget {
       }));
 
     final heightAnimation = useAnimation(Tween<double>(
-            begin: direction == WaterAnimationDirection.up ? 0.0 : 1.0,
-            end: direction == WaterAnimationDirection.up ? 1.0 : 0.0)
-        .animate(CurvedAnimation(
-            parent: heightController, curve: Curves.easeInOut)));
+                begin: direction == WaterAnimationDirection.up ? 0.0 : 1.0,
+                end: direction == WaterAnimationDirection.up ? 1.0 : 0.0)
+            .animate(
+                CurvedAnimation(parent: animation, curve: Curves.easeInOut))) *
+        2;
+
+    final hAnimation = useAnimation<double>(animation.drive(TweenSequence([
+      TweenSequenceItem(
+        tween: Tween(begin: 0.0, end: 1.0)
+            .chain(CurveTween(curve: Curves.easeInOutCubic)),
+        weight: 1,
+      ),
+      TweenSequenceItem(
+        tween: Tween(begin: 1.0, end: 0.0)
+            .chain(CurveTween(curve: Curves.easeInOutCubic)),
+        weight: 1,
+      ),
+    ])));
 
     useEffect(() {
-      final removeAddListener = controller.addStartEventListner(() {
-        Timer(const Duration(seconds: 2), () {
-          firstController.forward();
-        });
-
-        Timer(const Duration(milliseconds: 1600), () {
-          secondController.forward();
-        });
-
-        Timer(const Duration(milliseconds: 800), () {
-          thirdController.forward();
-        });
-
-        fourthController.forward();
-
-        heightController.forward();
+      // final removeAddListener = controller.addStartEventListner(() {
+      Timer(const Duration(seconds: 2), () {
+        firstController.forward();
       });
 
-      final removeEndListener = controller.addEndEventListner(() {
-        heightController.reset();
+      Timer(const Duration(milliseconds: 1600), () {
+        secondController.forward();
       });
 
-      return () {
-        removeAddListener();
-        removeEndListener();
-      };
+      Timer(const Duration(milliseconds: 800), () {
+        thirdController.forward();
+      });
+
+      fourthController.forward();
+      return null;
+
+      //     heightController.forward();
+      // });
+
+      // final removeEndListener = controller.addEndEventListner(() {
+      //   heightController.reset();
+      // });
+
+      // return () {
+      //   removeAddListener();
+      //   removeEndListener();
+      // };
     }, []);
 
     final height = MediaQuery.of(context).size.height;
@@ -188,45 +201,47 @@ class WaterAnimation extends HookConsumerWidget {
     return Stack(
       children: [
         child,
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              IgnorePointer(
-                child: CustomPaint(
-                  painter: MyPainter(
-                    firstAnimation,
-                    secondAnimation,
-                    thirdAnimation,
-                    fourthAnimation,
-                  ),
-                  child: SizedBox(
-                    height: min(max(height * heightAnimation, 0), 200),
-                    width: double.infinity,
-                  ),
-                ),
-              ),
-              Container(
-                height: max(height * heightAnimation - 200, 0),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: FractionalOffset.topCenter,
-                    end: FractionalOffset.bottomCenter,
-                    colors: [
-                      const Color.fromARGB(255, 89, 106, 235).withOpacity(0.95),
-                      const Color.fromARGB(255, 170, 112, 211)
-                          .withOpacity(0.95),
-                    ],
-                    stops: const [
-                      0.0,
-                      1.0,
-                    ],
+        Opacity(
+          opacity: min(4 - 2 * heightAnimation, 1),
+          child: Align(
+            alignment: Alignment.bottomCenter,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IgnorePointer(
+                  child: CustomPaint(
+                    painter: MyPainter(
+                      firstAnimation,
+                      secondAnimation,
+                      thirdAnimation,
+                      fourthAnimation,
+                    ),
+                    child: SizedBox(
+                      height: min(max(height * min(1, hAnimation), 0), 200),
+                      width: double.infinity,
+                    ),
                   ),
                 ),
-                // color: const Color(0xff3B6ABA).withOpacity(.95),
-              )
-            ],
+                Container(
+                  height: max(height * min(1, hAnimation) - 200, 0),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: FractionalOffset.topCenter,
+                      end: FractionalOffset.bottomCenter,
+                      colors: [
+                        const Color(0xFF667BFD).withOpacity(0.99),
+                        const Color(0xFF2F4CFD).withOpacity(0.99),
+                      ],
+                      stops: const [
+                        0.0,
+                        1.0,
+                      ],
+                    ),
+                  ),
+                  // color: const Color(0xff3B6ABA).withOpacity(.95),
+                )
+              ],
+            ),
           ),
         ),
       ],

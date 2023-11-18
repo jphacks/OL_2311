@@ -9,6 +9,75 @@ import 'package:kanpai/view/onboarding/onboarding_layout.dart';
 import 'package:kanpai/view_models/connect_view_model.dart';
 import 'package:kanpai/view_models/question2_view_model.dart';
 
+class WaterRoute<T> extends PageRoute<T> {
+  WaterRoute({required this.builder}) : super();
+
+  final WidgetBuilder builder;
+
+  @override
+  bool get opaque => false;
+
+  @override
+  bool get barrierDismissible => true;
+
+  @override
+  Duration get transitionDuration => const Duration(milliseconds: 3000);
+
+  @override
+  bool get maintainState => true;
+
+  @override
+  Color get barrierColor => Colors.black54;
+
+  @override
+  Widget buildTransitions(BuildContext context, Animation<double> animation,
+      Animation<double> secondaryAnimation, Widget child) {
+    return Stack(
+      children: [
+        WaterAnimation(
+            duration: const Duration(milliseconds: 750),
+            animation: animation.drive(Tween(begin: 1.0, end: 0.0)),
+            direction: WaterAnimationDirection.down,
+            child: AnimatedBuilder(
+              animation: animation.drive(TweenSequence([
+                TweenSequenceItem(
+                  tween: Tween(begin: 0.0, end: 0.0),
+                  weight: 10,
+                ),
+                TweenSequenceItem(
+                  tween: Tween(begin: 0.0, end: 1.0),
+                  weight: 1,
+                ),
+                TweenSequenceItem(
+                  tween: Tween(begin: 1.0, end: 1.0),
+                  weight: 10,
+                ),
+              ])),
+              builder: (context, _) {
+                return Opacity(
+                    opacity: animation.value < 0.5
+                        ? 0
+                        : 0.5 < animation.value
+                            ? 1.0
+                            : animation.value,
+                    child: child);
+              },
+              child: child,
+            ))
+      ],
+    );
+  }
+
+  @override
+  Widget buildPage(BuildContext context, Animation<double> animation,
+      Animation<double> secondaryAnimation) {
+    return builder(context);
+  }
+
+  @override
+  String? get barrierLabel => "とじる";
+}
+
 class ConnectScreen extends HookConsumerWidget {
   const ConnectScreen({super.key});
 
@@ -68,46 +137,30 @@ class ConnectScreen extends HookConsumerWidget {
       return null;
     }, []);
 
-    return WaterAnimation(
-      controller: controller,
-      duration: const Duration(milliseconds: 3000),
-      direction: WaterAnimationDirection.up,
-      child: OnboardingLayout(
-        title: hasError ? "接続に失敗しました" : "接続を開始しますか？",
-        loading: isConnecting,
-        nextLabel: isConnecting ? "接続中..." : "接続を開始",
-        actions: [
-          IconButton(
-            icon: const Icon(
-              Icons.arrow_forward,
-              size: 30,
-              color: Colors.transparent,
-            ),
-            onPressed: () async {
-              controller.start();
-              await Future.delayed(const Duration(milliseconds: 4000));
-              if (!context.mounted) {
-                return;
-              }
-              Navigator.of(context).push(PageRouteBuilder(
-                pageBuilder: (context, animation, secondaryAnimation) =>
-                    KanpaiScreen(targetDevice: null),
-                transitionsBuilder:
-                    (context, animation, secondaryAnimation, child) {
-                  return FadeTransition(opacity: animation, child: child);
-                },
-                transitionDuration: const Duration(milliseconds: 1000),
-              ));
-              controller.reset();
-            },
+    return OnboardingLayout(
+      title: hasError ? "接続に失敗しました" : "接続を開始しますか？",
+      loading: isConnecting,
+      nextLabel: isConnecting ? "接続中..." : "接続を開始",
+      actions: [
+        IconButton(
+          icon: const Icon(
+            Icons.arrow_forward,
+            size: 30,
+            color: Colors.transparent,
           ),
-        ],
-        onNextPressed: showParingSheet,
-        child: SizedBox(
-          height: double.infinity,
-          child: Center(
-            child: Image.asset('assets/images/cup-image.png'),
-          ),
+          onPressed: () {
+            Navigator.of(context).push(WaterRoute(
+              builder: (context) => KanpaiScreen(targetDevice: null),
+            ));
+            controller.reset();
+          },
+        ),
+      ],
+      onNextPressed: showParingSheet,
+      child: SizedBox(
+        height: double.infinity,
+        child: Center(
+          child: Image.asset('assets/images/cup-image.png'),
         ),
       ),
     );

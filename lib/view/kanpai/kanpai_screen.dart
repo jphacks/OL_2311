@@ -256,87 +256,81 @@ class KanpaiScreen extends HookConsumerWidget {
         appBar: appbar,
         extendBodyBehindAppBar: true,
         backgroundColor: Colors.white,
-        body: WaterAnimation(
-          controller: controller,
-          duration: const Duration(milliseconds: 1500),
-          direction: WaterAnimationDirection.down,
-          child: SingleChildScrollView(
-            child: Container(
-              decoration: BoxDecoration(
-                  image: DecorationImage(
-                      image: AssetImage(kanpaiCount == 0
-                          ? "assets/images/kanpai-bg-black.png"
-                          : "assets/images/kanpai-bg-blue.png"),
-                      fit: BoxFit.contain,
-                      alignment: Alignment.topCenter)),
-              child: Padding(
-                padding: EdgeInsets.only(
-                    top: appbar.preferredSize.height + 30, bottom: 160),
-                child: Column(
-                  children: [
-                    const SizedBox(
-                      height: 40,
-                    ),
-                    _buildCounter(kanpaiCount),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Stack(
-                      alignment: AlignmentDirectional.bottomCenter,
-                      children: [
-                        if (latestCheeredUser != null)
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                left: 20, right: 20, bottom: 28),
-                            child: Stack(
-                              children: [
-                                if (prevLatestCheeredUser != null)
-                                  ProfileCard(
-                                    user: prevLatestCheeredUser,
-                                    hasBottomPadding: true,
-                                  ),
-                                AnimatedContainer(
-                                  duration: showProfileCard.value
-                                      ? const Duration(milliseconds: 500)
-                                      : Duration.zero,
-                                  transform: showProfileCard.value
-                                      ? Matrix4.translationValues(0, 0, 0)
-                                      : Matrix4.translationValues(0, 240, 0),
-                                  curve: Curves.easeInOut,
-                                  child: ProfileCard(
-                                    user: latestCheeredUser,
-                                    hasBottomPadding: true,
-                                  ),
+        body: SingleChildScrollView(
+          child: Container(
+            decoration: BoxDecoration(
+                image: DecorationImage(
+                    image: AssetImage(kanpaiCount == 0
+                        ? "assets/images/kanpai-bg-black.png"
+                        : "assets/images/kanpai-bg-blue.png"),
+                    fit: BoxFit.contain,
+                    alignment: Alignment.topCenter)),
+            child: Padding(
+              padding: EdgeInsets.only(
+                  top: appbar.preferredSize.height + 30, bottom: 160),
+              child: Column(
+                children: [
+                  const SizedBox(
+                    height: 40,
+                  ),
+                  _buildCounter(kanpaiCount),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Stack(
+                    alignment: AlignmentDirectional.bottomCenter,
+                    children: [
+                      if (latestCheeredUser != null)
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              left: 20, right: 20, bottom: 28),
+                          child: Stack(
+                            children: [
+                              if (prevLatestCheeredUser != null)
+                                ProfileCard(
+                                  user: prevLatestCheeredUser,
+                                  hasBottomPadding: true,
                                 ),
-                              ],
-                            ),
-                          )
-                        else
-                          const SizedBox(height: 260),
-                        Image.asset(
-                          "assets/images/partition.png",
+                              AnimatedContainer(
+                                duration: showProfileCard.value
+                                    ? const Duration(milliseconds: 500)
+                                    : Duration.zero,
+                                transform: showProfileCard.value
+                                    ? Matrix4.translationValues(0, 0, 0)
+                                    : Matrix4.translationValues(0, 240, 0),
+                                curve: Curves.easeInOut,
+                                child: ProfileCard(
+                                  user: latestCheeredUser,
+                                  hasBottomPadding: true,
+                                ),
+                              ),
+                            ],
+                          ),
                         )
+                      else
+                        const SizedBox(height: 260),
+                      Image.asset(
+                        "assets/images/partition.png",
+                      )
+                    ],
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    color: Colors.white,
+                    child: Column(
+                      children: [
+                        _buildTabbar(context,
+                            selectedTab: selectedTab,
+                            label: "$alreadyCheersUserCount / $allUserCount"),
+                        const SizedBox(
+                          height: 24,
+                        ),
+                        if (me != null)
+                          _buildUserGrid(context, me: me, users: filteredUsers),
                       ],
                     ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      color: Colors.white,
-                      child: Column(
-                        children: [
-                          _buildTabbar(context,
-                              selectedTab: selectedTab,
-                              label: "$alreadyCheersUserCount / $allUserCount"),
-                          const SizedBox(
-                            height: 24,
-                          ),
-                          if (me != null)
-                            _buildUserGrid(context,
-                                me: me, users: filteredUsers),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
+                  )
+                ],
               ),
             ),
           ),
