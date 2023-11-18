@@ -19,6 +19,8 @@ class Question3Screen extends HookConsumerWidget {
     final instagramController = useTextEditingController();
     final homepageController = useTextEditingController();
 
+    final disallowAutoExchange = useState(false);
+
     useEffect(() {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         isDirty.value = true;
@@ -62,6 +64,22 @@ class Question3Screen extends HookConsumerWidget {
                 controller: homepageController,
                 hintText: "リンクを入力してください",
               ),
+              const SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Checkbox(
+                    value: disallowAutoExchange.value,
+                    onChanged: (value) {
+                      disallowAutoExchange.value = value!;
+                    },
+                  ),
+                  const Text(
+                    "乾杯によるSNS自動交換を行わない",
+                    style: TextStyle(fontSize: 14),
+                  ),
+                ],
+              )
             ],
           ),
         ));
