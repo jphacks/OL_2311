@@ -24,12 +24,14 @@ class HomeViewModel extends StateNotifier<HomeState> {
             users: const AsyncValue.loading(),
             cheers: const AsyncValue.loading()));
 
-  void updateUsersWithKeywords(String meId) {
+  void updateUsersWithKeywords(String meBleUserId) {
     final updatedUsers = state.users.value?.map((user) {
       final latestCheer = state.cheers.value
           ?.where((cheer) =>
-              (cheer.fromUserId == meId && cheer.toUserId == user.id) ||
-              (cheer.fromUserId == user.id && cheer.toUserId == meId))
+              (cheer.fromUserId == meBleUserId &&
+                  cheer.toUserId == user.bleUserId) ||
+              (cheer.fromUserId == user.bleUserId &&
+                  cheer.toUserId == meBleUserId))
           .toList();
 
       // latestCheer を timestamp に基づいて降順でソート
@@ -60,12 +62,11 @@ class HomeViewModel extends StateNotifier<HomeState> {
     });
   }
 
-  void fetchCheers(String meId) {
+  void fetchCheers(String meBleUserId) {
     final cheersStream = _cheerRepository.getCheersStream();
     cheersStream.listen((cheers) {
       state = state.copyWith(cheers: AsyncValue.data(cheers));
-      print(cheers);
-      updateUsersWithKeywords(meId);
+      updateUsersWithKeywords(meBleUserId);
     });
   }
 

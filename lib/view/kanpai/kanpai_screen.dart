@@ -131,7 +131,7 @@ class KanpaiScreen extends HookConsumerWidget {
 
     useEffect(() {
       homeViewModel.fetchUsers();
-      homeViewModel.fetchCheers(meId!);
+      homeViewModel.fetchCheers(me!.bleUserId!);
       return () {};
     }, []);
 
