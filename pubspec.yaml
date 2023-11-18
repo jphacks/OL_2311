@@ -76,8 +76,8 @@ flutter_launcher_icons:
   image_path: "assets/icon/appicon.png"
 
 flutter_native_splash:
-  background_image: "assets/splash/background.png"
-  image: assets/splash/foreground.png
+  background_image: "assets/splash/background-new.png"
+  image: assets/splash/foreground-new.png
 
 # The following section is specific to Flutter packages.
 flutter:
