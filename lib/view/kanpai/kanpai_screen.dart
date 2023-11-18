@@ -59,7 +59,7 @@ class KanpaiScreen extends HookConsumerWidget {
     final authState = ref.watch(authViewModelProvider);
     final meId = authState.appUser?.id;
 
-    final selectedTab = useState<KanpaiTab>(KanpaiTab.all);
+    final selectedTab = useState<KanpaiTab>(KanpaiTab.list);
     final ascending = useState<bool>(true);
     final speechText = useState<String>("");
     final latestCheeredBleUserId = useState<String?>(null);
