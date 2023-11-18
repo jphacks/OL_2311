@@ -22,7 +22,7 @@ void main() async {
   );
   final prefs = await SharedPreferences.getInstance();
 
-  await Future.delayed(const Duration(seconds: 1));
+  await Future.delayed(const Duration(milliseconds: 750));
   FlutterNativeSplash.remove();
 
   runApp(
