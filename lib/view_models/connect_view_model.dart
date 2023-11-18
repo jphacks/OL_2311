@@ -3,7 +3,6 @@ import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:kanpai/models/connect_state.dart';
 import 'package:kanpai/util/ble_connector.dart';
-import 'package:kanpai/view/onboarding/question2_screen/tech_area.dart';
 
 final connectViewModelProvider =
     StateNotifierProvider<ConnectViewModel, ConnectState>(
@@ -24,7 +23,6 @@ class ConnectViewModel extends StateNotifier<ConnectState> {
   Future<BluetoothDevice?> connect(
     String deviceUuid,
     String bleUserId,
-    TechArea? techArea,
   ) async {
     state = state.copyWith(isConnecting: true, hasError: false);
 

@@ -104,8 +104,7 @@ class ConnectScreen extends HookConsumerWidget {
           ? code
           : debugDeviceId;
 
-      final connectedDevice =
-          await viewmodel.connect(deviceId, bleUserId!, selectedTechArea);
+      final connectedDevice = await viewmodel.connect(deviceId, bleUserId!);
       if (connectedDevice == null) {
         return;
       }
