@@ -213,7 +213,7 @@ class KanpaiScreen extends HookConsumerWidget {
     useEffect(() {
       if (latestCheeredUser != null) {
         showProfileCard.value = false;
-        HapticFeedback.mediumImpact();
+        HapticFeedback.heavyImpact();
         Future.delayed(const Duration(milliseconds: 500)).then((_) {
           showProfileCard.value = true;
         });
