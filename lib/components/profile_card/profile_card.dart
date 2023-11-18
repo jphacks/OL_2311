@@ -9,11 +9,16 @@ import 'package:kanpai/util/format_time.dart';
 import 'package:kanpai/util/get_user_color.dart';
 
 class ProfileCard extends HookConsumerWidget {
-  ProfileCard({super.key, required this.user, this.hasBottomPadding = false})
+  ProfileCard(
+      {super.key,
+      required this.user,
+      this.hasBottomPadding = false,
+      this.hideBorder = false})
       : tags = user == null ? [] : [user.location!, user.techArea!];
 
   final User? user;
   final bool hasBottomPadding;
+  final bool hideBorder;
 
   final List<String> tags;
 
@@ -21,12 +26,15 @@ class ProfileCard extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final techAreaStruct = TechAreaStruct.fromText(user?.techArea);
 
+    final width = MediaQuery.of(context).size.width;
     return Container(
       decoration: BoxDecoration(
         color: const Color.fromRGBO(66, 66, 66, 1),
-        border: Border.all(
-          color: Colors.white.withOpacity(0.8),
-        ),
+        border: hideBorder
+            ? null
+            : Border.all(
+                color: Colors.white.withOpacity(0.8),
+              ),
         borderRadius: const BorderRadius.all(Radius.circular(12)),
         image: const DecorationImage(
           image: AssetImage("assets/images/bg-effect-cup.png"),
@@ -40,15 +48,18 @@ class ProfileCard extends HookConsumerWidget {
           ],
         ),
       ),
-      child: Column(
-        children: [
-          _buildHeader(techAreaStruct.solidBgColor),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
-            child: _buildBody(techAreaStruct.ringImage),
-          ),
-          if (hasBottomPadding) const SizedBox(height: 20),
-        ],
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _buildHeader(techAreaStruct.solidBgColor),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
+              child: _buildBody(techAreaStruct.ringImage),
+            ),
+            if (hasBottomPadding) const SizedBox(height: 20),
+          ],
+        ),
       ),
     );
   }
