@@ -1,12 +1,82 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:kanpai/components/water_animation.dart';
 import 'package:kanpai/main.dart';
 import 'package:kanpai/view/kanpai/kanpai_screen.dart';
 import 'package:kanpai/view/onboarding/connect_screen/qr_capture_sheet.dart';
 import 'package:kanpai/view/onboarding/onboarding_layout.dart';
 import 'package:kanpai/view_models/connect_view_model.dart';
 import 'package:kanpai/view_models/question2_view_model.dart';
+
+class WaterRoute<T> extends PageRoute<T> {
+  WaterRoute({required this.builder}) : super();
+
+  final WidgetBuilder builder;
+
+  @override
+  bool get opaque => false;
+
+  @override
+  bool get barrierDismissible => true;
+
+  @override
+  Duration get transitionDuration => const Duration(milliseconds: 3000);
+
+  @override
+  bool get maintainState => true;
+
+  @override
+  Color get barrierColor => Colors.black54;
+
+  @override
+  Widget buildTransitions(BuildContext context, Animation<double> animation,
+      Animation<double> secondaryAnimation, Widget child) {
+    return Stack(
+      children: [
+        WaterAnimation(
+            duration: const Duration(milliseconds: 750),
+            animation: animation.drive(Tween(begin: 1.0, end: 0.0)),
+            direction: WaterAnimationDirection.down,
+            child: AnimatedBuilder(
+              animation: animation.drive(TweenSequence([
+                TweenSequenceItem(
+                  tween: Tween(begin: 0.0, end: 0.0),
+                  weight: 10,
+                ),
+                TweenSequenceItem(
+                  tween: Tween(begin: 0.0, end: 1.0),
+                  weight: 1,
+                ),
+                TweenSequenceItem(
+                  tween: Tween(begin: 1.0, end: 1.0),
+                  weight: 10,
+                ),
+              ])),
+              builder: (context, _) {
+                return Opacity(
+                    opacity: animation.value < 0.5
+                        ? 0
+                        : 0.5 < animation.value
+                            ? 1.0
+                            : animation.value,
+                    child: child);
+              },
+              child: child,
+            ))
+      ],
+    );
+  }
+
+  @override
+  Widget buildPage(BuildContext context, Animation<double> animation,
+      Animation<double> secondaryAnimation) {
+    return builder(context);
+  }
+
+  @override
+  String? get barrierLabel => "とじる";
+}
 
 class ConnectScreen extends HookConsumerWidget {
   const ConnectScreen({super.key});
@@ -19,6 +89,8 @@ class ConnectScreen extends HookConsumerWidget {
     final prefs = ref.watch(sharedPreferencesProvider);
     final selectedTechArea =
         ref.watch(question2ViewModelProvider).asData?.value;
+
+    final controller = useWaterAnimationController();
 
     final showParingSheet = useCallback(() async {
       final code = await showQrCaptureSheet(context);
@@ -39,14 +111,24 @@ class ConnectScreen extends HookConsumerWidget {
       if (connectedDevice == null) {
         return;
       }
+
+      controller.start();
+      await Future.delayed(const Duration(milliseconds: 4000));
+
       if (!context.mounted) {
         return;
       }
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (_) => KanpaiScreen(targetDevice: connectedDevice),
-        ),
-      );
+
+      Navigator.of(context).push(PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            KanpaiScreen(targetDevice: null),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return FadeTransition(opacity: animation, child: child);
+        },
+        transitionDuration: const Duration(milliseconds: 1000),
+      ));
+
+      controller.reset();
     }, []);
 
     useEffect(() {
@@ -66,11 +148,12 @@ class ConnectScreen extends HookConsumerWidget {
             size: 30,
             color: Colors.transparent,
           ),
-          onPressed: () => Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (_) => KanpaiScreen(targetDevice: null),
-            ),
-          ),
+          onPressed: () {
+            Navigator.of(context).push(WaterRoute(
+              builder: (context) => KanpaiScreen(targetDevice: null),
+            ));
+            controller.reset();
+          },
         ),
       ],
       onNextPressed: showParingSheet,

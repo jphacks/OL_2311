@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:firebase_auth/firebase_auth.dart' as fba;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/svg.dart';
@@ -10,6 +11,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:kanpai/components/profile_card/profile_card.dart';
 import 'package:kanpai/components/tab_button.dart';
 import 'package:kanpai/components/user_icon_panel.dart';
+import 'package:kanpai/components/water_animation.dart';
 import 'package:kanpai/models/user_model.dart';
 import 'package:kanpai/util/bluetooth_ext.dart';
 import 'package:kanpai/util/last_where_or_null.dart';
@@ -56,6 +58,13 @@ class KanpaiScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final controller = useWaterAnimationController();
+
+    useEffect(() {
+      WidgetsBinding.instance.addPostFrameCallback((_) => controller.start());
+      return null;
+    }, []);
+
     final authState = ref.watch(authViewModelProvider);
     final meId = authState.appUser?.id;
 
@@ -204,6 +213,7 @@ class KanpaiScreen extends HookConsumerWidget {
     useEffect(() {
       if (latestCheeredUser != null) {
         showProfileCard.value = false;
+        HapticFeedback.mediumImpact();
         Future.delayed(const Duration(milliseconds: 500)).then((_) {
           showProfileCard.value = true;
         });
