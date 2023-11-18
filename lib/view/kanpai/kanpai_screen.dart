@@ -138,7 +138,7 @@ class KanpaiScreen extends HookConsumerWidget {
         me?.cheerUserIds?.lastWhereOrNull((id) => id != meBleUserId);
 
     final (latestCheeredUser, prevLatestCheeredUser) = usePreviousMemorized(() {
-      return users.firstWhere((u) => u.bleUserId == latestCheeredUserId);
+      return users.firstWhereOrNull((u) => u.bleUserId == latestCheeredUserId);
     }, null, [latestCheeredUserId]);
 
     final filteredUsers = useMemoized(() {

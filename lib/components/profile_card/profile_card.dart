@@ -26,7 +26,6 @@ class ProfileCard extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final techAreaStruct = TechAreaStruct.fromText(user?.techArea);
 
-    final width = MediaQuery.of(context).size.width;
     return Container(
       decoration: BoxDecoration(
         color: const Color.fromRGBO(66, 66, 66, 1),
@@ -123,37 +122,40 @@ class ProfileCard extends HookConsumerWidget {
               width: 10,
             ),
             if (user != null)
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    user!.name!,
-                    style: const TextStyle(
-                        color: Colors.black87,
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold),
-                  ),
-                  Text(
-                    formatDateTime(DateTime.now()),
-                    style: TextStyle(
-                      color: Colors.black.withOpacity(0.6),
-                      fontSize: 12,
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text(
+                      user!.name!,
+                      style: const TextStyle(
+                          color: Colors.black87,
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold),
+                      overflow: TextOverflow.ellipsis,
                     ),
-                  ),
-                  const SizedBox(
-                    height: 8,
-                  ),
-                  Wrap(
-                    spacing: 8,
-                    children: tags
-                        .map((tag) => Text("#$tag",
-                            style: const TextStyle(
-                                fontSize: 12,
-                                color: Colors.black87,
-                                fontWeight: FontWeight.bold)))
-                        .toList(),
-                  )
-                ],
+                    Text(
+                      formatDateTime(DateTime.now()),
+                      style: TextStyle(
+                        color: Colors.black.withOpacity(0.6),
+                        fontSize: 12,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 8,
+                    ),
+                    Wrap(
+                      spacing: 8,
+                      children: tags
+                          .map((tag) => Text("#$tag",
+                              style: const TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.black87,
+                                  fontWeight: FontWeight.bold)))
+                          .toList(),
+                    )
+                  ],
+                ),
               ),
           ],
         ),
