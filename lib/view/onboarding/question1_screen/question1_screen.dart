@@ -18,6 +18,7 @@ class Question1Screen extends HookConsumerWidget {
     return OnboardingLayout(
       title: "出身地はどこですか？",
       hide: residenceArea.value == null,
+      indicator: residenceArea.value == null ? 0 : 1,
       onNextPressed: () {
         question1ViewModel.updateMe(residenceArea.value!.label);
         Navigator.of(context)

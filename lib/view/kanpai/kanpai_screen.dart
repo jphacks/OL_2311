@@ -12,14 +12,15 @@ import 'package:kanpai/components/tab_button.dart';
 import 'package:kanpai/components/user_icon_panel.dart';
 import 'package:kanpai/models/user_model.dart';
 import 'package:kanpai/util/bluetooth_ext.dart';
+import 'package:kanpai/util/last_where_or_null.dart';
+import 'package:kanpai/util/use_previous_memorized.dart';
 import 'package:kanpai/view_models/auth_view_model.dart';
 import 'package:kanpai/view_models/kanpai_view_model.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 
 enum KanpaiTab {
-  all,
-  done,
-  notDone;
+  list,
+  history,
 }
 
 class KanpaiScreen extends HookConsumerWidget {
@@ -31,6 +32,27 @@ class KanpaiScreen extends HookConsumerWidget {
   final BluetoothDevice? targetDevice;
   late StreamSubscription<List<int>> _kanpaiSubscription;
   final _speechToText = SpeechToText();
+
+  void startKanpaiListener(
+    void Function(String fromUserId, String toBleUserId) handler,
+  ) async {
+    await targetDevice!.connectAndUpdateStream();
+    final characteristic = await targetDevice!.getNotifyCharacteristic();
+    final fromUserId = fba.FirebaseAuth.instance.currentUser?.uid;
+    if (characteristic == null || fromUserId == null) return;
+
+    _kanpaiSubscription = characteristic.lastValueStream.listen((value) {
+      print('arrivezvalue: $value');
+      if (value.isEmpty) return;
+
+      final toBleUserId = utf8.decode(value);
+
+      debugPrint('cheers occurred from $fromUserId to $toBleUserId');
+      handler(fromUserId, toBleUserId);
+    });
+
+    await characteristic.setNotifyValue(true);
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -48,6 +70,7 @@ class KanpaiScreen extends HookConsumerWidget {
         .maybeWhen(data: (data) => data, orElse: () => <User>[]);
 
     final me = users.where((u) => u.id == meId).firstOrNull;
+    final meBleUserId = me?.bleUserId;
 
     // 録音のハンドリング
     void handleRecording(String fromUserId, String toBleUserId) async {
@@ -101,45 +124,46 @@ class KanpaiScreen extends HookConsumerWidget {
       return () {};
     }, []);
 
-    final kanpaiCount = useMemoized(() {
-      try {
-        return me?.cheerUserIds?.length ?? 0;
-      } on StateError catch (_) {
-        return 0;
-      }
-    }, [users, meId]);
+    final kanpaiCount = me?.cheerUserIds?.length ?? 0;
 
     final alreadyCheersUserCount = useMemoized(
-        () =>
-            users.where((u) => u.cheerUserIds?.contains(meId) ?? false).length,
+        () => users
+            .where((u) => u.cheerUserIds?.contains(meBleUserId) ?? false)
+            .length,
         [users, meId]);
 
     final allUserCount = useMemoized(() => users.length - 1, [users]);
 
-    final latestCheeredUser = useMemoized(() {
-      try {
-        final latestCheeredUserId =
-            me?.cheerUserIds?.lastWhere((id) => id != meId);
-        return users.firstWhere((u) => u.id == latestCheeredUserId);
-      } on StateError catch (_) {
-        return null;
-      }
-    }, [users, meId]);
+    final latestCheeredUserId =
+        me?.cheerUserIds?.lastWhereOrNull((id) => id != meBleUserId);
+
+    final (latestCheeredUser, prevLatestCheeredUser) = usePreviousMemorized(() {
+      return users.firstWhere((u) => u.bleUserId == latestCheeredUserId);
+    }, null, [latestCheeredUserId]);
 
     final filteredUsers = useMemoized(() {
-      final filteredUsers = switch (selectedTab.value) {
-        KanpaiTab.all => users,
-        KanpaiTab.done =>
-          users.where((u) => (u.cheerUserIds?.contains(meId) ?? false)),
-        KanpaiTab.notDone =>
-          users.where((u) => (!(u.cheerUserIds?.contains(meId) ?? false))),
-      };
-      if (ascending.value) {
-        return filteredUsers.toList();
-      } else {
-        return filteredUsers.toList().reversed;
+      if (selectedTab.value == KanpaiTab.history) {
+        final cheerUserIds = me?.cheerUserIds ?? [];
+
+        // 乾杯した回数をカウントする
+        final cheerUserIdsCountMap = users
+            .where((user) => user.id != meId && user.bleUserId != null)
+            .map((user) => user.bleUserId!)
+            .fold<Map<String, int>>(
+                {}, (map, bleUserId) => {...map, bleUserId: 0});
+        for (String bleUserId in cheerUserIds) {
+          cheerUserIdsCountMap[bleUserId] =
+              (cheerUserIdsCountMap[bleUserId] ?? 0) + 1;
+        }
+
+        // 乾杯した回数に応じてソートする
+        final sortedCheerUserIds = cheerUserIdsCountMap.entries.toList();
+        sortedCheerUserIds.sort((a, b) => b.value.compareTo(a.value));
+        return sortedCheerUserIds
+            .map((e) => users.firstWhere((user) => user.bleUserId == e.key));
       }
-    }, [users, selectedTab.value, ascending.value]);
+      return users.where((user) => user.id != meBleUserId);
+    }, [users, selectedTab.value, meBleUserId, meId]);
 
     final viewmodel = ref.watch(homeViewModelProvider.notifier);
 
@@ -176,9 +200,24 @@ class KanpaiScreen extends HookConsumerWidget {
       };
     }, []);
 
+    final showProfileCard = useState(true);
+    useEffect(() {
+      if (latestCheeredUser != null) {
+        showProfileCard.value = false;
+        Future.delayed(const Duration(milliseconds: 500)).then((_) {
+          showProfileCard.value = true;
+        });
+      }
+      return null;
+    }, [latestCheeredUser?.bleUserId]);
+
     final appbar = AppBar(
       elevation: 0,
       backgroundColor: Colors.transparent,
+      title: const Text(
+        "JPHACKS 2023",
+        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+      ),
       leading: IconButton(
         onPressed: () async {
           await targetDevice?.disconnect();
@@ -217,43 +256,62 @@ class KanpaiScreen extends HookConsumerWidget {
                     fit: BoxFit.contain,
                     alignment: Alignment.topCenter)),
             child: Padding(
-              padding: const EdgeInsets.only(top: 50, bottom: 160),
+              padding: EdgeInsets.only(
+                  top: appbar.preferredSize.height + 30, bottom: 160),
               child: Column(
                 children: [
-                  SizedBox(
-                    width: double.infinity,
-                    height: 320,
-                    child: _buildCounter(kanpaiCount),
+                  const SizedBox(
+                    height: 40,
                   ),
-                  Padding(
+                  _buildCounter(kanpaiCount),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Stack(
+                    alignment: AlignmentDirectional.bottomCenter,
+                    children: [
+                      if (latestCheeredUser != null)
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              left: 20, right: 20, bottom: 28),
+                          child: Stack(
+                            children: [
+                              if (prevLatestCheeredUser != null)
+                                ProfileCard(
+                                  user: prevLatestCheeredUser,
+                                  hasBottomPadding: true,
+                                ),
+                              AnimatedContainer(
+                                duration: showProfileCard.value
+                                    ? const Duration(milliseconds: 500)
+                                    : Duration.zero,
+                                transform: showProfileCard.value
+                                    ? Matrix4.translationValues(0, 0, 0)
+                                    : Matrix4.translationValues(0, 240, 0),
+                                curve: Curves.easeInOut,
+                                child: ProfileCard(
+                                  user: latestCheeredUser,
+                                  hasBottomPadding: true,
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      else
+                        const SizedBox(height: 260),
+                      Image.asset(
+                        "assets/images/partition.png",
+                      )
+                    ],
+                  ),
+                  Container(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
+                    color: Colors.white,
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        ProfileCard(user: latestCheeredUser),
-                        const SizedBox(
-                          height: 52,
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text("乾杯した人数",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .labelMedium
-                                    ?.copyWith(fontWeight: FontWeight.bold)),
-                            Text("$alreadyCheersUserCount / $allUserCount",
-                                style: const TextStyle(
-                                    fontSize: 24,
-                                    fontFamily: "Chillax",
-                                    fontWeight: FontWeight.w600)),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
                         _buildTabbar(context,
-                            selectedTab: selectedTab, ascending: ascending),
+                            selectedTab: selectedTab,
+                            label: "$alreadyCheersUserCount / $allUserCount"),
                         const SizedBox(
                           height: 24,
                         ),
@@ -261,7 +319,7 @@ class KanpaiScreen extends HookConsumerWidget {
                           _buildUserGrid(context, me: me, users: filteredUsers),
                       ],
                     ),
-                  ),
+                  )
                 ],
               ),
             ),
@@ -280,17 +338,17 @@ class KanpaiScreen extends HookConsumerWidget {
                 fontSize: 12,
                 height: 1,
                 fontWeight: FontWeight.w600)),
-        const SizedBox(height: 16),
+        const SizedBox(height: 12),
         Text("$kanpaiCount",
             style: const TextStyle(
                 color: Colors.white,
-                fontSize: 54,
+                fontSize: 40,
                 fontFamily: "Chillax",
                 height: 1,
                 fontWeight: FontWeight.w600)),
         SvgPicture.asset(
           "assets/svgs/kanpai-logo.svg",
-          height: 28,
+          height: 20,
           theme: const SvgTheme(currentColor: Colors.white),
         ),
       ],
@@ -298,69 +356,40 @@ class KanpaiScreen extends HookConsumerWidget {
   }
 
   Row _buildTabbar(BuildContext context,
-      {required ValueNotifier<KanpaiTab> selectedTab,
-      required ValueNotifier<bool> ascending}) {
+      {required ValueNotifier<KanpaiTab> selectedTab, required String label}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Row(
           children: [
             TabButton(
-                isSelected: selectedTab.value == KanpaiTab.all,
-                onSelected: () => selectedTab.value = KanpaiTab.all,
+                isSelected: selectedTab.value == KanpaiTab.list,
+                onSelected: () => selectedTab.value = KanpaiTab.list,
                 child: _buildTabButtonText(context,
-                    label: "すべて",
-                    isSelected: selectedTab.value == KanpaiTab.all)),
+                    label: "名前",
+                    isSelected: selectedTab.value == KanpaiTab.list)),
             const SizedBox(
               width: 4,
             ),
             TabButton(
-                isSelected: selectedTab.value == KanpaiTab.notDone,
-                onSelected: () => selectedTab.value = KanpaiTab.notDone,
+                isSelected: selectedTab.value == KanpaiTab.history,
+                onSelected: () => selectedTab.value = KanpaiTab.history,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    _buildTabButtonIcon(selectedTab.value == KanpaiTab.history),
                     _buildTabButtonText(context,
-                        label: "未 ",
-                        isSelected: selectedTab.value == KanpaiTab.notDone),
-                    _buildTabButtonIcon(selectedTab.value == KanpaiTab.notDone),
-                  ],
-                )),
-            const SizedBox(
-              width: 4,
-            ),
-            TabButton(
-                isSelected: selectedTab.value == KanpaiTab.done,
-                onSelected: () => selectedTab.value = KanpaiTab.done,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _buildTabButtonIcon(selectedTab.value == KanpaiTab.done),
-                    _buildTabButtonText(context,
-                        label: " 済",
-                        isSelected: selectedTab.value == KanpaiTab.done),
+                        label: " した順",
+                        isSelected: selectedTab.value == KanpaiTab.history),
                   ],
                 )),
           ],
         ),
-        OutlinedButton.icon(
-            style: ButtonStyle(
-              side: MaterialStateProperty.all(
-                  const BorderSide(color: Colors.black87)),
-              padding: MaterialStateProperty.all(
-                  const EdgeInsets.symmetric(vertical: 0, horizontal: 8)),
-              backgroundColor: MaterialStateProperty.all(Colors.transparent),
-              foregroundColor: MaterialStateProperty.all(Colors.black87),
-              overlayColor: MaterialStateProperty.all(Colors.black12),
-            ),
-            icon: Icon(
-              ascending.value ? Icons.arrow_downward : Icons.arrow_upward,
-              size: 16,
-            ),
-            onPressed: () {
-              ascending.value = !ascending.value;
-            },
-            label: const Text("名前"))
+        Text(label,
+            style: const TextStyle(
+                fontSize: 24,
+                fontFamily: "Chillax",
+                fontWeight: FontWeight.w600))
       ],
     );
   }
@@ -388,7 +417,7 @@ class KanpaiScreen extends HookConsumerWidget {
         runSpacing: 24,
         children: users.map((user) {
           final cheersCount =
-              me.cheerUserIds?.where((id) => id == user.id).length ?? 0;
+              me.cheerUserIds?.where((id) => id == user.bleUserId).length ?? 0;
           return SizedBox(
               width: (deviceWidth - 60) / 2,
               child: UserIconPanel(

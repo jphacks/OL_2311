@@ -23,7 +23,6 @@ class UserRepository {
 
   Future<User?> getUser(String userId) async {
     final res = await _db.collection('users').doc(userId).get();
-    print(res.data());
     if (res.data() == null) return null;
     return User.fromJson(res.data()!);
   }

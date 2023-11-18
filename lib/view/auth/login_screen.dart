@@ -5,6 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:kanpai/main.dart';
 import 'package:kanpai/view/auth/ble_config_screen.dart';
 import 'package:kanpai/view/onboarding/profile_screen/profile_screen.dart';
+import 'package:kanpai/view/tutorial/tutorial_screen.dart';
 import 'package:kanpai/view_models/auth_view_model.dart';
 
 class LoginScreen extends HookConsumerWidget {
@@ -71,6 +72,10 @@ class LoginScreen extends HookConsumerWidget {
                       height: 24,
                     ),
                     _buildGitHubLoginButton(context, ref),
+                    const SizedBox(
+                      height: 12,
+                    ),
+                    const _buildTutorialButton()
                   ],
                 ),
               )
@@ -141,5 +146,26 @@ class LoginScreen extends HookConsumerWidget {
             style: TextStyle(fontSize: 15),
           )),
     );
+  }
+}
+
+class _buildTutorialButton extends StatelessWidget {
+  const _buildTutorialButton();
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (_) => const Tutorial1Screen(),
+                fullscreenDialog: true),
+          );
+        },
+        child: const Text(
+          "チュートリアル",
+          style: TextStyle(color: Colors.black54),
+        ));
   }
 }

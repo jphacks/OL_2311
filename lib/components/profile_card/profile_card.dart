@@ -2,224 +2,186 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:kanpai/components/profile_card/profile_card_tag.dart';
+import 'package:kanpai/components/profile_card/icon_chip.dart';
+import 'package:kanpai/components/profile_card/sns_button.dart';
 import 'package:kanpai/models/user_model.dart';
-import 'package:url_launcher/link.dart';
+import 'package:kanpai/util/format_time.dart';
+import 'package:kanpai/util/get_user_color.dart';
 
 class ProfileCard extends HookConsumerWidget {
-  const ProfileCard({super.key, required this.user});
+  ProfileCard(
+      {super.key,
+      required this.user,
+      this.hasBottomPadding = false,
+      this.hideBorder = false})
+      : tags = user == null ? [] : [user.location!, user.techArea!];
 
   final User? user;
+  final bool hasBottomPadding;
+  final bool hideBorder;
+
+  final List<String> tags;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final techAreaStruct = TechAreaStruct.fromText(user?.techArea);
+
+    final width = MediaQuery.of(context).size.width;
     return Container(
-      decoration: const BoxDecoration(
-        color: Color.fromRGBO(66, 66, 66, 1),
-        borderRadius: BorderRadius.all(Radius.circular(12)),
-        image: DecorationImage(
-          image: AssetImage("assets/images/card-bg.png"),
+      decoration: BoxDecoration(
+        color: const Color.fromRGBO(66, 66, 66, 1),
+        border: hideBorder
+            ? null
+            : Border.all(
+                color: Colors.white.withOpacity(0.8),
+              ),
+        borderRadius: const BorderRadius.all(Radius.circular(12)),
+        image: const DecorationImage(
+          image: AssetImage("assets/images/bg-effect-cup.png"),
           fit: BoxFit.cover,
         ),
+        gradient: RadialGradient(
+          radius: 1,
+          colors: [
+            techAreaStruct.cardBgGradientBegin,
+            techAreaStruct.cardBgGradientEnd
+          ],
+        ),
       ),
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        children: [
-          _buildHeader(),
-          const Divider(
-            height: 1,
-          ),
-          SizedBox(
-            height: user == null ? 25 : 35,
-          ),
-          _buildBody(),
-          SizedBox(
-            height: user == null ? 25 : 35,
-          ),
-          _buildFooter()
-        ],
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _buildHeader(techAreaStruct.solidBgColor),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
+              child: _buildBody(techAreaStruct.ringImage),
+            ),
+            if (hasBottomPadding) const SizedBox(height: 20),
+          ],
+        ),
       ),
     );
   }
 
-  Container _buildHeader() {
+  Container _buildHeader(Color color) {
     return Container(
-      padding: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
       decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            color: Colors.white.withOpacity(0.2),
-            width: 1,
-          ),
-        ),
+        color: color,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Row(
-            children: [
-              const Text(
-                "直近の ",
-                style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold),
-              ),
-              SvgPicture.asset(
-                "assets/svgs/kanpai-logo.svg",
-                height: 24,
-                theme: const SvgTheme(currentColor: Colors.white),
-              ),
-            ],
+          const Text(
+            "直近の ",
+            style: TextStyle(
+                fontSize: 12, color: Colors.white, fontWeight: FontWeight.bold),
           ),
-          if (user != null)
-            Text(
-              "10/29 14:55",
-              style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.white.withOpacity(0.6),
-                  fontWeight: FontWeight.bold),
-            ),
+          SvgPicture.asset(
+            "assets/svgs/kanpai-logo.svg",
+            height: 20,
+            theme: const SvgTheme(currentColor: Colors.white),
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildFooter() {
+  Widget _buildBody(String ringImageUrl) {
     if (user == null) {
-      return Wrap(
-        runSpacing: 6,
-        children: [
-          const Text(
-            "まだ ",
-            style: TextStyle(
+      return const Center(
+        child: Text(
+          "? ? ?",
+          style: TextStyle(
               color: Colors.white,
-              fontSize: 14,
-            ),
-          ),
-          SvgPicture.asset(
-            "assets/svgs/kanpai-logo.svg",
-            height: 20,
-            theme: const SvgTheme(currentColor: Colors.white),
-          ),
-          const Text(
-            " した人がいません。近くの人と ",
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 14,
-            ),
-          ),
-          SvgPicture.asset(
-            "assets/svgs/kanpai-logo.svg",
-            height: 20,
-            theme: const SvgTheme(currentColor: Colors.white),
-          ),
-          const Text(
-            " してみましょう！",
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 14,
-            ),
-          ),
-        ],
+              fontFamily: "Kollektif_sub",
+              fontSize: 22,
+              fontWeight: FontWeight.bold),
+        ),
       );
     }
-
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
+    return Column(
       children: [
-        Link(
-            uri: Uri.parse("https://www.instagram.com/${user!.instagramId}"),
-            builder: (BuildContext context, FollowLink? followLink) => InkWell(
-                  onTap: followLink,
-                  child: const FaIcon(
-                    FontAwesomeIcons.instagram,
-                    color: Colors.white,
-                    size: 18,
-                  ),
-                )),
-        const SizedBox(
-          width: 12,
-        ),
-        Link(
-            // TODO: githubアカウント
-            uri: Uri.parse("https://github.com"),
-            builder: (BuildContext context, FollowLink? followLink) => InkWell(
-                  onTap: followLink,
-                  child: const FaIcon(
-                    FontAwesomeIcons.github,
-                    color: Colors.white,
-                    size: 18,
-                  ),
-                )),
-        const SizedBox(
-          width: 12,
-        ),
-        Link(
-          uri: Uri.parse("https://twitter.com/${user!.xId}"),
-          builder: (BuildContext context, FollowLink? followLink) => InkWell(
-            onTap: followLink,
-            child: const FaIcon(
-              FontAwesomeIcons.xTwitter,
-              color: Colors.white,
-              size: 18,
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            if (user != null)
+              IconChip(
+                imageUrl: user!.profileImageUrl!,
+                ringImageUrl: ringImageUrl,
+              )
+            else
+              Container(
+                width: 60,
+                height: 60,
+                decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(999)),
+              ),
+            const SizedBox(
+              width: 10,
             ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Row _buildBody() {
-    return Row(
-      children: [
-        if (user != null)
-          CircleAvatar(
-              radius: 30, backgroundImage: NetworkImage(user!.profileImageUrl!))
-        else
-          Container(
-            width: 60,
-            height: 60,
-            decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(999)),
-          ),
-        const SizedBox(
-          width: 12,
-        ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: user == null
-              ? [
-                  const Text(
-                    "まだ見ぬだれか",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold),
-                  ),
-                ]
-              : [
+            if (user != null)
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
                   Text(
                     user!.name!,
                     style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
+                        color: Colors.black87,
+                        fontSize: 24,
                         fontWeight: FontWeight.bold),
                   ),
+                  Text(
+                    formatDateTime(DateTime.now()),
+                    style: TextStyle(
+                      color: Colors.black.withOpacity(0.6),
+                      fontSize: 12,
+                    ),
+                  ),
                   const SizedBox(
-                    height: 6,
+                    height: 8,
                   ),
                   Wrap(
                     spacing: 8,
-                    children: [
-                      ProfileCardTag(label: user!.location!),
-                      ProfileCardTag(label: user!.techArea!)
-                    ],
+                    children: tags
+                        .map((tag) => Text("#$tag",
+                            style: const TextStyle(
+                                fontSize: 12,
+                                color: Colors.black87,
+                                fontWeight: FontWeight.bold)))
+                        .toList(),
                   )
                 ],
-        )
+              ),
+          ],
+        ),
+        const SizedBox(
+          height: 20,
+        ),
+        if (user != null)
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              SnsButton(
+                  url: "https://www.instagram.com/${user!.instagramId}",
+                  icon: FontAwesomeIcons.instagram),
+              const SizedBox(
+                width: 12,
+              ),
+              const SnsButton(
+                  // TODO: githubアカウント
+                  url: "https://github.com",
+                  icon: FontAwesomeIcons.github),
+              const SizedBox(
+                width: 12,
+              ),
+              SnsButton(
+                  url: "https://twitter.com/${user!.xId}",
+                  icon: FontAwesomeIcons.xTwitter),
+            ],
+          )
       ],
     );
   }
