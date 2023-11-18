@@ -36,6 +36,15 @@ class UserRepository {
     return User.fromJson(res.docs.first.data());
   }
 
+  Future<String?> getUserIdByBleUserId(String bleUserId) async {
+    final res = await _db
+        .collection('users')
+        .where('bleUserId', isEqualTo: bleUserId)
+        .get();
+    if (res.docs.isEmpty) return null;
+    return res.docs.first.id;
+  }
+
   Future<User?> getMe() async {
     final currentUser = _authRepository.getCurrentUser();
     if (currentUser == null) return null;
