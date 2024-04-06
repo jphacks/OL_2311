@@ -15,11 +15,11 @@ class BleConnector {
 
     final scanResultsSubscription = FlutterBluePlus.scanResults.listen(
       (results) {
-        targetDevice = results
+        final allDevices = results
             .where((elt) => elt.device.platformName == "Kanpai")
-            .firstOrNull
-            ?.device;
-        print(targetDevice);
+            .toList();
+        allDevices.sort((a, b) => b.rssi.compareTo(a.rssi));
+        targetDevice = allDevices.first.device;
       },
     );
 
@@ -29,6 +29,7 @@ class BleConnector {
       timeout: scanDuration,
     );
     await Future.delayed(scanDuration);
+    await FlutterBluePlus.stopScan();
     scanResultsSubscription.cancel();
     // --- Scan finish ---
 
