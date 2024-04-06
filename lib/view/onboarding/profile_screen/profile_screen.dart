@@ -15,14 +15,14 @@ class ProfileScreen extends HookConsumerWidget {
     final ProfileViewModel = ref.watch(profileViewModelProvider.notifier);
     final displayName = FirebaseAuth.instance.currentUser!.displayName;
 
-    final nameController = useTextEditingController(text: displayName);
+    final usernameController = useTextEditingController(text: displayName);
 
     return OnboardingLayout(
       title: "プロフィールはこちらで\nよろしいですか？",
       onNextPressed: () {
         // TODO: 画像を更新できるようにする
-        ProfileViewModel.updateMe(
-            nameController.text, FirebaseAuth.instance.currentUser!.photoURL!);
+        ProfileViewModel.updateMe(usernameController.text,
+            FirebaseAuth.instance.currentUser!.photoURL!);
         Navigator.of(context)
             .push(MaterialPageRoute(builder: (_) => const Question1Screen()));
       },
@@ -69,7 +69,7 @@ class ProfileScreen extends HookConsumerWidget {
           FormItem(
               label: "名前",
               helperText: "乾杯する相手に表示される名前です",
-              controller: nameController),
+              controller: usernameController),
         ],
       ),
     );

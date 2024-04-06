@@ -13,7 +13,8 @@ class Question3ViewModel extends StateNotifier<AsyncValue<List<User>>> {
 
   Question3ViewModel(this._userRepository) : super(const AsyncValue.loading());
 
-  void updateMe(String xId, String instagramId, String homepageLink) async {
+  void updateMe(String xId, String instagramId, String githubId,
+      String websiteLink) async {
     final user = await _userRepository.getMe();
     if (user == null) return;
 
@@ -22,7 +23,8 @@ class Question3ViewModel extends StateNotifier<AsyncValue<List<User>>> {
       user.copyWith(
         xId: xId,
         instagramId: instagramId,
-        homepageLink: homepageLink,
+        githubId: githubId,
+        websiteLink: websiteLink,
       ),
     );
   }

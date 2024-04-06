@@ -13,14 +13,14 @@ class ProfileViewModel extends StateNotifier<AsyncValue<List<User>>> {
 
   ProfileViewModel(this._userRepository) : super(const AsyncValue.loading());
 
-  void updateMe(String name, String? profileImageUrl) async {
+  void updateMe(String username, String? profileImageUrl) async {
     final user = await _userRepository.getMe();
     if (user == null) return;
 
     _userRepository.updateUser(
       user.id,
       user.copyWith(
-        name: name,
+        username: username,
         profileImageUrl: profileImageUrl,
       ),
     );

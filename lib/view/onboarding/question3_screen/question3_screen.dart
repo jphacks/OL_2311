@@ -17,7 +17,8 @@ class Question3Screen extends HookConsumerWidget {
 
     final xController = useTextEditingController();
     final instagramController = useTextEditingController();
-    final homepageController = useTextEditingController();
+    final githubController = useTextEditingController();
+    final websiteController = useTextEditingController();
 
     final disallowAutoExchange = useState(false);
 
@@ -31,12 +32,15 @@ class Question3Screen extends HookConsumerWidget {
 
     return OnboardingLayout(
         title: "SNSで繋がろう",
-        description: "※乾杯した相手に公開されます",
+        description: "※入力されたSNSは乾杯した相手にのみ公開されます",
         nextLabel: "コップと接続する",
         indicator: isDirty.value ? 3 : 2,
         onNextPressed: () {
-          question3ViewModel.updateMe(xController.text,
-              instagramController.text, homepageController.text);
+          question3ViewModel.updateMe(
+              xController.text,
+              instagramController.text,
+              githubController.text,
+              websiteController.text);
           Navigator.of(context).push(
             MaterialPageRoute(
               builder: (_) => const ConnectScreen(),
@@ -60,26 +64,17 @@ class Question3Screen extends HookConsumerWidget {
               ),
               const SizedBox(height: 16),
               FormItem(
-                label: "ホームページ",
-                controller: homepageController,
-                hintText: "リンクを入力してください",
+                label: "GitHub",
+                controller: githubController,
+                hintText: "IDを入力してください",
               ),
               const SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Checkbox(
-                    value: disallowAutoExchange.value,
-                    onChanged: (value) {
-                      disallowAutoExchange.value = value!;
-                    },
-                  ),
-                  const Text(
-                    "乾杯によるSNS自動交換を行わない",
-                    style: TextStyle(fontSize: 14),
-                  ),
-                ],
-              )
+              FormItem(
+                label: "ウェブサイト",
+                controller: websiteController,
+                hintText: "URLを入力してください",
+              ),
+              const SizedBox(height: 16),
             ],
           ),
         ));

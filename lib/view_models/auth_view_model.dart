@@ -44,7 +44,7 @@ class AuthViewModel extends StateNotifier<AuthState> {
       final currentUser = _authRepository.getCurrentUser();
       final newUser = User(
         id: currentUser!.uid,
-        name: currentUser.displayName ?? '',
+        username: currentUser.displayName ?? '',
         profileImageUrl: currentUser.photoURL ?? '',
       );
       await _userRepository.createUser(newUser);
