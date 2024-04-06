@@ -16,9 +16,10 @@ class BleConnector {
     final scanResultsSubscription = FlutterBluePlus.scanResults.listen(
       (results) {
         targetDevice = results
-            .where((elt) => elt.device.remoteId.str == deviceUuid)
+            .where((elt) => elt.device.platformName == "Kanpai")
             .firstOrNull
             ?.device;
+        print(targetDevice);
       },
     );
 
