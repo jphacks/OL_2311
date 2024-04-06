@@ -126,6 +126,9 @@ class ConnectScreen extends HookConsumerWidget {
 
     return OnboardingLayout(
       title: hasError ? "接続に失敗しました" : "接続を開始しますか？",
+      onPopHandler: () async {
+        await viewmodel.disconnect();
+      },
       loading: isConnecting,
       nextLabel: isConnecting ? "接続中..." : "接続を開始",
       actions: [

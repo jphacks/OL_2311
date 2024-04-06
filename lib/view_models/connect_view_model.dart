@@ -20,6 +20,12 @@ class ConnectViewModel extends StateNotifier<ConnectState> {
 
   final BleConnector _bleConnector;
 
+  Future<void> disconnect() async {
+    final device = state.connectedDevice;
+    print("Connected Device: $device");
+    await device?.disconnect();
+  }
+
   Future<BluetoothDevice?> connect(
     String deviceUuid,
     String bleUserId,

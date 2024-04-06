@@ -14,6 +14,7 @@ class OnboardingLayout extends HookConsumerWidget {
     this.loading = false,
     this.indicator,
     this.actions,
+    this.onPopHandler,
   });
 
   final String title;
@@ -25,6 +26,7 @@ class OnboardingLayout extends HookConsumerWidget {
   final bool loading;
   final int? indicator;
   final List<Widget>? actions;
+  final Future<void> Function()? onPopHandler;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -50,7 +52,8 @@ class OnboardingLayout extends HookConsumerWidget {
       elevation: 0,
       backgroundColor: Colors.transparent,
       leading: IconButton(
-        onPressed: () {
+        onPressed: () async {
+          await onPopHandler?.call();
           Navigator.of(context).pop();
         },
         icon: const Icon(
