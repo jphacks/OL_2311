@@ -41,7 +41,7 @@ class LoginScreen extends HookConsumerWidget {
               Align(
                 alignment: Alignment.center,
                 child: Container(
-                  padding: const EdgeInsets.only(bottom: 256),
+                  padding: const EdgeInsets.only(bottom: 128),
                   width: double.infinity,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -57,6 +57,21 @@ class LoginScreen extends HookConsumerWidget {
                         width: 132,
                         theme: const SvgTheme(currentColor: Color(0xff010103)),
                       ),
+                      const SizedBox(
+                        height: 44,
+                      ),
+                      const Text(
+                        "Sponsor advised by",
+                        textAlign: TextAlign.center,
+                        style:
+                            TextStyle(fontSize: 14, color: Color(0xff010103)),
+                      ),
+                      const SizedBox(
+                        height: 6,
+                      ),
+                      Image.asset(
+                        "assets/images/suntory.png",
+                      ),
                     ],
                   ),
                 ),
@@ -70,7 +85,7 @@ class LoginScreen extends HookConsumerWidget {
                     const SizedBox(
                       height: 24,
                     ),
-                    _buildGitHubLoginButton(context, ref),
+                    _buildAppleLoginButton(context, ref),
                     const SizedBox(
                       height: 12,
                     ),
@@ -83,14 +98,14 @@ class LoginScreen extends HookConsumerWidget {
         ));
   }
 
-  SizedBox _buildGitHubLoginButton(BuildContext context, WidgetRef ref) {
+  SizedBox _buildAppleLoginButton(BuildContext context, WidgetRef ref) {
     final loginViewModel = ref.watch(authViewModelProvider.notifier);
 
     return SizedBox(
       width: double.infinity,
       child: FilledButton.icon(
           onPressed: () async {
-            // TODO: GitHubログインに変更
+            // TODO: Implement Apple Sign In
             await loginViewModel.signUpWithGoogle();
             if (!context.mounted) return;
             Navigator.push(
@@ -99,12 +114,12 @@ class LoginScreen extends HookConsumerWidget {
             );
           },
           icon: const FaIcon(
-            FontAwesomeIcons.github,
+            FontAwesomeIcons.apple,
             size: 20,
           ),
           label: const Text(
-            "GitHub アカウントでログイン",
-            style: TextStyle(fontSize: 15),
+            "Appleでサインイン",
+            style: TextStyle(fontSize: 16),
           )),
     );
   }
@@ -137,8 +152,8 @@ class LoginScreen extends HookConsumerWidget {
             size: 18,
           ),
           label: const Text(
-            "Googleアカウントでログイン",
-            style: TextStyle(fontSize: 15),
+            "Googleでサインイン",
+            style: TextStyle(fontSize: 16),
           )),
     );
   }

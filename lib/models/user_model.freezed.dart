@@ -22,14 +22,17 @@ User _$UserFromJson(Map<String, dynamic> json) {
 mixin _$User {
   String get id =>
       throw _privateConstructorUsedError; // Firebase Authenticationのuid
-  String? get name => throw _privateConstructorUsedError; // 名前
+  String? get username => throw _privateConstructorUsedError; // 名前
+  String? get email => throw _privateConstructorUsedError; // メールアドレス
+  String? get bio => throw _privateConstructorUsedError; // ひとこと
   String? get profileImageUrl => throw _privateConstructorUsedError; // 画像のurl
   String? get location => throw _privateConstructorUsedError; // 出身地
   String? get techArea => throw _privateConstructorUsedError; // 好き・得意な技術領域
   String? get xId => throw _privateConstructorUsedError; // SNS Xのid
   String? get instagramId =>
       throw _privateConstructorUsedError; // SNSのInstagramのid
-  String? get homepageLink => throw _privateConstructorUsedError; // ホームページのリンク
+  String? get githubId => throw _privateConstructorUsedError; // SNSのGitHubのid
+  String? get websiteLink => throw _privateConstructorUsedError; // ウェブサイトのリンク
   String? get deviceUuid =>
       throw _privateConstructorUsedError; // BluetoothデバイスのUUID
   String? get bleUserId =>
@@ -52,13 +55,16 @@ abstract class $UserCopyWith<$Res> {
   @useResult
   $Res call(
       {String id,
-      String? name,
+      String? username,
+      String? email,
+      String? bio,
       String? profileImageUrl,
       String? location,
       String? techArea,
       String? xId,
       String? instagramId,
-      String? homepageLink,
+      String? githubId,
+      String? websiteLink,
       String? deviceUuid,
       String? bleUserId,
       String? lastCheersUserId,
@@ -80,13 +86,16 @@ class _$UserCopyWithImpl<$Res, $Val extends User>
   @override
   $Res call({
     Object? id = null,
-    Object? name = freezed,
+    Object? username = freezed,
+    Object? email = freezed,
+    Object? bio = freezed,
     Object? profileImageUrl = freezed,
     Object? location = freezed,
     Object? techArea = freezed,
     Object? xId = freezed,
     Object? instagramId = freezed,
-    Object? homepageLink = freezed,
+    Object? githubId = freezed,
+    Object? websiteLink = freezed,
     Object? deviceUuid = freezed,
     Object? bleUserId = freezed,
     Object? lastCheersUserId = freezed,
@@ -98,9 +107,17 @@ class _$UserCopyWithImpl<$Res, $Val extends User>
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as String,
-      name: freezed == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
+      username: freezed == username
+          ? _value.username
+          : username // ignore: cast_nullable_to_non_nullable
+              as String?,
+      email: freezed == email
+          ? _value.email
+          : email // ignore: cast_nullable_to_non_nullable
+              as String?,
+      bio: freezed == bio
+          ? _value.bio
+          : bio // ignore: cast_nullable_to_non_nullable
               as String?,
       profileImageUrl: freezed == profileImageUrl
           ? _value.profileImageUrl
@@ -122,9 +139,13 @@ class _$UserCopyWithImpl<$Res, $Val extends User>
           ? _value.instagramId
           : instagramId // ignore: cast_nullable_to_non_nullable
               as String?,
-      homepageLink: freezed == homepageLink
-          ? _value.homepageLink
-          : homepageLink // ignore: cast_nullable_to_non_nullable
+      githubId: freezed == githubId
+          ? _value.githubId
+          : githubId // ignore: cast_nullable_to_non_nullable
+              as String?,
+      websiteLink: freezed == websiteLink
+          ? _value.websiteLink
+          : websiteLink // ignore: cast_nullable_to_non_nullable
               as String?,
       deviceUuid: freezed == deviceUuid
           ? _value.deviceUuid
@@ -159,13 +180,16 @@ abstract class _$$UserImplCopyWith<$Res> implements $UserCopyWith<$Res> {
   @useResult
   $Res call(
       {String id,
-      String? name,
+      String? username,
+      String? email,
+      String? bio,
       String? profileImageUrl,
       String? location,
       String? techArea,
       String? xId,
       String? instagramId,
-      String? homepageLink,
+      String? githubId,
+      String? websiteLink,
       String? deviceUuid,
       String? bleUserId,
       String? lastCheersUserId,
@@ -184,13 +208,16 @@ class __$$UserImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? id = null,
-    Object? name = freezed,
+    Object? username = freezed,
+    Object? email = freezed,
+    Object? bio = freezed,
     Object? profileImageUrl = freezed,
     Object? location = freezed,
     Object? techArea = freezed,
     Object? xId = freezed,
     Object? instagramId = freezed,
-    Object? homepageLink = freezed,
+    Object? githubId = freezed,
+    Object? websiteLink = freezed,
     Object? deviceUuid = freezed,
     Object? bleUserId = freezed,
     Object? lastCheersUserId = freezed,
@@ -202,9 +229,17 @@ class __$$UserImplCopyWithImpl<$Res>
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as String,
-      name: freezed == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
+      username: freezed == username
+          ? _value.username
+          : username // ignore: cast_nullable_to_non_nullable
+              as String?,
+      email: freezed == email
+          ? _value.email
+          : email // ignore: cast_nullable_to_non_nullable
+              as String?,
+      bio: freezed == bio
+          ? _value.bio
+          : bio // ignore: cast_nullable_to_non_nullable
               as String?,
       profileImageUrl: freezed == profileImageUrl
           ? _value.profileImageUrl
@@ -226,9 +261,13 @@ class __$$UserImplCopyWithImpl<$Res>
           ? _value.instagramId
           : instagramId // ignore: cast_nullable_to_non_nullable
               as String?,
-      homepageLink: freezed == homepageLink
-          ? _value.homepageLink
-          : homepageLink // ignore: cast_nullable_to_non_nullable
+      githubId: freezed == githubId
+          ? _value.githubId
+          : githubId // ignore: cast_nullable_to_non_nullable
+              as String?,
+      websiteLink: freezed == websiteLink
+          ? _value.websiteLink
+          : websiteLink // ignore: cast_nullable_to_non_nullable
               as String?,
       deviceUuid: freezed == deviceUuid
           ? _value.deviceUuid
@@ -259,13 +298,16 @@ class __$$UserImplCopyWithImpl<$Res>
 class _$UserImpl implements _User {
   _$UserImpl(
       {required this.id,
-      this.name,
+      this.username,
+      this.email,
+      this.bio,
       this.profileImageUrl,
       this.location,
       this.techArea,
       this.xId,
       this.instagramId,
-      this.homepageLink,
+      this.githubId,
+      this.websiteLink,
       this.deviceUuid,
       this.bleUserId,
       this.lastCheersUserId,
@@ -281,8 +323,14 @@ class _$UserImpl implements _User {
   final String id;
 // Firebase Authenticationのuid
   @override
-  final String? name;
+  final String? username;
 // 名前
+  @override
+  final String? email;
+// メールアドレス
+  @override
+  final String? bio;
+// ひとこと
   @override
   final String? profileImageUrl;
 // 画像のurl
@@ -299,8 +347,11 @@ class _$UserImpl implements _User {
   final String? instagramId;
 // SNSのInstagramのid
   @override
-  final String? homepageLink;
-// ホームページのリンク
+  final String? githubId;
+// SNSのGitHubのid
+  @override
+  final String? websiteLink;
+// ウェブサイトのリンク
   @override
   final String? deviceUuid;
 // BluetoothデバイスのUUID
@@ -335,7 +386,7 @@ class _$UserImpl implements _User {
 
   @override
   String toString() {
-    return 'User(id: $id, name: $name, profileImageUrl: $profileImageUrl, location: $location, techArea: $techArea, xId: $xId, instagramId: $instagramId, homepageLink: $homepageLink, deviceUuid: $deviceUuid, bleUserId: $bleUserId, lastCheersUserId: $lastCheersUserId, cheerUserIds: $cheerUserIds, keywords: $keywords)';
+    return 'User(id: $id, username: $username, email: $email, bio: $bio, profileImageUrl: $profileImageUrl, location: $location, techArea: $techArea, xId: $xId, instagramId: $instagramId, githubId: $githubId, websiteLink: $websiteLink, deviceUuid: $deviceUuid, bleUserId: $bleUserId, lastCheersUserId: $lastCheersUserId, cheerUserIds: $cheerUserIds, keywords: $keywords)';
   }
 
   @override
@@ -344,7 +395,10 @@ class _$UserImpl implements _User {
         (other.runtimeType == runtimeType &&
             other is _$UserImpl &&
             (identical(other.id, id) || other.id == id) &&
-            (identical(other.name, name) || other.name == name) &&
+            (identical(other.username, username) ||
+                other.username == username) &&
+            (identical(other.email, email) || other.email == email) &&
+            (identical(other.bio, bio) || other.bio == bio) &&
             (identical(other.profileImageUrl, profileImageUrl) ||
                 other.profileImageUrl == profileImageUrl) &&
             (identical(other.location, location) ||
@@ -354,8 +408,10 @@ class _$UserImpl implements _User {
             (identical(other.xId, xId) || other.xId == xId) &&
             (identical(other.instagramId, instagramId) ||
                 other.instagramId == instagramId) &&
-            (identical(other.homepageLink, homepageLink) ||
-                other.homepageLink == homepageLink) &&
+            (identical(other.githubId, githubId) ||
+                other.githubId == githubId) &&
+            (identical(other.websiteLink, websiteLink) ||
+                other.websiteLink == websiteLink) &&
             (identical(other.deviceUuid, deviceUuid) ||
                 other.deviceUuid == deviceUuid) &&
             (identical(other.bleUserId, bleUserId) ||
@@ -372,13 +428,16 @@ class _$UserImpl implements _User {
   int get hashCode => Object.hash(
       runtimeType,
       id,
-      name,
+      username,
+      email,
+      bio,
       profileImageUrl,
       location,
       techArea,
       xId,
       instagramId,
-      homepageLink,
+      githubId,
+      websiteLink,
       deviceUuid,
       bleUserId,
       lastCheersUserId,
@@ -402,13 +461,16 @@ class _$UserImpl implements _User {
 abstract class _User implements User {
   factory _User(
       {required final String id,
-      final String? name,
+      final String? username,
+      final String? email,
+      final String? bio,
       final String? profileImageUrl,
       final String? location,
       final String? techArea,
       final String? xId,
       final String? instagramId,
-      final String? homepageLink,
+      final String? githubId,
+      final String? websiteLink,
       final String? deviceUuid,
       final String? bleUserId,
       final String? lastCheersUserId,
@@ -420,8 +482,12 @@ abstract class _User implements User {
   @override
   String get id;
   @override // Firebase Authenticationのuid
-  String? get name;
+  String? get username;
   @override // 名前
+  String? get email;
+  @override // メールアドレス
+  String? get bio;
+  @override // ひとこと
   String? get profileImageUrl;
   @override // 画像のurl
   String? get location;
@@ -432,8 +498,10 @@ abstract class _User implements User {
   @override // SNS Xのid
   String? get instagramId;
   @override // SNSのInstagramのid
-  String? get homepageLink;
-  @override // ホームページのリンク
+  String? get githubId;
+  @override // SNSのGitHubのid
+  String? get websiteLink;
+  @override // ウェブサイトのリンク
   String? get deviceUuid;
   @override // BluetoothデバイスのUUID
   String? get bleUserId;
