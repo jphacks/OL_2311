@@ -70,7 +70,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
           primarySwatch: Colors.blue,
-          primaryColor: const Color.fromRGBO(22, 55, 252, 1),
+          primaryColor: const Color.fromRGBO(91, 194, 220, 1),
           fontFamily: "San Francisco",
           fontFamilyFallback: const ["Hiragino Sans"],
           filledButtonTheme: FilledButtonThemeData(

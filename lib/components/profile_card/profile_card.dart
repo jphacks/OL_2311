@@ -130,7 +130,7 @@ class ProfileCard extends HookConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Text(
-                      user!.name!,
+                      user!.username!,
                       style: const TextStyle(
                           color: Colors.black87,
                           fontSize: 24,

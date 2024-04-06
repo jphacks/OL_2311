@@ -67,6 +67,7 @@ class OnboardingLayout extends HookConsumerWidget {
     return Scaffold(
       appBar: appbar,
       extendBodyBehindAppBar: true,
+      resizeToAvoidBottomInset: true,
       backgroundColor: const Color.fromRGBO(245, 245, 245, 1),
       body: Padding(
         padding: EdgeInsets.only(
@@ -92,7 +93,8 @@ class OnboardingLayout extends HookConsumerWidget {
                               tag: "LinearProgressIndicator",
                               child: LinearProgressIndicator(
                                 value: controller.value,
-                                color: const Color(0xff1738FD),
+                                valueColor: AlwaysStoppedAnimation(
+                                    Theme.of(context).primaryColor),
                                 backgroundColor: const Color(0xffE0E0E0),
                               ),
                             );
