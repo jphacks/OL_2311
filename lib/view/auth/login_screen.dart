@@ -105,6 +105,7 @@ class LoginScreen extends HookConsumerWidget {
       width: double.infinity,
       child: FilledButton.icon(
           onPressed: () async {
+            // TODO: Implement Apple Sign In
             await loginViewModel.signUpWithGoogle();
             if (!context.mounted) return;
             Navigator.push(

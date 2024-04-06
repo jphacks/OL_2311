@@ -16,6 +16,7 @@ class ProfileScreen extends HookConsumerWidget {
     final displayName = FirebaseAuth.instance.currentUser!.displayName;
 
     final usernameController = useTextEditingController(text: displayName);
+    final bioController = useTextEditingController();
 
     return OnboardingLayout(
       title: "プロフィールはこちらで\nよろしいですか？",
@@ -26,51 +27,55 @@ class ProfileScreen extends HookConsumerWidget {
         Navigator.of(context)
             .push(MaterialPageRoute(builder: (_) => const Question1Screen()));
       },
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Stack(
-              clipBehavior: Clip.none,
-              children: [
-                CircleAvatar(
-                    radius: 40,
-                    backgroundImage: NetworkImage(
-                        FirebaseAuth.instance.currentUser!.photoURL!)),
-                Positioned(
-                  bottom: -8,
-                  right: -8,
-                  child: Container(
-                      padding: const EdgeInsets.all(6),
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          border: Border.all(
-                              color: const Color(0xffE0E0E0), width: 1),
-                          borderRadius: BorderRadius.circular(999)),
-                      child: const Icon(
-                        Icons.camera_alt,
-                        size: 18,
-                      )),
-                )
-              ],
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  CircleAvatar(
+                      radius: 40,
+                      backgroundImage: NetworkImage(
+                          FirebaseAuth.instance.currentUser!.photoURL!)),
+                  Positioned(
+                    bottom: -8,
+                    right: -8,
+                    child: Container(
+                        padding: const EdgeInsets.all(6),
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border.all(
+                                color: const Color(0xffE0E0E0), width: 1),
+                            borderRadius: BorderRadius.circular(999)),
+                        child: const Icon(
+                          Icons.camera_alt,
+                          size: 18,
+                        )),
+                  )
+                ],
+              ),
             ),
-          ),
-          const SizedBox(
-            height: 8,
-          ),
-          Text(
-            // TODO: 正しい値を入れる
-            "Google ID : 03840_kanpai",
-            style: Theme.of(context).textTheme.labelLarge,
-          ),
-          const SizedBox(
-            height: 32,
-          ),
-          FormItem(
-              label: "名前",
-              helperText: "乾杯する相手に表示される名前です",
-              controller: usernameController),
-        ],
+            const SizedBox(
+              height: 8,
+            ),
+            const SizedBox(
+              height: 32,
+            ),
+            FormItem(
+                label: "ユーザーネーム",
+                description: "乾杯する相手に表示される名前です。",
+                controller: usernameController),
+            const SizedBox(height: 24),
+            FormItem(
+              label: "ひとこと",
+              hintText: "（例）はじめまして、よろしくお願いします！",
+              controller: bioController,
+              maxLines: 2,
+            ),
+          ],
+        ),
       ),
     );
   }

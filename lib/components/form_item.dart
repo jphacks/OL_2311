@@ -6,15 +6,19 @@ class FormItem extends HookConsumerWidget {
       {super.key,
       required this.label,
       required this.controller,
+      this.description,
       this.hintText,
       this.helperText,
-      this.autofocus = false});
+      this.autofocus = false,
+      this.maxLines = 1});
 
   final String label;
+  final String? description;
   final String? hintText;
   final String? helperText;
   final TextEditingController controller;
   final bool autofocus;
+  final int maxLines;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -31,9 +35,14 @@ class FormItem extends HookConsumerWidget {
         const SizedBox(
           height: 8,
         ),
+        if (description != null) ...[
+          Text(description ?? "", style: const TextStyle(fontSize: 14)),
+          const SizedBox(height: 8),
+        ],
         TextFormField(
           controller: controller,
           autofocus: autofocus,
+          maxLines: maxLines,
           decoration: InputDecoration(
             contentPadding: const EdgeInsets.all(16),
             filled: true,

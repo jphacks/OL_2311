@@ -23,6 +23,8 @@ mixin _$User {
   String get id =>
       throw _privateConstructorUsedError; // Firebase Authenticationのuid
   String? get username => throw _privateConstructorUsedError; // 名前
+  String? get email => throw _privateConstructorUsedError; // メールアドレス
+  String? get bio => throw _privateConstructorUsedError; // ひとこと
   String? get profileImageUrl => throw _privateConstructorUsedError; // 画像のurl
   String? get location => throw _privateConstructorUsedError; // 出身地
   String? get techArea => throw _privateConstructorUsedError; // 好き・得意な技術領域
@@ -54,6 +56,8 @@ abstract class $UserCopyWith<$Res> {
   $Res call(
       {String id,
       String? username,
+      String? email,
+      String? bio,
       String? profileImageUrl,
       String? location,
       String? techArea,
@@ -83,6 +87,8 @@ class _$UserCopyWithImpl<$Res, $Val extends User>
   $Res call({
     Object? id = null,
     Object? username = freezed,
+    Object? email = freezed,
+    Object? bio = freezed,
     Object? profileImageUrl = freezed,
     Object? location = freezed,
     Object? techArea = freezed,
@@ -104,6 +110,14 @@ class _$UserCopyWithImpl<$Res, $Val extends User>
       username: freezed == username
           ? _value.username
           : username // ignore: cast_nullable_to_non_nullable
+              as String?,
+      email: freezed == email
+          ? _value.email
+          : email // ignore: cast_nullable_to_non_nullable
+              as String?,
+      bio: freezed == bio
+          ? _value.bio
+          : bio // ignore: cast_nullable_to_non_nullable
               as String?,
       profileImageUrl: freezed == profileImageUrl
           ? _value.profileImageUrl
@@ -167,6 +181,8 @@ abstract class _$$UserImplCopyWith<$Res> implements $UserCopyWith<$Res> {
   $Res call(
       {String id,
       String? username,
+      String? email,
+      String? bio,
       String? profileImageUrl,
       String? location,
       String? techArea,
@@ -193,6 +209,8 @@ class __$$UserImplCopyWithImpl<$Res>
   $Res call({
     Object? id = null,
     Object? username = freezed,
+    Object? email = freezed,
+    Object? bio = freezed,
     Object? profileImageUrl = freezed,
     Object? location = freezed,
     Object? techArea = freezed,
@@ -214,6 +232,14 @@ class __$$UserImplCopyWithImpl<$Res>
       username: freezed == username
           ? _value.username
           : username // ignore: cast_nullable_to_non_nullable
+              as String?,
+      email: freezed == email
+          ? _value.email
+          : email // ignore: cast_nullable_to_non_nullable
+              as String?,
+      bio: freezed == bio
+          ? _value.bio
+          : bio // ignore: cast_nullable_to_non_nullable
               as String?,
       profileImageUrl: freezed == profileImageUrl
           ? _value.profileImageUrl
@@ -273,6 +299,8 @@ class _$UserImpl implements _User {
   _$UserImpl(
       {required this.id,
       this.username,
+      this.email,
+      this.bio,
       this.profileImageUrl,
       this.location,
       this.techArea,
@@ -297,6 +325,12 @@ class _$UserImpl implements _User {
   @override
   final String? username;
 // 名前
+  @override
+  final String? email;
+// メールアドレス
+  @override
+  final String? bio;
+// ひとこと
   @override
   final String? profileImageUrl;
 // 画像のurl
@@ -352,7 +386,7 @@ class _$UserImpl implements _User {
 
   @override
   String toString() {
-    return 'User(id: $id, username: $username, profileImageUrl: $profileImageUrl, location: $location, techArea: $techArea, xId: $xId, instagramId: $instagramId, githubId: $githubId, websiteLink: $websiteLink, deviceUuid: $deviceUuid, bleUserId: $bleUserId, lastCheersUserId: $lastCheersUserId, cheerUserIds: $cheerUserIds, keywords: $keywords)';
+    return 'User(id: $id, username: $username, email: $email, bio: $bio, profileImageUrl: $profileImageUrl, location: $location, techArea: $techArea, xId: $xId, instagramId: $instagramId, githubId: $githubId, websiteLink: $websiteLink, deviceUuid: $deviceUuid, bleUserId: $bleUserId, lastCheersUserId: $lastCheersUserId, cheerUserIds: $cheerUserIds, keywords: $keywords)';
   }
 
   @override
@@ -363,6 +397,8 @@ class _$UserImpl implements _User {
             (identical(other.id, id) || other.id == id) &&
             (identical(other.username, username) ||
                 other.username == username) &&
+            (identical(other.email, email) || other.email == email) &&
+            (identical(other.bio, bio) || other.bio == bio) &&
             (identical(other.profileImageUrl, profileImageUrl) ||
                 other.profileImageUrl == profileImageUrl) &&
             (identical(other.location, location) ||
@@ -393,6 +429,8 @@ class _$UserImpl implements _User {
       runtimeType,
       id,
       username,
+      email,
+      bio,
       profileImageUrl,
       location,
       techArea,
@@ -424,6 +462,8 @@ abstract class _User implements User {
   factory _User(
       {required final String id,
       final String? username,
+      final String? email,
+      final String? bio,
       final String? profileImageUrl,
       final String? location,
       final String? techArea,
@@ -444,6 +484,10 @@ abstract class _User implements User {
   @override // Firebase Authenticationのuid
   String? get username;
   @override // 名前
+  String? get email;
+  @override // メールアドレス
+  String? get bio;
+  @override // ひとこと
   String? get profileImageUrl;
   @override // 画像のurl
   String? get location;

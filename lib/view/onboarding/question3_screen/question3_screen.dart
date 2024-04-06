@@ -20,8 +20,6 @@ class Question3Screen extends HookConsumerWidget {
     final githubController = useTextEditingController();
     final websiteController = useTextEditingController();
 
-    final disallowAutoExchange = useState(false);
-
     useEffect(() {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         isDirty.value = true;

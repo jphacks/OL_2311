@@ -64,6 +64,7 @@ class OnboardingLayout extends HookConsumerWidget {
     return Scaffold(
       appBar: appbar,
       extendBodyBehindAppBar: true,
+      resizeToAvoidBottomInset: true,
       backgroundColor: const Color.fromRGBO(245, 245, 245, 1),
       body: Padding(
         padding: EdgeInsets.only(

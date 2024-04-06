@@ -8,6 +8,8 @@ class User with _$User {
   factory User({
     required String id, // Firebase Authenticationのuid
     String? username, // 名前
+    String? email, // メールアドレス
+    String? bio, // ひとこと
     String? profileImageUrl, // 画像のurl
     String? location, // 出身地
     String? techArea, // 好き・得意な技術領域
