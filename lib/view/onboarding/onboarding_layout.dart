@@ -89,7 +89,8 @@ class OnboardingLayout extends HookConsumerWidget {
                               tag: "LinearProgressIndicator",
                               child: LinearProgressIndicator(
                                 value: controller.value,
-                                color: const Color(0xff1738FD),
+                                valueColor: AlwaysStoppedAnimation(
+                                    Theme.of(context).primaryColor),
                                 backgroundColor: const Color(0xffE0E0E0),
                               ),
                             );
