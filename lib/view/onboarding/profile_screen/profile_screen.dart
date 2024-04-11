@@ -20,6 +20,7 @@ class ProfileScreen extends HookConsumerWidget {
 
     return OnboardingLayout(
       title: "プロフィールはこちらで\nよろしいですか？",
+      indicator: 1,
       onNextPressed: () {
         // TODO: 画像を更新できるようにする
         ProfileViewModel.updateMe(usernameController.text,
