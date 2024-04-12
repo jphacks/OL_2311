@@ -60,18 +60,6 @@ class LoginScreen extends HookConsumerWidget {
                       const SizedBox(
                         height: 44,
                       ),
-                      const Text(
-                        "Sponsor advised by",
-                        textAlign: TextAlign.center,
-                        style:
-                            TextStyle(fontSize: 14, color: Color(0xff010103)),
-                      ),
-                      const SizedBox(
-                        height: 6,
-                      ),
-                      Image.asset(
-                        "assets/images/suntory.png",
-                      ),
                     ],
                   ),
                 ),

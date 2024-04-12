@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kanpai/repositories/user_repository.dart';
 import 'package:kanpai/util/get_user_color.dart';
 import 'package:kanpai/util/string.dart';
-import 'package:kanpai/view/onboarding/question2_screen/tech_area.dart';
+import 'package:kanpai/view/onboarding/question1_screen/tech_area.dart';
 
 final question2ViewModelProvider =
     StateNotifierProvider<Question2ViewModel, AsyncValue<TechArea?>>((ref) {
